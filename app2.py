@@ -378,6 +378,10 @@ def embedding_store_aml(_doc,_hf_embeddings):
     docsearch = FAISS.from_documents(_doc, _hf_embeddings)
     return _doc, docsearch
 
+def embedding_store_aml_2(_doc,_hf_embeddings):
+    docsearch = FAISS.from_documents(_doc, _hf_embeddings)
+    return _doc, docsearch
+
 
 # def merge_and_extract_text(pdf_list):
 #     merged_pdf = fitz.open()
@@ -2329,7 +2333,7 @@ elif selected_option_case_type == "Money Laundering":
                     if st.session_state.clicked1:
                         if temp_file_path2 is not None:
                             
-                            doc_1, docsearch2 = embedding_store_aml(temp_file_path2,hf_embeddings)
+                            doc_1, docsearch2 = embedding_store_aml_2(temp_file_path2,hf_embeddings)
                             # File handling logic
                             
                             

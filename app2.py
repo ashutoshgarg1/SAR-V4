@@ -2978,7 +2978,7 @@ elif selected_option_case_type == "Money Laundering":
                     tmp_table = pd.concat([tmp_table, st.session_state["tmp_table_gpt_aml"]], ignore_index=True)
                     tmp_summary.append(st.session_state["tmp_summary_gpt_aml"])
                     tmp_table.drop_duplicates(inplace=True)
-                    st.write(tmp_table)
+                    #st.write(tmp_table)
 
 
                 elif st.session_state.llm == "Open-Source":
@@ -3120,7 +3120,7 @@ elif selected_option_case_type == "Money Laundering":
                     #         data=file, 
                     #         file_name=zip_file_name,
                     #         disabled=st.session_state.disabled)
-                    #st.write(tmp_table)
+                    st.write(tmp_table)
                     #st.write(tmp_table)
                     if doc:
                         st.download_button(

@@ -3060,27 +3060,16 @@ elif selected_option_case_type == "Money Laundering":
                 # save document
                 # output_bytes = docx.Document.save(doc, 'output.docx')
                 # st.download_button(label='Download Report', data=output_bytes, file_name='evidence.docx', mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-                if st.session_state.llm == "Closed-Source":
-                    paragraph = doc.add_paragraph()
-                    paragraph = doc.add_paragraph()
-                    doc.add_heading('SARA Recommendation', level=2)
-                    doc.add_paragraph()       
-                    paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt_aml"])
-                elif st.session_state.llm == "Open-Source":
-                    paragraph = doc.add_paragraph()
-                    paragraph = doc.add_paragraph()
-                    doc.add_heading('SARA Recommendation', level=2)
-                    doc.add_paragraph()       
-                    paragraph = doc.add_paragraph(st.session_state["sara_recommendation_llama_aml"])
-
+                paragraph = doc.add_paragraph()
+                paragraph = doc.add_paragraph()
+                doc.add_heading('SARA Recommendation', level=2)
+                doc.add_paragraph()       
+                paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt"])
 
                 bio = io.BytesIO()
                 doc.save(bio)
-            except:
-                    
-                    e = Exception("")
-                    st.exception(e)
-
+            except NameError:
+                pass
             
             
             with col5_up:

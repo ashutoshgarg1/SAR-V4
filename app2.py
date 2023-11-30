@@ -2551,7 +2551,7 @@ elif selected_option_case_type == "Money Laundering":
                                 st.markdown("### SARA Recommendation")
                                 
                                 st.markdown(response1)
-                                st.write(res_df_gpt)
+                                
 
                                 st.markdown("#### Recommendation Feedback:")
                                 col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)

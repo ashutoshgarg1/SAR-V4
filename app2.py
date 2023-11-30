@@ -3007,7 +3007,7 @@ elif selected_option_case_type == "Money Laundering":
                     "Case Number                            ": " SAR-2023-24680",
                     "Customer Name                       ": " Sarah Jones",
                     "Customer ID                              ": " 560062",
-                    "Case open date                         ": " Sep 01, 2022",
+                    "Case open date                         ": " July 05, 2022",
                     "Case Type                                  ": " Money Laundering",
                     "Case Status                                ": " Open"
                 }

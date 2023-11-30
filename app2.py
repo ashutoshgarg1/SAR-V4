@@ -2211,7 +2211,7 @@ elif selected_option_case_type == "Money Laundering":
                     elif fetched_pdf.endswith(file_ext2):
                         selected_file_path = os.path.join(directory_path, fetched_pdf)
                         
-                        if selected_file_path.startswith("aml_docs/Credit_Card_statement"):
+                        if selected_file_path.startswith("aml_docs/credit_card_statement"):
                             
                             json1=process_data_credit_card(selected_file_path)
                             #st.write("creditcard")
@@ -2228,7 +2228,7 @@ elif selected_option_case_type == "Money Laundering":
                             #text = convert_image_to_searchable_pdf(selected_file_path)
                             texts = text_to_docs(json2,file)
                             for i in texts:
-                                temp_file_path1.append(i)
+                                temp_file_path2.append(i)
                 st.write(temp_file_path2)            
 
     

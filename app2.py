@@ -2978,6 +2978,7 @@ elif selected_option_case_type == "Money Laundering":
                     tmp_table = pd.concat([tmp_table, st.session_state["tmp_table_gpt_aml"]], ignore_index=True)
                     tmp_summary.append(st.session_state["tmp_summary_gpt_aml"])
                     tmp_table.drop_duplicates(inplace=True)
+                    st.write(tmp_table)
 
 
                 elif st.session_state.llm == "Open-Source":
@@ -3046,6 +3047,7 @@ elif selected_option_case_type == "Money Laundering":
                 columns = list(tmp_table.columns)
                 table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
                 table.autofit = True
+                
                 for col in range(len(columns)):
                     # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
                     table.cell(0, col).text = columns[col]

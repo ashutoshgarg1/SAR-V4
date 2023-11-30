@@ -2342,7 +2342,9 @@ elif selected_option_case_type == "Money Laundering":
                                 ## Question-1
 
                                 
-                                #st.write(doc_1)
+                                st.write(doc_1)
+                                st.write(temp_file_path2)
+
     
                                 query = "Why was the transaction triggered?"
                                 
@@ -2395,7 +2397,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Do not give/add any extra Note, Explanation in answer.) '''
-                                st.write(doc_1)
+                                
                                 st.write(context_1)
                                 system_prompt = wrap_prompt("You are a Money Laundering Analyst.", "system")
                                 user_prompt = wrap_prompt(prompt_1, "user")

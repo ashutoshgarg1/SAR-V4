@@ -2346,8 +2346,8 @@ elif selected_option_case_type == "Money Laundering":
                                 ## Question-1
 
                                 
-                                st.write(doc_1)
-                                st.write(temp_file_path2)
+                                # st.write(doc_1)
+                                # st.write(temp_file_path2)
 
     
                                 query = "Why was the transaction triggered?"
@@ -2395,7 +2395,7 @@ elif selected_option_case_type == "Money Laundering":
 
                                 ## Question-3
 
-                                query = "credit_card_statement?"
+                                query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                 prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
                                 Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\

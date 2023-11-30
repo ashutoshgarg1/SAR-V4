@@ -2173,6 +2173,7 @@ elif selected_option_case_type == "Money Laundering":
         
                 #creating temp directory to have all the files at one place for accessing
                 tmp_dir_ = tempfile.mkdtemp()
+                temp_file_path1= []
                 temp_file_path2= []
     
                 for uploaded_file in pdf_files:
@@ -2227,7 +2228,7 @@ elif selected_option_case_type == "Money Laundering":
                             #text = convert_image_to_searchable_pdf(selected_file_path)
                             texts = text_to_docs(json2,file)
                             for i in texts:
-                                temp_file_path2.append(i)
+                                temp_file_path1.append(i)
                 st.write(temp_file_path2)            
 
     

@@ -1688,7 +1688,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     for key,value in summ_dict_gpt.items():
                         text.append(value)
                     response_summ_gpt = llm_chain_gpt.run(text)
-                    # st.write(response_summ_gpt)
+                    st.write(text)
                     return response_summ_gpt,summ_dict_gpt
 
                 if 'clicked2' not in st.session_state:
@@ -1706,10 +1706,10 @@ elif selected_option_case_type == "Fraud transaction dispute":
                         if st.session_state.llm == "Closed-Source":
                             st.session_state.disabled=False
                             summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
-                            context_summary = summ_dict_gpt + sara_open_source_gpt 
                             # chat_history = resp_dict_obj['Summary']
-                            response_summ_gpt,summ_dict_gpt = summ_gpt_(context_summary)
+                            response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt)
                             response_summ_gpt = response_summ_gpt.replace("$", " ")
+                           # response_summ_gpt = response_summ_gpt.replace("$", " ")
                             response_summ_gpt = response_summ_gpt.replace("5,000", "5,000 USD")
                             response_summ_gpt = response_summ_gpt.replace("5,600", "5,600 USD")
                             # memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=300)

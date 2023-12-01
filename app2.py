@@ -1204,7 +1204,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
                                     Based on above points, give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Context: {contexts}\n\
-                                    Response (Start the output answering if it is a suspicious activity or not and then Give me a concise recommendation in few pointers.If not a case of suspicion them mention it properly.)"
+                                    Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points"
                                 response1 = usellm(prompt) 
                                 
                                 # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)

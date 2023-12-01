@@ -382,6 +382,9 @@ def embedding_store_aml(_doc,_hf_embeddings):
 def embedding_store_aml_4(_doc,_hf_embeddings):
     docsearch = FAISS.from_documents(_doc, _hf_embeddings)
     return _doc, docsearch
+def embedding_store_aml_5(_doc,_hf_embeddings):
+    docsearch = FAISS.from_documents(_doc, _hf_embeddings)
+    return _doc, docsearch
 
 
 # def merge_and_extract_text(pdf_list):
@@ -2218,7 +2221,7 @@ elif selected_option_case_type == "Money Laundering":
                     elif fetched_pdf.endswith(file_ext2):
                         selected_file_path = os.path.join(directory_path, fetched_pdf)
                         
-                        if selected_file_path.startswith("aml_docs/Credit_Card_statement"):
+                        if selected_file_path.startswith("aml_docs/credit_card_statement"):
                             
                             json1=process_data_credit_card(selected_file_path)
                             #st.write("creditcard")
@@ -2336,7 +2339,7 @@ elif selected_option_case_type == "Money Laundering":
                     if st.session_state.clicked1:
                         if temp_file_path2 is not None:
                             
-                            doc_1, docsearch2 = embedding_store_aml_4(temp_file_path2,hf_embeddings)
+                            doc_1, docsearch2 = embedding_store_aml_5(temp_file_path2,hf_embeddings)
                             # File handling logic
                             
                             

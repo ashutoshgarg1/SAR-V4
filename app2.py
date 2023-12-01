@@ -2007,6 +2007,8 @@ elif selected_option_case_type == "Money Laundering":
         
     
         col1,col2 = st.columns(2)
+        customer_details = """Case number : SAR-2023-24680, Customer name : Sarah Jones, Case open date : July 05, 2022 \
+            Case type: Money Laundering, Customer ID : 560062, Case status : Open """
         # Row 1
         with col1:
             st.markdown("##### **Case number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:** SAR-2023-24680")
@@ -2895,7 +2897,7 @@ elif selected_option_case_type == "Money Laundering":
                             st.session_state.disabled=False
             
                             # summ_dict_gpt = st.session_state.tmp_table_gpt_aml.set_index('Question')['Answer'].to_dict()
-                            summary1= ', '.join(res_df_gpt['Answer']) + sara_close_source
+                            summary1= customer_details + ', '.join(res_df_gpt['Answer']) + sara_close_source
                             # chat_history = resp_dict_obj['Summary']
                             # memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=400)
                             # memory.save_context({"input": "This is the entire summary"}, 
@@ -2913,7 +2915,7 @@ elif selected_option_case_type == "Money Laundering":
                             ## using open ai:
                             st.write(summary1)
 
-                            prompt_summ=f'''Provide a detailed summary of the below Context, and make sure to include all the relevant information (this includes names, transactions, involved parties, amounts involved, etc.). Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            prompt_summ=f'''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
                             Context: {summary1}  '''
                             system_prompt = wrap_prompt("You are a summarization tool", "system")
                             user_prompt = wrap_prompt(prompt_summ, "user")

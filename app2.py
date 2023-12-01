@@ -1208,13 +1208,14 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
                                     Based on above points, give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Context: {contexts}\n\
-                                    Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points"
+                                    Response: Start the Output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points"
                                 response1 = usellm(prompt) 
                                 
                                 # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)
                                 response1 = response1.replace("$", " ")
                                 response1 = response1.replace("5,000", "5,000 USD")
                                 response1 = response1.replace("5,600", "5,600 USD")
+                                sara_open_source_gpt = response1
                                 st.session_state["sara_recommendation_gpt"] = response1  
                                 # sara_recommendation_gpt = response1 
                                         

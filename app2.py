@@ -1208,7 +1208,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
                                     Based on above points, give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Context: {contexts}\n\
-                                    Response: Start the Output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points"
+                                    Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual pointers."
                                 response1 = usellm(prompt) 
                                 
                                 # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)
@@ -1688,7 +1688,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     for key,value in summ_dict_gpt.items():
                         text.append(value)
                     response_summ_gpt = llm_chain_gpt.run(text)
-                    st.write(text)
+                    #st.write(text)
                     return response_summ_gpt,summ_dict_gpt
 
                 if 'clicked2' not in st.session_state:

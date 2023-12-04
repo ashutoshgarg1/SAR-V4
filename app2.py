@@ -1708,7 +1708,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             st.session_state.disabled=False
                             #summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
                             summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_gpt
-                            st.write(summ_dict_gpt)
+                            #st.write(summ_dict_gpt)
                             # chat_history = resp_dict_obj['Summary']
                             response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt)
 

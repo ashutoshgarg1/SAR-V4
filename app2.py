@@ -1004,9 +1004,9 @@ elif selected_option_case_type == "Fraud transaction dispute":
                # Creating header
                 col1,col2 = st.columns(2)
                 with col1:
-                    st.markdown("""<span style="font-size: 24px; ">Key-Questions</span>""", unsafe_allow_html=True)
+                    st.markdown("""<span style="font-size: 24px; ">Key Questions</span>""", unsafe_allow_html=True)
                     # Create a Pandas DataFrame with your data
-                    data = {'Questions': ["What is the customer's name?","What is the suspect's name?",' List the merchant name',' How was the bank notified?',' When was the bank notified?',' What is the fraud type?',' When did the fraud occur?',' Was the disputed amount greater than 5000 USD?','what type of network/card is used in transaction?',' Was the police report filed?']}
+                    data = {'Questions': ["What is the customer's name?","What is the suspect's name?",' List the merchant name',' How was the bank notified?',' When was the bank notified?',' What is the fraud type?',' When did the fraud occur?',' Was the disputed amount greater than 5000 USD?','What type of network/card is used in transaction?',' Was the police report filed?']}
                     df_fixed = pd.DataFrame(data)
                     df_fixed.index = df_fixed.index +1
                 with col2:
@@ -2012,16 +2012,16 @@ elif selected_option_case_type == "Money Laundering":
 # st.markdown('---')
 
     # Redirect to Merge PDFs page when "Merge PDFs" is selected
-    if selected_option == "SAR-2023-24680":
-        st.session_state.case_num = "SAR-2023-24680"
+    if selected_option == "SAR-2023-24550":
+        st.session_state.case_num = "SAR-2023-24550"
         
     
         col1,col2 = st.columns(2)
-        customer_details = """Case number : SAR-2023-24680, Customer name : Sarah Jones, Case open date : July 05, 2022 \
+        customer_details = """Case number : SAR-2023-24550, Customer name : Sarah Jones, Case open date : July 05, 2022 \
             Case type: Money Laundering, Customer ID : 560062, Case status : Open """
         # Row 1
         with col1:
-            st.markdown("##### **Case number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:** SAR-2023-24680")
+            st.markdown("##### **Case number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:** SAR-2023-24550")
             st.markdown("##### **Customer name  :** Sarah Jones")
     
     
@@ -3019,7 +3019,7 @@ elif selected_option_case_type == "Money Laundering":
                 # Addition of case details
                 paragraph = doc.add_paragraph(" ")
                 case_info = {
-                    "Case Number                            ": " SAR-2023-24680",
+                    "Case Number                            ": " SAR-2023-24550",
                     "Customer Name                       ": " Sarah Jones",
                     "Customer ID                              ": " 560062",
                     "Case open date                         ": " July 05, 2022",

@@ -781,9 +781,9 @@ with st.sidebar:
     #option2 = ["Select Case ID", "SAR-2023-24680", "SAR-2023-24550", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
     # Add a single dropdown
     if selected_option_case_type == "Fraud transaction dispute":
-        option2 = ["Select Case ID", "SAR-2023-24680", "SAR-2023-24550", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
+        option2 = ["Select Case ID", "SAR-2023-24680", "SAR-2023-54670", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
     else:
-        option2 = ["Select Case ID", "SAR-2023-24550", "SAR-2023-24680", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
+        option2 = ["Select Case ID", "SAR-2023-24550", "SAR-2023-44710", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
     
     selected_option = st.sidebar.selectbox("", option2)
     # Add the image to the sidebar below options
@@ -1686,9 +1686,9 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                    
             with col4_up:
                 def summ_gpt_(tmp_table_gpt):
-                    template = """Write a concise summary of the context provided.
-                    ```{text}```
-                    Response: (Return your response in a single paragraph. Please don't include words like these: 'chat summary', 'includes information', 'repetitions of information',' repetitive information'  in my final summary.) """
+                    template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            Context: {text}  '''
+                    
                     prompt = PromptTemplate(template=template,input_variables=["text"])
                     llm_chain_gpt = LLMChain(prompt=prompt,llm=llm)
 
@@ -1708,10 +1708,12 @@ elif selected_option_case_type == "Fraud transaction dispute":
                 def set_clicked2():
                     st.session_state.clicked2 = True
                     st.session_state.disabled = True
-                st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
-                st.write()
+                #st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
+                #st.write()
                 st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled)    
-                with st.spinner("Summarize...."):
+                with st.spinner("Summarization ..."):
+                    st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
+                    st.write()
                     if st.session_state.clicked2:
 
                         if st.session_state.llm == "Closed-Source":

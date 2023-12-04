@@ -1679,7 +1679,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                         for i in range(len(doc)):
                             #st.write(doc[i])
                             y=i+1
-                            st.write(f":blue[Chunk-{y}:]")
+                            st.write(f":blue[Reference-{y}:]")
                             st_ = doc[i].page_content.replace("($)"," ")
                             st.write(":blue[Page Content:]",st_) 
                             st.write(":blue[Source:]",doc[i].metadata['source'])
@@ -2899,7 +2899,7 @@ elif selected_option_case_type == "Money Laundering":
                         for i in range(len(doc)):
                             #st.write(doc[i])
                             y=i+1
-                            st.write(f":blue[Chunk-{y}:]")
+                            st.write(f":blue[Reference-{y}:]")
                             st_ = doc[i].page_content.replace("($)"," ")
                             st.write(":blue[Page Content:]",st_) 
                             st.write(":blue[Source:]",doc[i].metadata['source'])

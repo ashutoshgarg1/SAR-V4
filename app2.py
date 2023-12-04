@@ -1688,7 +1688,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     for key,value in summ_dict_gpt.items():
                         text.append(value)
                     response_summ_gpt = llm_chain_gpt.run(text)
-                    #st.write(text)
+                    st.write(text)
                     return response_summ_gpt,summ_dict_gpt
 
                 if 'clicked2' not in st.session_state:

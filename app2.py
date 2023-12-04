@@ -1708,12 +1708,12 @@ elif selected_option_case_type == "Fraud transaction dispute":
                 def set_clicked2():
                     st.session_state.clicked2 = True
                     st.session_state.disabled = True
-                #st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
-                #st.write()
+                st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
+                st.write()
                 st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled)    
                 with st.spinner("Summarization ..."):
-                    st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
-                    st.write()
+                    # st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
+                    # st.write()
                     if st.session_state.clicked2:
 
                         if st.session_state.llm == "Closed-Source":

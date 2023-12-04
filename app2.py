@@ -778,14 +778,14 @@ with st.sidebar:
     selected_option_case_type = st.sidebar.selectbox("", options1)
     st.markdown("---")
 
-    option2 = ["Select Case ID", "SAR-2023-24680", "SAR-2023-24550", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
+    #option2 = ["Select Case ID", "SAR-2023-24680", "SAR-2023-24550", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
     # Add a single dropdown
     if selected_option_case_type == "Fraud transaction dispute":
         option2 = ["Select Case ID", "SAR-2023-24680", "SAR-2023-24550", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
     else:
         option2 = ["Select Case ID", "SAR-2023-24550", "SAR-2023-24680", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
     
-    selected_option = st.sidebar.selectbox("", option1)
+    selected_option = st.sidebar.selectbox("", option2)
     # Add the image to the sidebar below options
     st.sidebar.image("MicrosoftTeams-image (3).png", use_column_width=True)
 

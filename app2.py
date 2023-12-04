@@ -1682,13 +1682,14 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     prompt = PromptTemplate(template=template,input_variables=["text"])
                     llm_chain_gpt = LLMChain(prompt=prompt,llm=llm)
 
-                    summ_dict_gpt = tmp_table_gpt.set_index('Question')['Answer']
+                    #summ_dict_gpt = tmp_table_gpt.set_index('Question')['Answer']
                     # st.write(summ_dict_gpt)
-                    text = []
-                    for key,value in summ_dict_gpt.items():
-                        text.append(value)
+                    # text = []
+                    # for key,value in summ_dict_gpt.items():
+                    #     text.append(value)
+                    text = tmp_table_gpt
                     response_summ_gpt = llm_chain_gpt.run(text)
-                    st.write(text)
+                    #st.write(text)
                     return response_summ_gpt,summ_dict_gpt
 
                 if 'clicked2' not in st.session_state:
@@ -1705,11 +1706,11 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                         if st.session_state.llm == "Closed-Source":
                             st.session_state.disabled=False
-                            summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
-                            summ_dict_gpt1 = summ_dict_gpt + sara_recommendation_gpt
-                            st.write(summ_dict_gpt1)
+                            #summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
+                            summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_gpt
+                            st.write(summ_dict_gpt)
                             # chat_history = resp_dict_obj['Summary']
-                            response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt1)
+                            response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt)
 
                             response_summ_gpt = response_summ_gpt.replace("$", " ")
                            # response_summ_gpt = response_summ_gpt.replace("$", " ")

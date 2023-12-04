@@ -780,9 +780,9 @@ with st.sidebar:
     
     # Add a single dropdown
     if selected_option_case_type == "Fraud transaction dispute":
-        option1 = ["Select Case ID", "SAR-2023-24680", "SAR-2023-24550", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
+        option2 = ["Select Case ID", "SAR-2023-24680", "SAR-2023-24550", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
     else:
-        option1 = ["Select Case ID", "SAR-2023-24550", "SAR-2023-24680", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
+        option2 = ["Select Case ID", "SAR-2023-24550", "SAR-2023-24680", "SAR-2023-97531", "SAR-2023-86420", "SAR-2023-24681"]
     
     selected_option = st.sidebar.selectbox("", option1)
     # Add the image to the sidebar below options
@@ -1205,7 +1205,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
                                 contexts = docsearch.similarity_search(query, k=9)
-                                prompt = f" You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
                                     1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
                                     2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
                                     3. If a potential suspect name is identified or not? Suspect is a person who has commited the fraud, If identified then this can be a suspicious activity, else not.\n\n\
@@ -1213,7 +1213,12 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     Based on above points, give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Context: {contexts}\n\
                                     Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions individually."
-                                response1 = usellm(prompt) 
+                                system_prompt = wrap_prompt(" You are professional Fraud Analyst.", "system")
+                                user_prompt = wrap_prompt(prompt, "user")
+                                res = get_response([system_prompt, user_prompt])
+                                response1 = res['choices'][0]['message']['content']
+                                
+                                #response1 = usellm(prompt) 
                                 
                                 # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)
                                 response1 = response1.replace("$", " ")

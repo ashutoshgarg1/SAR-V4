@@ -1217,7 +1217,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 response1 = response1.replace("5,600", "5,600 USD")
                                 sara_open_source_gpt = response1
                                 st.session_state["sara_recommendation_gpt"] = response1  
-                                # sara_recommendation_gpt = response1 
+                                sara_recommendation_gpt = response1 
                                         
                                 
                                 st.markdown("### SARA Recommendation")
@@ -1706,8 +1706,9 @@ elif selected_option_case_type == "Fraud transaction dispute":
                         if st.session_state.llm == "Closed-Source":
                             st.session_state.disabled=False
                             summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
+                            summ_dict_gpt1 = summ_dict_gpt + sara_recommendation_gpt
                             # chat_history = resp_dict_obj['Summary']
-                            response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt)
+                            response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt1)
                             response_summ_gpt = response_summ_gpt.replace("$", " ")
                            # response_summ_gpt = response_summ_gpt.replace("$", " ")
                             response_summ_gpt = response_summ_gpt.replace("5,000", "5,000 USD")

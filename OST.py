@@ -1446,8 +1446,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 response_3,docs = run_chain(template,query)
                                 
                                 analyse1 = response_3['output_text']
-                                # st.write(response_3)
-                                # st.write(docs)
+                                st.write(response_3)
+                                st.write(docs)
 
 
                                 template = """You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
@@ -1461,8 +1461,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 response_4,docs = run_chain(template,query)
                                 
                                 analyse2 = response_4['output_text']
-                                # st.write(response_3)
-                                # st.write(docs)
+                                st.write(response_3)
+                                st.write(docs)
 
 
                                 template = """You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
@@ -1476,8 +1476,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 response_5,docs = run_chain(template,query)
                                 
                                 analyse3 = response_5['output_text']
-                                # st.write(response_3)
-                                # st.write(docs)
+                                st.write(response_3)
+                                st.write(docs)
                                 
                     
                                 # SARA Recommendation
@@ -1492,9 +1492,9 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     Analyse above points properly and give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Response (Mention why this is a suspicious activity,Give me a concise response in pointers like [1],[2],[3]..)"
                             
-                                st.write(analyse2)
-                                st.write(analyse1)
-                                st.write(analyse3)                        
+                                # st.write(analyse2)
+                                # st.write(analyse1)
+                                # st.write(analyse3)                        
                                 response1 = llama_llm(llama_13b,prompt) 
                                 response1 = response1.replace("$", "")
                                 response1 = response1.replace("5,000", "5,000")

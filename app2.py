@@ -1501,12 +1501,12 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
 
                                 
-                                st.session_state["sara_recommendation_gpt"] = response1  
-                                sara_recommendation_llama = response1 
+                                st.session_state["sara_recommendation_gpt"] = response_  
+                                sara_recommendation_llama = response_ 
                                         
                                 
                                 st.markdown("### SARA Recommendation")
-                                st.markdown(response1)
+                                st.markdown(response_)
 
                                 
                                 st.markdown("#### Recommendation Feedback:")

@@ -1400,7 +1400,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 #response1 = usellm(prompt) 
                                 
                                 # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)
-                                response1 = response1.replace("$", " ")
+                                response1 = response_1.replace("$", " ")
                                 response1 = response1.replace("5,000", "5,000 USD")
                                 response1 = response1.replace("5,600", "5,600 USD")
                                 sara_open_source_gpt = response1

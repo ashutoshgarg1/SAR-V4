@@ -5,6 +5,7 @@ import pandas as pd
 import streamlit as st
 import streamlit_toggle as tog
 import cv2
+from langchain.chains.question_answering import load_qa_chain
 import pdfplumber
 import pytesseract
 from pdf2image import convert_from_path

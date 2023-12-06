@@ -1492,7 +1492,9 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     Analyse above points properly and give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Response (Mention why this is a suspicious activity,Give me a concise response in pointers like [1],[2],[3]..)"
                             
-                                                        
+                                st.write(analyse2)
+                                st.write(analyse1)
+                                st.write(analyse3)                        
                                 response1 = llama_llm(llama_13b,prompt) 
                                 response1 = response1.replace("$", "")
                                 response1 = response1.replace("5,000", "5,000")

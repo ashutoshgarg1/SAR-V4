@@ -1386,7 +1386,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
 
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
-                                contexts = ', '.join(res_df_gpt['Answer'])
+                                contexts = ', '.join(res_df_llama['Answer'])
                                 prompt = f"You are a fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
                                     1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
                                     2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
@@ -1807,7 +1807,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             prompt = PromptTemplate(template=template,input_variables=["text"])
                             llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
 
-                            text = ', '.join(res_df_gpt['Answer']) + sara_recommendation_llama
+                            text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
                             # text = []
                             # for key,value in summ_dict_llama.items():
                             #     text.append(value)

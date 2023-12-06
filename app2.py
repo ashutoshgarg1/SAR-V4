@@ -1205,7 +1205,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
 
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
-                                contexts = docsearch.similarity_search(query, k=9)
+                                contexts = ', '.join(res_df_gpt['Answer'])
                                 prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
                                     1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
                                     2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
@@ -1373,29 +1373,80 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 st.session_state["tmp_table_llama"] = pd.concat([st.session_state.tmp_table_llama, res_df_llama], ignore_index=True)
 
 
-                                st.write("#### SARA Recommendation")
+                                query ="Is invoice is billed to cardholder or someone else?"
+                                contexts = docsearch.similarity_search(query, k=9)
+                                prompt = f" You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                cardholder's name,adress can be identified from cardholder information. Cardholder is the person who is the owner of the card, cardholder can also be referenced as the victim with whom fraud has taken place.\n\n\
+                                Identify to whom invoice is billed (Detials mentioned in invoice is of the person who made the transaction,it may be or may not be of the cardholder)\n\n\
+                                Compare both the details, if details mentioned in invoice matches the cardholder details, then invoice is billed to cardholder else it is billed to someone else who misued the card.\n\n\
+                                Context: {contexts}\n\
+                                Response (Give me a concise response.)"
+                                response_1 = llama_llm(llama_13b,prompt)
+
+
+
+                                query ="Give your recommendation if this is a Suspicious activity or not?"
+                                contexts = ', '.join(res_df_gpt['Answer'])
+                                prompt = f"You are a fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                    1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
+                                    2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
+                                    3. If a potential suspect name is identified or not? Suspect is a person who has commited the fraud, If identified then this can be a suspicious activity, else not.\n\n\
+                                    Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
+                                    Based on above points, give your recommendation if this is a case of suspicious activity or not? \n\n\
+                                    Context: {contexts}\n\
+                                    Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions individually."
+                                response_1 = llama_llm(llama_13b,prompt)
                                 
-                                st.markdown("""<span style="font-size: 16px;">Based on the given context, the activity can be considered suspicious due to the following reasons:</span>""", unsafe_allow_html=True)
-                                st.markdown("""<span style="font-size: 16px;">1. The transaction amount is $5,600.</span>""", unsafe_allow_html=True)
-                                st.markdown("""<span style="font-size: 16px;">2. The fraud type is mentioned as "83 Fraud - Card Absent Environment,which indicates the absence of the physical card during the transaction.</span>""", unsafe_allow_html=True)
-                                st.markdown("""<span style="font-size: 16px;">3. A suspect named Mike White is identified, address is mentioned as 520 Wintergreen Ct, Vancaville, CA 95587 in the merchant invoice,further confirming the possibility of fraud.</span>""", unsafe_allow_html=True)
-                                st.markdown("""<span style="font-size: 16px;">Considering the above findings, the activity can be considered as suspicious and should be investigated further</span>""", unsafe_allow_html=True)
+                                #response1 = usellm(prompt) 
+                                
+                                # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)
+                                response1 = response1.replace("$", " ")
+                                response1 = response1.replace("5,000", "5,000 USD")
+                                response1 = response1.replace("5,600", "5,600 USD")
+                                sara_open_source_gpt = response1
+                                st.session_state["sara_recommendation_gpt"] = response1  
+                                sara_recommendation_llama = response1 
+                                        
+                                
+                                st.markdown("### SARA Recommendation")
+                                st.markdown(response1)
 
-                                if st.session_state.clicked1:
+                                
+                                st.markdown("#### Recommendation Feedback:")
+                                col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
 
-                                    st.markdown("#### Recommendation Feedback:")
-                                    col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
+                                with col_1:
+                                    if st.button("👍🏻",key=3):
+                                        st.write("*Feedback is recorded*")
+                        
 
-                                    with col_1:
-                                        if st.button("👍🏻",key=3):
-                                            st.write("*Feedback is recorded*")
-                                        # st.markdown('<span style="font-size: 24px;">👍🏻</span>',unsafe_allow_html=True)
+                                with col_2:
+                                    if st.button("👎🏻",key=4):
+                                        st.write("*Feedback is recorded*")
+
+
+                                
+                                # st.markdown("""<span style="font-size: 16px;">Based on the given context, the activity can be considered suspicious due to the following reasons:</span>""", unsafe_allow_html=True)
+                                # st.markdown("""<span style="font-size: 16px;">1. The transaction amount is $5,600.</span>""", unsafe_allow_html=True)
+                                # st.markdown("""<span style="font-size: 16px;">2. The fraud type is mentioned as "83 Fraud - Card Absent Environment,which indicates the absence of the physical card during the transaction.</span>""", unsafe_allow_html=True)
+                                # st.markdown("""<span style="font-size: 16px;">3. A suspect named Mike White is identified, address is mentioned as 520 Wintergreen Ct, Vancaville, CA 95587 in the merchant invoice,further confirming the possibility of fraud.</span>""", unsafe_allow_html=True)
+                                # st.markdown("""<span style="font-size: 16px;">Considering the above findings, the activity can be considered as suspicious and should be investigated further</span>""", unsafe_allow_html=True)
+
+                                # if st.session_state.clicked1:
+
+                                #     st.markdown("#### Recommendation Feedback:")
+                                #     col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
+
+                                #     with col_1:
+                                #         if st.button("👍🏻",key=3):
+                                #             st.write("*Feedback is recorded*")
+                                #         # st.markdown('<span style="font-size: 24px;">👍🏻</span>',unsafe_allow_html=True)
                             
 
-                                    with col_2:
-                                        if st.button("👎🏻",key=4):
-                                            st.write("*Feedback is recorded*")
-                                        # st.markdown('<span style="font-size: 24px;">👎🏻</span>',unsafe_allow_html=True)
+                                #     with col_2:
+                                #         if st.button("👎🏻",key=4):
+                                #             st.write("*Feedback is recorded*")
+                                #         # st.markdown('<span style="font-size: 24px;">👎🏻</span>',unsafe_allow_html=True)
     
 
                                
@@ -1701,7 +1752,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     response_summ_gpt = llm_chain_gpt.run(text)
                     #st.write(text)
                     return response_summ_gpt,summ_dict_gpt
-
+                
+                
                 if 'clicked2' not in st.session_state:
                     st.session_state.clicked2 = False
                 
@@ -1720,6 +1772,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             st.session_state.disabled=False
                             #summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
                             summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_gpt
+                            
                             #st.write(summ_dict_gpt)
                             # chat_history = resp_dict_obj['Summary']
                             response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt)
@@ -1748,17 +1801,16 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                         elif st.session_state.llm == "Open-Source":
                             st.session_state.disabled=False
-                            template = """Write a detailed summary.
-                            Return your response in a single paragraph.
-                            ```{text}```
-                            Response: """
+                            #summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_llama
+                            template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            Context: {text}  '''
                             prompt = PromptTemplate(template=template,input_variables=["text"])
                             llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
 
-                            summ_dict_llama = st.session_state.tmp_table_llama.set_index('Question')['Answer']
-                            text = []
-                            for key,value in summ_dict_llama.items():
-                                text.append(value)
+                            text = ', '.join(res_df_gpt['Answer']) + sara_recommendation_llama
+                            # text = []
+                            # for key,value in summ_dict_llama.items():
+                            #     text.append(value)
                             st.session_state["tmp_summary_llama"] = llm_chain_llama.run(text)
                             st.write(st.session_state["tmp_summary_llama"])
 

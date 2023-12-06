@@ -1432,7 +1432,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 
 
 
-                                template = """You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                template = """ You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
                                 Identify cardholder name from cardholder information,cardholder is the owner of the card. \n\
                                 Then check,to whom Merchant Invoice is billed \n\
                                 Compare both details and identify if merchant invoice is billed to cradholder or some fraud used the card without cardholder's consent\n\
@@ -1461,11 +1461,11 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 response_4,docs = run_chain(template,query)
                                 
                                 analyse2 = response_4['output_text']
-                                st.write(response_3)
+                                st.write(response_4)
                                 st.write(docs)
 
 
-                                template = """You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                template = """ You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
                                 Identify the suspect name who have misued the card without cardholder's consent.\n\
                                 {context}
                                 Question: {query}
@@ -1476,7 +1476,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 response_5,docs = run_chain(template,query)
                                 
                                 analyse3 = response_5['output_text']
-                                st.write(response_3)
+                                st.write(response_5)
                                 st.write(docs)
                                 
                     

@@ -1490,7 +1490,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     3. {analyse3} If a suspect who misued the card, is identified ,then this can be considered as a suspicious activity else not.\n\n\
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
                                     Analyse above points properly and give your recommendation if this is a case of suspicious activity or not? \n\n\
-                                    Response (Mention why this is a suspicious activity,Give me a concise response in pointers like [1],[2],[3]..)"
+                                    Response  (Mention why this is a suspicious activity,Give me a concise response in pointers like [1],[2],[3]..)"
                             
                                 # st.write(analyse2)
                                 # st.write(analyse1)

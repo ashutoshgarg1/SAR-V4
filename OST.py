@@ -2746,10 +2746,10 @@ elif selected_option_case_type == "Money Laundering":
                                 
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                 #st.write(context_1)
-                                prompt_1 = f'''You should closely look into the transactions information data for the reason why was the transaction flagged as suspicious. \n\n
+                                prompt_1 = f'''You are an Analyst and you should closely look into the transactions information data for the below question from the context. \n\n
                                 Question: {query}\n\
                                 Context: {context_1}\n\
-                                Response: Give the reason in one sentence.'''
+                                Response: Output the reason in a sentence.'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 ques1 = response
                                 

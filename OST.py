@@ -2749,7 +2749,7 @@ elif selected_option_case_type == "Money Laundering":
                                 prompt_1 = f'''You should closely look into the transactions information data for the reason why was the transaction flagged as suspicious. \n\n
                                 Question: {query}\n\
                                 Context: {context_1}\n\
-                                Response: Give a concise response as reason in one sentence. '''
+                                Response: Give the reason in one sentence. '''
                                 response = llama_llm(llama_13b,prompt_1)
                                 ques1 = response
                                 
@@ -2766,10 +2766,10 @@ elif selected_option_case_type == "Money Laundering":
                                 query = "What are the products that are associated with this customer?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                 
-                                prompt_1 = f'''Your goal is identify all the products that are associated with the customer. \n\
+                                prompt_1 = f'''You are a Analyst and Your goal is read customer information and answer below quesion : \n\
                                 Question: {query}\n\
                                 Context: {context_1}\n\
-                                Response: (Output the identified Products, Do not give/add any Explanation, Note, etc. in the answer.)'''
+                                Response: (Output the identified Products only, Do not give/add any Explanation, Note, etc. in the answer.)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 
                                 
@@ -2782,8 +2782,8 @@ elif selected_option_case_type == "Money Laundering":
 
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
-                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
+                                prompt_1=f'''You are a Money laundering analyst and your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
+                                Transactions made to a suspicious entity or a high risk geography. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Do not give/add any extra Note, Explanation in answer.) '''
                                 
@@ -2800,9 +2800,8 @@ elif selected_option_case_type == "Money Laundering":
                 
                                 context_1 = transactions_cc
                                 prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
-                                Output the total calculated amount as answer to the question.
+                                Output the total calculated amount as answer to the question.\n\
                                 Context: {context_1}\n\
-                                Question: {query}\n\
                                 Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
 
 
@@ -2818,8 +2817,9 @@ elif selected_option_case_type == "Money Laundering":
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                   
 
-                                prompt_1=f''' Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions can be:\n\n
-                                High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions.Also, do not repeat the same transaction.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions can be:\
+                                High Value Cash Deposits transactions.\n\
+                                Strictly do not include any Paycheck transactions or Opening balance transaction as they may not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions.Also, do not repeat the same transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Strictly do not give/add any Note, Explanation in answer.) '''
                                 #st.write(context_1)
@@ -2838,9 +2838,8 @@ elif selected_option_case_type == "Money Laundering":
                                 #st.session_state["lineage_aml"][query] = context_1
                                 context_1 = transactions_sa
                                 prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
-                                Output the total calculated amount as answer to the question.
+                                Output the total calculated amount as answer to the question.\n\
                                 Context: {context_1}\n\
-                                Question: {query}\n\
                                 Response: (Add this before the toal amount : "Total Money Laundering amount that can be associated with savings account is : ")'''
                                 
 
@@ -2918,7 +2917,7 @@ elif selected_option_case_type == "Money Laundering":
                                 3.) what type of money laundering activity is taking place and why ?\n\n\                     
                                 Context: {contexts}\n\
                                 Also, add your concise recommendation whether SAR filling is required or not ?
-                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points."""
+                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions asked above as individual points."""
                                 response = llama_llm(llama_13b,prompt_1)
                                 response1 = response.replace("$", "USD ")
                                 sara_open_source=response1

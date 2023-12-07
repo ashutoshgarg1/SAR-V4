@@ -1888,7 +1888,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                 st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
                 st.write()
                 st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled)    
-                with st.spinner("Summarization...."):
+                with st.spinner("Summarization ..."):
+                #with st.spinner("Summarization...."):
                     if st.session_state.clicked2:
                         if st.session_state.llm == "Closed-Source":
                             st.session_state.disabled=False
@@ -1921,17 +1922,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             # if st.button("Update Summary"):
                             #     st.session_state["fin_opt"] = usr_review
                             st.write(st.session_state["tmp_summary_gpt"])
-                            st.markdown("#### Summarization Feedback:")
-                            col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
-                    
-                            with col_1:
-                                if st.button("👍🏻",key=4):
-                                    st.write("*Feedback is recorded*")
-                
-                
-                            with col_2:
-                                if st.button("👎🏻",key=5):
-                                    st.write("*Feedback is recorded*")
+                            
 
 
                         elif st.session_state.llm == "Open-Source":
@@ -1963,7 +1954,6 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             if st.button("👎🏻",key=6):
                                 st.write("*Feedback is recorded*")
                             # st.markdown('<span style="font-size: 24px;">👎🏻</span>',unsafe_allow_html=True)
-
                     
                 tmp_summary = []
                 tmp_table = pd.DataFrame()

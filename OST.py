@@ -1882,12 +1882,12 @@ elif selected_option_case_type == "Fraud transaction dispute":
                 
                 def summ_llama_():
                     template = """Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.
-                    ```{text}```
+                    ```{text1}```
                     Response: (Return your response in a single paragraph.) """
                     prompt = PromptTemplate(template=template,input_variables=["text"])
                     llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
 
-                    text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
+                    text1 = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
                     response_summ_llama = llm_chain_llama.run(text)
                     return response_summ_llama
                 

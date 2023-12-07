@@ -1889,8 +1889,9 @@ elif selected_option_case_type == "Fraud transaction dispute":
                 st.write()
                 st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled)    
                 with st.spinner("Summarization ..."):
-                #with st.spinner("Summarization...."):
+                
                     if st.session_state.clicked2:
+
                         if st.session_state.llm == "Closed-Source":
                             st.session_state.disabled=False
 
@@ -1934,6 +1935,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
 
                             text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
+                            st.write(text)
                             # text = []
                             # for key,value in summ_dict_llama.items():
                             #     text.append(value)

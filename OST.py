@@ -110,10 +110,10 @@ os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 llama_13b = HuggingFaceHub(
             repo_id="meta-llama/Llama-2-13b-chat-hf",
             model_kwargs={"temperature":0.01, 
-                        "min_new_tokens":50, 
-                        "max_new_tokens":150})
+                        "min_new_tokens":100, 
+                        "max_new_tokens":300})
 
-memory = ConversationSummaryBufferMemory(llm= llama_13b, max_token_limit=200)
+memory = ConversationSummaryBufferMemory(llm= llama_13b, max_token_limit=500)
 conversation = ConversationChain(llm= llama_13b, memory=memory,verbose=False)
 
 
@@ -1468,29 +1468,26 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 # SARA Recommendation
 
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
-                                contexts_1 = ', '.join(res_df_llama['Answer'])
-                                prompt_1 = f"You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                contexts = docsearch.similarity_search(query, k=5)
+                                prompt = f"You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
                                     1. Check if The transaction/disputed amount > 5,000 USD value threshold,If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
                                     2. {analyse} analyse this response,if invoice is billed to cardholder then there is no suspicion else, it can be a suspicious activity.\n\n\
                                     3. If a suspect is identified from above ,then this can be considered as a suspicious activity else not.\n\n\
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
                                     Analyse above points properly and give your recommendation if this is a case of suspicious activity or not? \n\n\
-                                    Context: {contexts_1}\n\
-                                    Response: (Give concise response in pointers)"
+                                    Context: {contexts}\n\
+                                    Response (Give me a concise response in 3 points with numbering like [1,2])"
                             
                                                     
-                                responsellama = llama_llm(llama_13b,prompt_1)
-                                responsellama = responsellama.replace("$", "USD")
-                                     
+                                response1 = llama_llm(llama_13b,prompt)
+                                response1 = response1.replace("$", "USD")
+                                response1 = response1.replace("5,000", "5,000")
+                                response_ = response1.replace("5,600", "5,600")      
                     
                             
                             
-                                st.session_state["sara_recommendation_llama"] = responsellama
-
-
-                                
-                                #st.session_state["sara_recommendation_gpt"] = response_  
-                                sara_recommendation_llama = responsellama 
+                                st.session_state["sara_recommendation_llama"] = response1  
+                                sara_recommendation_llama = response1 
                                         
                                 
                                 st.markdown("### SARA Recommendation")

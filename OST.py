@@ -1949,17 +1949,20 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             st.session_state["tmp_summary_llama"] = llm_chain_llama.run(text)
                             st.write(st.session_state["tmp_summary_llama"])
 
-                            st.markdown("#### Summarization Feedback:")
-                            col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
-                    
-                            with col_1:
-                                if st.button("👍🏻",key=5):
-                                    st.write("*Feedback is recorded*")
-                
-                
-                            with col_2:
-                                if st.button("👎🏻",key=6):
-                                    st.write("*Feedback is recorded*")
+                    if st.session_state.clicked2:
+                        st.markdown("#### Summarization Feedback:")
+                        col_1, col_2, col_3, col_4, col_5,col_6 = st.columns(6)
+
+                        with col_1:
+                            if st.button("👍🏻",key=5):
+                                st.write("*Feedback is recorded*")
+                            # st.markdown('<span style="font-size: 24px;">👍🏻</span>',unsafe_allow_html=True)
+
+
+                        with col_2:
+                            if st.button("👎🏻",key=6):
+                                st.write("*Feedback is recorded*")
+                            # st.markdown('<span style="font-size: 24px;">👎🏻</span>',unsafe_allow_html=True)
 
                     
                 tmp_summary = []

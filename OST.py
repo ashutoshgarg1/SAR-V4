@@ -1819,6 +1819,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             st.write(":blue[Source:]",doc[i].metadata['source'])
                                    
             with col4_up:
+
                 def summ_gpt_(tmp_table_gpt):
                     template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
                             Context: {text}  '''
@@ -1837,22 +1838,14 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     return response_summ_gpt,summ_dict_gpt
                 
                 
-                if 'clicked2' not in st.session_state:
-                    st.session_state.clicked2 = False
-                
-                def set_clicked2():
-                    st.session_state.clicked2 = True
-                    st.session_state.disabled = True
-                st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
-                st.write()
-                st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled)    
-                with st.spinner("Summarization ..."):
-                    # st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
-                    # st.write()
-                    if st.session_state.clicked2:
-
+                with st.spinner('Summarization ...'):
+                    st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
+                    st.write()
+                    if st.button("Summarize",disabled=st.session_state.disabled):
                         if st.session_state.llm == "Closed-Source":
                             st.session_state.disabled=False
+
+                       
                             #summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
                             summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_gpt
                             

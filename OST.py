@@ -1929,19 +1929,28 @@ elif selected_option_case_type == "Fraud transaction dispute":
                         elif st.session_state.llm == "Open-Source":
                             st.session_state.disabled=False
                             #summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_llama
-                            template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
-                            Context: {text}  '''
-                            prompt = PromptTemplate(template=template,input_variables=["text"])
-                            llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
+                            # template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            # Context: {text}  '''
+                            # prompt = PromptTemplate(template=template,input_variables=["text"])
+                            # llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
 
                             text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
                             #st.write(text)
                             # text = []
                             # for key,value in summ_dict_llama.items():
                             #     text.append(value)
-                            result = llm_chain_llama.run(text)
-                            st.markdown(result)
-                            st.session_state["tmp_summary_llama"] = llm_chain_llama.run(text)
+                            #####
+                            
+                                
+                            prompt_1 =  '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            Context: {text}  '''
+                            response = llama_llm(llama_13b,prompt_1)
+
+                            ####
+                            #result = llm_chain_llama.run(text)
+                            st.session_state["tmp_summary_llama"] = response
+                            st.markdown(response)
+                            
                             #st.write(st.session_state["tmp_summary_llama"])
 
                     if st.session_state.clicked2:

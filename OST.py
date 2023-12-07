@@ -1889,7 +1889,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                     text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
                     response_summ_llama = llm_chain_llama.run(text)
-                    return response_summ_llama,summ_dict_llama
+                    return response_summ_llama
                 
                 if 'clicked2' not in st.session_state:
                     st.session_state.clicked2 = False
@@ -1913,7 +1913,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             
                             #st.write(summ_dict_gpt)
                             # chat_history = resp_dict_obj['Summary']
-                            response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt)
+                            response_summ_gpt = summ_gpt_(summ_dict_gpt)
 
                             response_summ_gpt = response_summ_gpt.replace("$", " ")
                            # response_summ_gpt = response_summ_gpt.replace("$", " ")

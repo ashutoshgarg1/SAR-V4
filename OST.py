@@ -1939,8 +1939,10 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             # text = []
                             # for key,value in summ_dict_llama.items():
                             #     text.append(value)
+                            result = llm_chain_llama.run(text)
+                            st.write(result)
                             st.session_state["tmp_summary_llama"] = llm_chain_llama.run(text)
-                            st.write(st.session_state["tmp_summary_llama"])
+                            #st.write(st.session_state["tmp_summary_llama"])
 
                     if st.session_state.clicked2:
                         st.markdown("#### Summarization Feedback:")

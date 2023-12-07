@@ -1491,7 +1491,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                         
                                 
                                 st.markdown("### SARA Recommendation")
-                                st.write(responsellama)
+                                st.write(response1)
 
                                 
                                 st.markdown("#### Recommendation Feedback:")

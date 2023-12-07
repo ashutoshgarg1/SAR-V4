@@ -1940,7 +1940,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             # for key,value in summ_dict_llama.items():
                             #     text.append(value)
                             result = llm_chain_llama.run(text)
-                            st.write(result)
+                            st.markdown(result)
                             st.session_state["tmp_summary_llama"] = llm_chain_llama.run(text)
                             #st.write(st.session_state["tmp_summary_llama"])
 

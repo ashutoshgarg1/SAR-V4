@@ -1879,6 +1879,18 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     response_summ_gpt = llm_chain_gpt.run(text)
                     #st.write(text)
                     return response_summ_gpt,summ_dict_gpt
+                
+                def summ_llama_():
+                    template = """Write a detailed summary of the text provided.
+                    ```{text}```
+                    Response: (Return your response in a single paragraph.) """
+                    prompt = PromptTemplate(template=template,input_variables=["text"])
+                    llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b2)
+
+                    text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
+                    response_summ_llama = llm_chain_llama.run(text)
+                    return response_summ_llama,summ_dict_llama
+                
                 if 'clicked2' not in st.session_state:
                     st.session_state.clicked2 = False
                 
@@ -1928,8 +1940,15 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                         elif st.session_state.llm == "Open-Source":
                             st.session_state.disabled=False
+
+                            response_summ_llama,summ_dict_llama = summ_llama_()
+                            response_summ_llama = response_summ_llama.replace("$", "USD")
+                            response_summ_llama = response_summ_llama.replace("5,000", "5,000")
+                            response_summ_llama = response_summ_llama.replace("5,600", "5,600")
+                            st.session_state["tmp_summary_llama"] = response_summ_llama
+                            st.write(st.session_state["tmp_summary_llama"])
                             #summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_llama
-                            text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
+                            
                             # template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
                             # Context: {text}  '''
                             # prompt = PromptTemplate(template=template,input_variables=["text"])
@@ -1943,16 +1962,16 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             #####
                             #st.write(text)
                         
-                            prompt_1 =  f'''Act as a summarization tool and Output a detailed summary of below Context:\n\
-                            Context: {text}'''
-                            response = llama_llm(llama_13b,prompt_1)
+                            # prompt_1 =  f'''Act as a summarization tool and Output a detailed summary of below Context:\n\
+                            # Context: {text}'''
+                            # response = llama_llm(llama_13b,prompt_1)
 
-                            ####
-                            # result = llm_chain_llama.run(text)
-                            st.session_state["tmp_summary_llama"] = response
+                            # ####
+                            # # result = llm_chain_llama.run(text)
+                            # st.session_state["tmp_summary_llama"] = response
                             # st.write(text)
-                            # st.write("summaryyyy")
-                            st.write(response)
+                            # # st.write("summaryyyy")
+                            # st.write(response)
                             
                             #st.write(st.session_state["tmp_summary_llama"])
 

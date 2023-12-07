@@ -1479,7 +1479,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     Response: (Give me a concise response in 3 points with numbering like [1,2])"
                             
                                                     
-                                responsellama = llama_llm(llama_13b,prompt_!)
+                                responsellama = llama_llm(llama_13b,prompt_1)
                                 responsellama = responsellama.replace("$", "USD")
                                      
                     

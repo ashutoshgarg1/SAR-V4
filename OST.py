@@ -1905,12 +1905,12 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
                     
                             with col_1:
-                                if st.button("👍🏻",key=4):
+                                if st.button("👍🏻",key=5):
                                     st.write("*Feedback is recorded*")
                 
                 
                             with col_2:
-                                if st.button("👎🏻",key=5):
+                                if st.button("👎🏻",key=6):
                                     st.write("*Feedback is recorded*")
 
                     

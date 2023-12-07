@@ -1476,7 +1476,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
                                     Analyse above points properly and give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Context: {contexts}\n\
-                                    Response (Give me a concise response in 3 points with numbering like [1,2])"
+                                    Response (Give me a concise response in 3 points for each question with numbering like [1,2])"
                             
                                                     
                                 response1 = llama_llm(llama_13b,prompt)

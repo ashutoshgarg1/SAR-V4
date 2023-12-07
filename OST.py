@@ -1935,7 +1935,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
 
                             text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
-                            st.write(text)
+                            #st.write(text)
                             # text = []
                             # for key,value in summ_dict_llama.items():
                             #     text.append(value)

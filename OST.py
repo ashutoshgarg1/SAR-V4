@@ -1468,34 +1468,33 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 # SARA Recommendation
 
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
-                                contexts = ', '.join(res_df_llama['Answer'])
-                                prompt = f"You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                contexts_1 = ', '.join(res_df_llama['Answer'])
+                                prompt_1 = f"You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
                                     1. Check if The transaction/disputed amount > 5,000 USD value threshold,If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
                                     2. {analyse} analyse this response,if invoice is billed to cardholder then there is no suspicion else, it can be a suspicious activity.\n\n\
                                     3. If a suspect is identified from above ,then this can be considered as a suspicious activity else not.\n\n\
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
                                     Analyse above points properly and give your recommendation if this is a case of suspicious activity or not? \n\n\
-                                    Context: {contexts}\n\
+                                    Context: {contexts_1}\n\
                                     Response: (Give me a concise response in 3 points with numbering like [1,2])"
                             
                                                     
-                                response1 = llama_llm(llama_13b,prompt)
-                                response1 = response1.replace("$", "USD")
-                                response1 = response1.replace("5,000", "5,000")
-                                response_ = response1.replace("5,600", "5,600")      
+                                responsellama = llama_llm(llama_13b,prompt_!)
+                                responsellama = responsellama.replace("$", "USD")
+                                     
                     
                             
                             
-                                st.session_state["sara_recommendation_llama"] = response1
+                                st.session_state["sara_recommendation_llama"] = responsellama
 
 
                                 
                                 #st.session_state["sara_recommendation_gpt"] = response_  
-                                sara_recommendation_llama = response1 
+                                sara_recommendation_llama = responsellama 
                                         
                                 
                                 st.markdown("### SARA Recommendation")
-                                st.write(response_)
+                                st.write(responsellama)
 
                                 
                                 st.markdown("#### Recommendation Feedback:")

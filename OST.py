@@ -1881,7 +1881,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     return response_summ_gpt,summ_dict_gpt
                 
                 def summ_llama_():
-                    template = """Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.
+                    template = """Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.
                     ```{text}```
                     Response: (Return your response in a single paragraph.) """
                     prompt = PromptTemplate(template=template,input_variables=["text"])

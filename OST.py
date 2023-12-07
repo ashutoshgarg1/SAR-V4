@@ -1950,8 +1950,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             ####
                             # result = llm_chain_llama.run(text)
                             st.session_state["tmp_summary_llama"] = response
-                            st.write(text)
-                            st.write("summaryyyy")
+                            # st.write(text)
+                            # st.write("summaryyyy")
                             st.write(response)
                             
                             #st.write(st.session_state["tmp_summary_llama"])

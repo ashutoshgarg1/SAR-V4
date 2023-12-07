@@ -577,8 +577,9 @@ if "lineage_aml_llama" not in st.session_state:
 
 if "lineage_gpt" not in st.session_state:
     st.session_state["lineage_gpt"] = {}
-if "lineage_gpt_llama" not in st.session_state:
-    st.session_state["lineage_gpt_llama"] = {}
+    
+if "lineage_llama_fd" not in st.session_state:
+    st.session_state["lineage_llama_fd"] = {}
 
 
 
@@ -1255,6 +1256,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             elif st.session_state.llm == "Open-Source":
 
                                 chat_history = {}
+                                lineage_dict_llama = {}
 
                                 query = "What is the customer's name?"
                                 context_1 = docsearch.similarity_search(query, k=9)
@@ -1265,6 +1267,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                         Response: (Give me response in one sentence. Do not give me any Explanation or Note)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
 
 
                                 query = "What is the suspect's name?"
@@ -1275,6 +1279,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                             Response: (Give a short response in a single sentence.Do not add any extra Information, Explanation,Note.)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
 
                                 
                                 
@@ -1287,6 +1293,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                             Response: (Give a short response in a single sentence. Do not add any extra Information,Explanation,Note.)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
 
 
                                 query = "How was the bank notified?"
@@ -1297,6 +1305,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                             Response: (Give me a concise response in one sentence. Do not give me any further Explanation, Note )'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
 
                                 
                                 query = "When was the bank notified?"
@@ -1307,6 +1317,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                             Response: (Give me a concise response in one sentence.Do not add any prefix like 'Response' or 'Based on the document'. Do not add any extra Explanation, Note)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
                                 
 
 
@@ -1318,6 +1330,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                             Response: (Give me response in one sentence. Do not add prefix like 'Response' or 'based on the document. Do not give me any Explanation or Note)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
 
 
 
@@ -1330,6 +1344,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                             Response: (Give me a concise response in one sentence. Do not add prefix like 'based on the document. Do not add any further Explanation or Note.)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
 
 
                                 query = "Was the disputed amount greater than 5000 usd?"
@@ -1341,6 +1357,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                             Response: (Give a short response in a single sentence. Do not give any extra Explanation, Note, Descricption, Information.)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
 
 
                                 query = "What type of cards are involved?"
@@ -1351,6 +1369,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                             Response: (Give me a concise response in one sentence.Do not add prefix like: ['based on the document']. Do not add any further Explanation, Note.')'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
 
 
                                 query = "Was the police report filed?"
@@ -1361,6 +1381,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                             Response: (Provide a concise Response in a single sentence. Do not write any extra [Explanation, Note, Descricption].)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
+                                lineage_dict_llama[query] = context_1
+                                st.session_state["lineage_llama_fd"][query] = context_1
 
                                 try:
                                     res_df_llama = pd.DataFrame(list(chat_history.items()), columns=['Question','Answer'])
@@ -1802,21 +1824,41 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 st.session_state.tmp_table_llama.drop_duplicates(subset=['Question'])
 
             with col3_up:
-                if st.session_state["lineage_gpt"] is not None:
- 
-                    li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of network/card is used in transaction?","Was the police report filed?"]
+                    if st.session_state.llm == "Closed-Source":
+                            st.session_state.disabled=False
                     
-                   
-                    selected_option = st.selectbox("", li)
-                    if selected_option in li[1:]:
-                        doc = st.session_state["lineage_gpt"][selected_option]
-                        for i in range(len(doc)):
-                            #st.write(doc[i])
-                            y=i+1
-                            st.write(f":blue[Reference-{y}:]")
-                            st_ = doc[i].page_content.replace("($)"," ")
-                            st.write(":blue[Page Content:]",st_) 
-                            st.write(":blue[Source:]",doc[i].metadata['source'])
+                            li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of network/card is used in transaction?","Was the police report filed?"]
+                            
+                        
+                            selected_option = st.selectbox("", li)
+                            if selected_option in li[1:]:
+                                doc = st.session_state["lineage_gpt"][selected_option]
+                                for i in range(len(doc)):
+                                    #st.write(doc[i])
+                                    y=i+1
+                                    st.write(f":blue[Reference-{y}:]")
+                                    st_ = doc[i].page_content.replace("($)"," ")
+                                    st.write(":blue[Page Content:]",st_) 
+                                    st.write(":blue[Source:]",doc[i].metadata['source'])
+
+                    elif st.session_state.llm == "Open-Source":
+                            st.session_state.disabled=False
+                            li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of network/card is used in transaction?","Was the police report filed?"]
+                            
+                        
+                            selected_option = st.selectbox("", li)
+                            if selected_option in li[1:]:
+                                doc = st.session_state["lineage_llama_fd"][selected_option]
+                                for i in range(len(doc)):
+                                    #st.write(doc[i])
+                                    y=i+1
+                                    st.write(f":blue[Reference-{y}:]")
+                                    st_ = doc[i].page_content.replace("($)"," ")
+                                    st.write(":blue[Page Content:]",st_) 
+                                    st.write(":blue[Source:]",doc[i].metadata['source'])
+
+
+                                
                                    
             with col4_up:
 

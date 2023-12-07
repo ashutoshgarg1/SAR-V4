@@ -1940,17 +1940,17 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             # for key,value in summ_dict_llama.items():
                             #     text.append(value)
                             #####
-                            st.write(text)
+                            #st.write(text)
                                 
                             prompt_1 =  '''Provide a detailed summary of the below Context  such that it  includes all the relevant information (like names, transactions, involved parties, amounts involved, etc). Don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
                             Context: {text} \n\
-                            Response: (Provide the summary in a single paragraph.)'''
+                            Response: (output the summary in a single paragraph.)'''
                             response = llama_llm(llama_13b,prompt_1)
 
                             ####
                             #result = llm_chain_llama.run(text)
                             st.session_state["tmp_summary_llama"] = response
-                            st.write("summaryyyy")
+                            #st.write("summaryyyy")
                             st.write(response)
                             
                             #st.write(st.session_state["tmp_summary_llama"])

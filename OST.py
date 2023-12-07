@@ -1887,8 +1887,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     prompt = PromptTemplate(template=template,input_variables=["text"])
                     llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
 
-                    text1 = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
-                    response_summ_llama = llm_chain_llama.run(text1)
+                    text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
+                    response_summ_llama = llm_chain_llama.run(text)
                     return response_summ_llama
                 
                 if 'clicked2' not in st.session_state:

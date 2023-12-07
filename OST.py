@@ -1472,7 +1472,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 prompt = f"You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
                                     1. Check if The transaction/disputed amount > 5,000 USD value threshold,If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
                                     2. {analyse} analyse this response,if invoice is billed to cardholder then there is no suspicion else, it can be a suspicious activity.\n\n\
-                                    3. If a suspect is identified from above ,then this can be considered as a suspicious activity else not.\n\n\
+                                    3. If a suspect is identified from above , then what is the suspect's name ? and then this can be considered as a suspicious activity else not.\n\n\
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
                                     Analyse above points properly and give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Context: {contexts}\n\

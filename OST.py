@@ -1862,6 +1862,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                    
             with col4_up:
 
+
                 def summ_gpt_(tmp_table_gpt):
                     template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
                             Context: {text}  '''
@@ -1878,12 +1879,17 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     response_summ_gpt = llm_chain_gpt.run(text)
                     #st.write(text)
                     return response_summ_gpt,summ_dict_gpt
+                if 'clicked2' not in st.session_state:
+                    st.session_state.clicked2 = False
                 
-                
-                with st.spinner('Summarization ...'):
-                    st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
-                    st.write()
-                    if st.button("Summarize",disabled=st.session_state.disabled):
+                def set_clicked2():
+                    st.session_state.clicked2 = True
+                    st.session_state.disabled = True
+                st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
+                st.write()
+                st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled)    
+                with st.spinner("Summarization...."):
+                    if st.session_state.clicked2:
                         if st.session_state.llm == "Closed-Source":
                             st.session_state.disabled=False
 

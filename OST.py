@@ -2749,7 +2749,7 @@ elif selected_option_case_type == "Money Laundering":
                                 prompt_1 = f'''You should closely look into the transactions information data for the reason why was the transaction flagged as suspicious. \n\n
                                 Question: {query}\n\
                                 Context: {context_1}\n\
-                                Response: Give the reason in one sentence only.'''
+                                Response: Give the reason in one sentence.'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 ques1 = response
                                 

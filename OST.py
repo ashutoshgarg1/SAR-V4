@@ -1013,7 +1013,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                 with col1:
                     st.markdown("""<span style="font-size: 24px; ">Key Questions</span>""", unsafe_allow_html=True)
                     # Create a Pandas DataFrame with your data
-                    data = {'Questions': ["What is the customer's name?","What is the suspect's name?",' List the merchant name',' How was the bank notified?',' When was the bank notified?',' What is the fraud type?',' When did the fraud occur?',' Was the disputed amount greater than 5000 USD?','What type of network/card is used in transaction?',' Was the police report filed?']}
+                    data = {'Questions': ["What is the customer's name?","What is the suspect's name?",' List the merchant name',' How was the bank notified?',' When was the bank notified?',' What is the fraud type?',' When did the fraud occur?',' Was the disputed amount greater than 5000 USD?','What type of cards are involved?',' Was the police report filed?']}
                     df_fixed = pd.DataFrame(data)
                     df_fixed.index = df_fixed.index +1
                 with col2:
@@ -1843,7 +1843,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                     elif st.session_state.llm == "Open-Source":
                             st.session_state.disabled=False
-                            li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of network/card is used in transaction?","Was the police report filed?"]
+                            li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of cards are involved?","Was the police report filed?"]
                             
                         
                             selected_option = st.selectbox("", li)

@@ -1913,7 +1913,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             
                             #st.write(summ_dict_gpt)
                             # chat_history = resp_dict_obj['Summary']
-                            response_summ_gpt = summ_gpt_(summ_dict_gpt)
+                            response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt)
 
                             response_summ_gpt = response_summ_gpt.replace("$", " ")
                            # response_summ_gpt = response_summ_gpt.replace("$", " ")
@@ -1941,7 +1941,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                         elif st.session_state.llm == "Open-Source":
                             st.session_state.disabled=False
 
-                            response_summ_llama,summ_dict_llama = summ_llama_()
+                            response_summ_llama = summ_llama_()
                             response_summ_llama = response_summ_llama.replace("$", "USD")
                             response_summ_llama = response_summ_llama.replace("5,000", "5,000")
                             response_summ_llama = response_summ_llama.replace("5,600", "5,600")

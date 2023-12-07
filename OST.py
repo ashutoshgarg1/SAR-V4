@@ -1944,7 +1944,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             #st.write(text)
                         
                             prompt_1 =  f'''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
-                            Context: {text}  '''
+                            Context: {text}'''
                             response = llama_llm(llama_13b,prompt_1)
 
                             ####

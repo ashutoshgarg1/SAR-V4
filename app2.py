@@ -2703,16 +2703,21 @@ elif selected_option_case_type == "Money Laundering":
 
                             
                                 def dataframe_to_image(df):
-                                    plt.figure(figsize=(8, 6))
-                                    plt.axis('off')
-                                    plt.table(cellText=df.values, colLabels=df.columns, loc='center', cellLoc='center')
-                                    img = BytesIO()
-                                    plt.savefig(img, format='png')
-                                    plt.close()
+                                    # Convert DataFrame to HTML
+                                    df_html = df.to_html()
+
+                                    # Create an image from HTML using PIL
+                                    img = Image.open(BytesIO(df_html.encode('utf-8')))
                                     return img
+
+                                # Convert DataFrame to image
                                 image = dataframe_to_image(res_df_gpt)
 
+                                # Display image in Streamlit app
                                 st.image(image, caption='DataFrame as Image', use_column_width=True)
+
+
+                               # st.image(image, caption='DataFrame as Image', use_column_width=True)
 
                                 # st.write(res_df_gpt.to_string(index=False))
 

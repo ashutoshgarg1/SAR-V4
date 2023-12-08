@@ -2728,7 +2728,8 @@ elif selected_option_case_type == "Money Laundering":
               
 
 
-                                st.session_state["sara_recommendation_gpt_aml"] = response1                
+                                st.session_state["sara_recommendation_gpt_aml"] = response1
+                                saracommon = response1
                                 
                                 st.markdown("### SARA Recommendation")
                                 
@@ -2910,7 +2911,8 @@ elif selected_option_case_type == "Money Laundering":
                                 response1 = llama_llm(llama_13b,prompt)    
                                 
                                 response1 = response1.replace("$", "USD ") 
-                                sara_open_source = response1      
+                                sara_open_source = response1
+                                saracommon = response1  
                                 
                                 
                                 st.session_state["sara_recommendation_llama_aml"] = response1                    
@@ -3213,6 +3215,23 @@ elif selected_option_case_type == "Money Laundering":
                 subheader_paragraph.style = "Heading 2"
                 paragraph = doc.add_paragraph()
                 #""" Addition of a checkbox where unticked box imply unavailability of suspect info"""
+
+                # Add the customer information
+                sent_val = "Suspect has been reported."
+                paragraph = doc.add_paragraph()
+                runner = paragraph.add_run(sent_val)
+                runner.bold = True
+                runner.italic = True
+                suspect_info = {
+                    "Name                                             ": " Sarah Jones",
+                    "Address                                        ": "858 3rd Ave, Chula Vista, California, 91911 US",
+                    "Phone                                             ": " (619) 425-2972",
+                    "SSN                                                 ": "653-30-9562",
+                    "A/C No.                                        ": " 4587236908230087"
+                }
+
+                for key, value in suspect_info.items():
+                        doc.add_paragraph(f"{key}: {value}")
                 
                 doc.add_heading('Summary', level=2)
                 paragraph = doc.add_paragraph()
@@ -3223,7 +3242,6 @@ elif selected_option_case_type == "Money Laundering":
                 columns = list(tmp_table.columns)
                 table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
                 table.autofit = True
-                
                 for col in range(len(columns)):
                     # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
                     table.cell(0, col).text = columns[col]
@@ -3236,11 +3254,13 @@ elif selected_option_case_type == "Money Laundering":
                 # save document
                 # output_bytes = docx.Document.save(doc, 'output.docx')
                 # st.download_button(label='Download Report', data=output_bytes, file_name='evidence.docx', mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+
                 paragraph = doc.add_paragraph()
                 paragraph = doc.add_paragraph()
                 doc.add_heading('SARA Recommendation', level=2)
                 doc.add_paragraph()       
-                paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt"])
+                #paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt"])
+                paragraph = doc.add_paragraph(saracommon)
 
                 bio = io.BytesIO()
                 doc.save(bio)

@@ -2710,7 +2710,7 @@ elif selected_option_case_type == "Money Laundering":
                                                         loc='center',
                                                         cellLoc='center',
                                                         colColours=['#f3f3f3'] * len(df.columns),
-                                                        cellLoc='center')
+                                                        )
 
                                     table.auto_set_font_size(False)
                                     table.set_fontsize(10)

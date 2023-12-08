@@ -3234,16 +3234,15 @@ elif selected_option_case_type == "Money Laundering":
                         doc.add_paragraph(f"{key}: {value}")
                 
                 doc.add_heading('Summary', level=2)
-                tab_ = tmp_table.drop_duplicates(subset=['Question'])
-                st.write(tab_)
                 paragraph = doc.add_paragraph()
-                doc.add_paragraph(tab_)
+                st.write(tmp_summary)
+                doc.add_paragraph(tmp_summary)
                 paragraph = doc.add_paragraph()
                 doc.add_heading('Key Insights', level=2)
                 paragraph = doc.add_paragraph()
-                
-                
-                columns = list(tab_.columns)
+                tab=tmp_table.drop_duplicates(subset=['Question'])
+                st.write(tab)
+                columns = list(tab.columns)
                 table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
                 table.autofit = True
                 for col in range(len(columns)):

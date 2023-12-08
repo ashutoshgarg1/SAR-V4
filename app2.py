@@ -3,7 +3,7 @@ import random,os,json,io,re,zipfile,tempfile
 import ssl
 import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
+from PIL import Image
 from io import BytesIO
 import streamlit_toggle as tog
 import cv2

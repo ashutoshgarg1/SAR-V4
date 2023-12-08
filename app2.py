@@ -3224,10 +3224,10 @@ elif selected_option_case_type == "Money Laundering":
                 runner.italic = True
                 suspect_info = {
                     "Name                                           ": "   Sarah Jones",
-                    "Address                                           ": "   858 3rd Ave, Chula Vista, California, 91911 US",
-                    "Phone                                           ": "   (619) 425-2972",
-                    "A/C No.                                           ": "   4587236908230087",
-                    "SSN                                           ": "   653-30-9562"
+                    "Address                                       ": "   858 3rd Ave, Chula Vista, California, 91911 US",
+                    "Phone                                          ": "   (619) 425-2972",
+                    "A/C No.                                        ": "   4587236908230087",
+                    "SSN                                              ": "   653-30-9562"
                 }
 
                 for key, value in suspect_info.items():

@@ -3,6 +3,8 @@ import random,os,json,io,re,zipfile,tempfile
 import ssl
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
+from io import BytesIO
 import streamlit_toggle as tog
 import cv2
 from langchain.chains.question_answering import load_qa_chain

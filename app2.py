@@ -2701,10 +2701,7 @@ elif selected_option_case_type == "Money Laundering":
 
                             
                                 
-                                st.checkbox("Use container width", value=False, key="use_container_width")
-
-                                
-                                st.dataframe(res_df_gpt, use_container_width=st.session_state.use_container_width)
+                                st.text(res_df_gpt.to_string())
 
                                 #copy in session state
                                 st.session_state["tmp_table_gpt_aml"] = pd.concat([st.session_state.tmp_table_gpt_aml, res_df_gpt], ignore_index=True)

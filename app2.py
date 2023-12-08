@@ -2701,7 +2701,7 @@ elif selected_option_case_type == "Money Laundering":
 
                             
                                 
-                                st.write(res_df_gpt.to_string(index=False))
+                                st.divider(res_df_gpt.to_string(index=False))
 
                                 #copy in session state
                                 st.session_state["tmp_table_gpt_aml"] = pd.concat([st.session_state.tmp_table_gpt_aml, res_df_gpt], ignore_index=True)

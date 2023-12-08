@@ -3234,7 +3234,7 @@ elif selected_option_case_type == "Money Laundering":
                         doc.add_paragraph(f"{key}: {value}")
                 
                 doc.add_heading('Summary', level=2)
-                tab_ = tmp_table.drop_duplicates()
+                tab_ = tmp_table.drop_duplicates(inplace=True)
                 st.write(tab_)
                 paragraph = doc.add_paragraph()
                 doc.add_paragraph(tab_)

@@ -2703,26 +2703,25 @@ elif selected_option_case_type == "Money Laundering":
                                     st.exception(e)
 
                             
-                                def dataframe_to_image(df):
-                                    plt.figure(figsize=(10,10))
-                                    table = plt.table(cellText=df.values,
-                                                        colLabels=df.columns,
-                                                        loc='center',
-                                                        cellLoc='center',
-                                                        colColours=['#f3f3f3'] * len(df.columns),
-                                                        )
+                                plt.figure(figsize=(8, 6))  # Set the figure size (width, height)
+                                table = plt.table(cellText=res_df_gpt.values,
+                                                colLabels=res_df_gpt.columns,
+                                                loc='center',
+                                                cellLoc='center',
+                                                colColours=['#f3f3f3'] * len(res_df_gpt.columns),
+                                                cellLoc='center')
 
-                                    table.auto_set_font_size(False)
-                                    table.set_fontsize(10)
-                                    table.scale(1.2, 1.2)  # Scale the table for better readability
+                                table.auto_set_font_size(False)
+                                table.set_fontsize(10)
+                                table.scale(1.2, 1.2)  # Scale the table for better readability
 
-                                    return table 
+                                plt.axis('off')  # Hide axis
 
-                                # Convert DataFrame to image
-                                image = dataframe_to_image(res_df_gpt)
+                                # Display the table image using Streamlit
+                                st.pyplot()
 
                                 # Display image in Streamlit app
-                                st.image(image, caption='DataFrame as Image', use_column_width=True)
+                               # st.image(image, caption='DataFrame as Image', use_column_width=True)
 
 
                                # st.image(image, caption='DataFrame as Image', use_column_width=True)

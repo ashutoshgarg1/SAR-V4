@@ -3235,7 +3235,7 @@ elif selected_option_case_type == "Money Laundering":
                 
                 doc.add_heading('Summary', level=2)
                 paragraph = doc.add_paragraph()
-                st.write(tmp_summary)
+                #st.write(tmp_summary)
                 doc.add_paragraph(tmp_summary)
                 paragraph = doc.add_paragraph()
                 doc.add_heading('Key Insights', level=2)

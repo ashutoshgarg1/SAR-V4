@@ -2700,8 +2700,19 @@ elif selected_option_case_type == "Money Laundering":
                                     st.exception(e)
 
                             
-                                
-                                st.write(res_df_gpt.to_string(index=False))
+                                def dataframe_to_image(df):
+                                    plt.figure(figsize=(8, 6))
+                                    plt.axis('off')
+                                    plt.table(cellText=df.values, colLabels=df.columns, loc='center', cellLoc='center')
+                                    img = BytesIO()
+                                    plt.savefig(img, format='png')
+                                    plt.close()
+                                    return img
+                                image = dataframe_to_image(res_df_gpt)
+
+                                st.image(image, caption='DataFrame as Image', use_column_width=True)
+
+                                # st.write(res_df_gpt.to_string(index=False))
 
                                 #copy in session state
                                 st.session_state["tmp_table_gpt_aml"] = pd.concat([st.session_state.tmp_table_gpt_aml, res_df_gpt], ignore_index=True)

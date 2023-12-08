@@ -3259,8 +3259,8 @@ elif selected_option_case_type == "Money Laundering":
                 paragraph = doc.add_paragraph()
                 doc.add_heading('SARA Recommendation', level=2)
                 doc.add_paragraph()       
-                #paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt"])
-                paragraph = doc.add_paragraph(saracommon)
+                paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt_aml"])
+                #paragraph = doc.add_paragraph(saracommon)
 
                 bio = io.BytesIO()
                 doc.save(bio)

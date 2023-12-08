@@ -2704,7 +2704,7 @@ elif selected_option_case_type == "Money Laundering":
 
                             
                                 def dataframe_to_image(df):
-                                    plt.figure(figsize=(8, 6))
+                                    plt.figure(figsize=(10,10))
                                     plt.axis('off')
                                     plt.table(cellText=df.values, colLabels=df.columns, loc='center', cellLoc='center')
                                     img = BytesIO()

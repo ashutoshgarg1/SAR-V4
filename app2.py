@@ -2702,7 +2702,7 @@ elif selected_option_case_type == "Money Laundering":
                             
                                 
                                 #Display table
-                                st.dataframe(res_df_gpt)
+                                st.dataframe(res_df_gpt,width=1500, height=450)
 
                                 #copy in session state
                                 st.session_state["tmp_table_gpt_aml"] = pd.concat([st.session_state.tmp_table_gpt_aml, res_df_gpt], ignore_index=True)

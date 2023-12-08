@@ -7,7 +7,7 @@ from PIL import Image
 from io import BytesIO
 import streamlit_toggle as tog
 import cv2
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from langchain.chains.question_answering import load_qa_chain
 import pdfplumber
 import pytesseract
@@ -2704,11 +2704,12 @@ elif selected_option_case_type == "Money Laundering":
 
                             
                                 def dataframe_to_image(df):
-                                    # Convert DataFrame to HTML
-                                    df_html = df.to_html()
-
-                                    # Create an image from HTML using PIL
-                                    img = Image.open(BytesIO(df_html.encode('utf-8')))
+                                    plt.figure(figsize=(8, 6))
+                                    plt.axis('off')
+                                    plt.table(cellText=df.values, colLabels=df.columns, loc='center', cellLoc='center')
+                                    img = BytesIO()
+                                    plt.savefig(img, format='png')
+                                    plt.close()
                                     return img
 
                                 # Convert DataFrame to image

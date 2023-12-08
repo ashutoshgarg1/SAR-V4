@@ -3201,10 +3201,10 @@ elif selected_option_case_type == "Money Laundering":
                 # Add the customer information
                 customer_info = {
                     "Name                       ": " Sarah Jones",
-                    "Address                              ": "858 3rd Ave, Chula Vista, California, 91911 US",
-                    "Phone                         ": " (619) 425-2972",
-                    "A/C No.                                  ": " 4587236908230087",
-                    "SSN                                ": " 653-30-9562"
+                    "Address                       ": "858 3rd Ave, Chula Vista, California, 91911 US",
+                    "Phone                       ": " (619) 425-2972",
+                    "A/C No.                       ": " 4587236908230087",
+                    "SSN                        ": " 653-30-9562"
                 }
 
                 for key, value in customer_info.items():
@@ -3241,7 +3241,7 @@ elif selected_option_case_type == "Money Laundering":
                 doc.add_heading('Key Insights', level=2)
                 paragraph = doc.add_paragraph()
                 tab=tmp_table.drop_duplicates(subset=['Question'])
-                st.write(tab)
+                #st.write(tab)
                 columns = list(tab.columns)
                 table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
                 table.autofit = True

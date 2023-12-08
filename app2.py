@@ -3201,10 +3201,10 @@ elif selected_option_case_type == "Money Laundering":
                 # Add the customer information
                 customer_info = {
                     "Name                                           ": "   Sarah Jones",
-                    "Address                                        ": "   858 3rd Ave, Chula Vista, California, 91911 US",
-                    "Phone                                          ": "   (619) 425-2972",
-                    "A/C No.                                        ": "   4587236908230087",
-                    "SSN                                            ": "   653-30-9562"
+                    "Address                                           ": "   858 3rd Ave, Chula Vista, California, 91911 US",
+                    "Phone                                           ": "   (619) 425-2972",
+                    "A/C No.                                           ": "   4587236908230087",
+                    "SSN                                           ": "   653-30-9562"
                 }
 
                 for key, value in customer_info.items():
@@ -3224,10 +3224,10 @@ elif selected_option_case_type == "Money Laundering":
                 runner.italic = True
                 suspect_info = {
                     "Name                                           ": "   Sarah Jones",
-                    "Address                                        ": "   858 3rd Ave, Chula Vista, California, 91911 US",
-                    "Phone                                          ": "   (619) 425-2972",
-                    "A/C No.                                        ": "   4587236908230087",
-                    "SSN                                            ": "   653-30-9562"
+                    "Address                                           ": "   858 3rd Ave, Chula Vista, California, 91911 US",
+                    "Phone                                           ": "   (619) 425-2972",
+                    "A/C No.                                           ": "   4587236908230087",
+                    "SSN                                           ": "   653-30-9562"
                 }
 
                 for key, value in suspect_info.items():
@@ -3239,8 +3239,9 @@ elif selected_option_case_type == "Money Laundering":
                 paragraph = doc.add_paragraph()
                 doc.add_heading('Key Insights', level=2)
                 paragraph = doc.add_paragraph()
-                tmp_table.drop_duplicates(inplace=True)
-                columns = list(tmp_table.columns)
+                tab=tmp_table.drop_duplicates()
+                
+                columns = list(tab.columns)
                 table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
                 table.autofit = True
                 for col in range(len(columns)):
@@ -3248,7 +3249,7 @@ elif selected_option_case_type == "Money Laundering":
                     table.cell(0, col).text = columns[col]
                 # doc.add_table(st.session_state.tmp_table.shape[0]+1, st.session_state.tmp_table.shape[1], style='Table Grid')
 
-                for i, row in enumerate(tmp_table.itertuples()):
+                for i, row in enumerate(tab.itertuples()):
                     table_row = table.add_row().cells # add new row to table
                     for col in range(len(columns)): # iterate over each column in row and add text
                         table_row[col].text = str(row[col+1]) # avoid index by adding col+1

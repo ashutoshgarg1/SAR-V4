@@ -2575,7 +2575,7 @@ elif selected_option_case_type == "Money Laundering":
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                 prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
-                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
+                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions in one line each. # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Do not give/add any extra Note, Explanation in answer.) '''
                                 
@@ -2703,22 +2703,7 @@ elif selected_option_case_type == "Money Laundering":
                                     st.exception(e)
 
                             
-                                plt.figure(figsize=(8, 6))  # Set the figure size (width, height)
-                                table = plt.table(cellText=res_df_gpt.values,
-                                                colLabels=res_df_gpt.columns,
-                                                loc='center',
-                                                cellLoc='center',
-                                                colColours=['#f3f3f3'] * len(res_df_gpt.columns),
-                                                cellLoc='center')
-
-                                table.auto_set_font_size(False)
-                                table.set_fontsize(10)
-                                table.scale(1.2, 1.2)  # Scale the table for better readability
-
-                                plt.axis('off')  # Hide axis
-
-                                # Display the table image using Streamlit
-                                st.pyplot()
+                                st.table(res_df_gpt)
 
                                 # Display image in Streamlit app
                                # st.image(image, caption='DataFrame as Image', use_column_width=True)

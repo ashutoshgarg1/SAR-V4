@@ -7,6 +7,7 @@ from PIL import Image
 from io import BytesIO
 import streamlit_toggle as tog
 import cv2
+import matplotlib as plt
 from langchain.chains.question_answering import load_qa_chain
 import pdfplumber
 import pytesseract

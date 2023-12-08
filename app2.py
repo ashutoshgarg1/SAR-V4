@@ -3234,15 +3234,15 @@ elif selected_option_case_type == "Money Laundering":
                         doc.add_paragraph(f"{key}: {value}")
                 
                 doc.add_heading('Summary', level=2)
-                paragraph = doc.add_paragraph()
-                doc.add_paragraph(tmp_summary)
-                paragraph = doc.add_paragraph()
-                doc.add_heading('Key Insights', level=2)
-                paragraph = doc.add_paragraph()
-                st.session_state.tmp_table.drop_duplicates(inplace=True)
-                columns = list(st.session_state.tmp_table.columns)
-                table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
-                table.autofit = True
+                    paragraph = doc.add_paragraph()
+                    doc.add_paragraph(tmp_summary)
+                    paragraph = doc.add_paragraph()
+                    doc.add_heading('Key Insights', level=2)
+                    paragraph = doc.add_paragraph()
+                    tmp_table.drop_duplicates(inplace=True)
+                    columns = list(tmp_table.columns)
+                    table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
+                    table.autofit = True
                 for col in range(len(columns)):
                     # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
                     table.cell(0, col).text = columns[col]

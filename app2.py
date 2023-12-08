@@ -2705,12 +2705,18 @@ elif selected_option_case_type == "Money Laundering":
                             
                                 def dataframe_to_image(df):
                                     plt.figure(figsize=(10,10))
-                                    plt.axis('off')
-                                    plt.table(cellText=df.values, colLabels=df.columns, loc='center', cellLoc='center')
-                                    img = BytesIO()
-                                    plt.savefig(img, format='png')
-                                    plt.close()
-                                    return img
+                                    table = plt.table(cellText=df.values,
+                                                        colLabels=df.columns,
+                                                        loc='center',
+                                                        cellLoc='center',
+                                                        colColours=['#f3f3f3'] * len(df.columns),
+                                                        cellLoc='center')
+
+                                    table.auto_set_font_size(False)
+                                    table.set_fontsize(10)
+                                    table.scale(1.2, 1.2)  # Scale the table for better readability
+
+                                    return table 
 
                                 # Convert DataFrame to image
                                 image = dataframe_to_image(res_df_gpt)

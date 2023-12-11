@@ -2690,7 +2690,7 @@ elif selected_option_case_type == "Money Laundering":
                                 user_prompt = wrap_prompt(prompt_1, "user")
                                 res = get_response([system_prompt, user_prompt])
                                 response = res['choices'][0]['message']['content']
-                                response = resonse.replace("$","USD")
+                                response = response.replace("$","USD")
                                 #response = usellm(prompt_1)
 
                                

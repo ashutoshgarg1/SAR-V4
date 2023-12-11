@@ -2585,7 +2585,7 @@ elif selected_option_case_type == "Money Laundering":
                                 prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
                                 Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
-                                Response: (Output transactions in one line each. Do not give/add any extra Note, Explanation in answer.) '''
+                                Response: (Output those suspicious transactions in one line each. Do not give/add any extra Note, Explanation in answer.) '''
                                 
                                 # st.write(context_1)
                                 system_prompt = wrap_prompt("You are a Money Laundering Analyst.", "system")

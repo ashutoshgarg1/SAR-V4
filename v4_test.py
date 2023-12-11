@@ -2582,8 +2582,10 @@ elif selected_option_case_type == "Money Laundering":
 
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
-                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions in one line each. # Strictly do not repeat any transaction.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement.\n\
+                                Suspicious transactions can be:\n\
+                                Transactions made to a suspicious entity.\n\
+                                Output the "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Do not give/add any extra Note, Explanation in answer.) '''
                                 
@@ -2625,8 +2627,10 @@ elif selected_option_case_type == "Money Laundering":
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                   
 
-                                prompt_1=f''' Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions can be:\n\n
-                                High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions.Also, do not repeat the same transaction.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions from savings_account_statement. \n\
+                                Suspicious transactions can be:\n\
+                                High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
+                                Output the "Description", "Date" and "Credited ($)" of those identified transactions. Also, do not repeat the same transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Strictly do not give/add any Note, Explanation in answer.) '''
                                 #st.write(context_1)

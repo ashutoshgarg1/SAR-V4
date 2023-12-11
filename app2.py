@@ -108,7 +108,7 @@ os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
 
 llama_13b = HuggingFaceHub(
-            repo_id="HuggingFaceH4/zephyr-7b-beta",
+            repo_id="meta-llama/Llama-2-13b-chat-hf",
             model_kwargs={"temperature":0.1, 
                         "min_new_tokens":100, 
                         "max_new_tokens":300})

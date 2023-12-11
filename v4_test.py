@@ -2582,12 +2582,10 @@ elif selected_option_case_type == "Money Laundering":
 
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement.\n\
-                                Suspicious transactions can be:\n\
-                                Transactions made to a suspicious entity.\n\
-                                Output the "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
+                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
-                                Response: (Do not give/add any extra Note, Explanation in answer.) '''
+                                Response: (Output transactions in one line each. Do not give/add any extra Note, Explanation in answer.) '''
                                 
                                 # st.write(context_1)
                                 system_prompt = wrap_prompt("You are a Money Laundering Analyst.", "system")

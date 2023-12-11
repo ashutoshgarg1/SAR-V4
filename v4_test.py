@@ -2638,7 +2638,7 @@ elif selected_option_case_type == "Money Laundering":
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                 prompt_1=f''' Your goal is to identify the suspicious transactions only from Credit_Card_statement within the given Data. Suspicious transactions can be:\n\n
-                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of each identified transactions as a numbered list of this format : "Description:  Date:  Debited ($):" . # Strictly do not repeat any transaction.\n\
+                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of each identified transactions as a numbered list in this format : "Description:  Date:  Debited ($):" . # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Do not give/add any extra Note, Explanation in answer.) '''
                                 
@@ -2682,7 +2682,7 @@ elif selected_option_case_type == "Money Laundering":
                                 prompt_1=f''' Your goal is to identify the suspicious transactions from checking_account_statement.\n\
                                 Suspicious transactions can be:\n\
                                 High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
-                                Output the "Description", "Date" and "Credited ($)" of those identified transactions as a numbered list of this format : "Description:  Date:  Credited ($):". Also, do not repeat the same transaction.\n\
+                                Output the "Description", "Date" and "Credited ($)" of those identified transactions as a numbered list in this format : "Description:  Date:  Credited ($):". Also, do not repeat the same transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Strictly do not give/add any Note, Explanation in answer.) '''
                                 #st.write(context_1)

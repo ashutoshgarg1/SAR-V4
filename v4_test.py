@@ -2682,7 +2682,7 @@ elif selected_option_case_type == "Money Laundering":
                                 prompt_1=f''' Your goal is to identify the suspicious transactions from checking_account_statement.\n\
                                 Suspicious transactions can be:\n\
                                 High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
-                                Output the "Description", "Date" and "Credited ($)" of those identified transactions as numbered points strictly in this format : "Description:  Date:  Credited ($):". Also, do not repeat the same transaction.\n\
+                                Output the "Description", "Date" and "Credited ($)" of those identified transactions in numbered points strictly in this format : "Description:  Date:  Credited ($):". Also, do not repeat the same transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Strictly do not give/add any Note, Explanation in answer.) '''
                                 #st.write(context_1)

@@ -2606,7 +2606,6 @@ elif selected_option_case_type == "Money Laundering":
                                 prompt_1 = f'''Act as a calculator and add up all the amounts in the given context.\n\
                                 Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
-                                Question: {query}\n\
                                 Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
 
 

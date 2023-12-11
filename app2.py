@@ -1188,17 +1188,19 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     e = Exception("")
                                     st.exception(e)
 
+                                st.table(res_df_gpt)
+
                                
 
                                
-                                keys = res_dict.keys()
-                                count = 1
-                                for value in keys:
-                                    st.markdown("**Insight " +str(count)+": "+str(value)+"**")
-                                    #st.markdown("**Insight: "+str(value)+"**")
-                                    st.write(str(res_dict[value]))
-                                    st.divider()
-                                    count = count+1
+                                # keys = res_dict.keys()
+                                # count = 1
+                                # for value in keys:
+                                #     st.markdown("**Insight " +str(count)+": "+str(value)+"**")
+                                #     #st.markdown("**Insight: "+str(value)+"**")
+                                #     st.write(str(res_dict[value]))
+                                #     st.divider()
+                                #     count = count+1
 
                                 # tmp_table_gpt = res_df_gpt
 

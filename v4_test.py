@@ -3230,7 +3230,7 @@ elif selected_option_case_type == "Money Laundering":
                     "Address                                       ": "   123 Elm Street, Santa Barbara, California 94123",
                     "Phone                                           ": "   (619) 425-2972",
                     "A/C No.                                        ": "   4587236908230087",
-                    "SSN                                                ": "   653-30-9562"
+                    "SSN                                                ": "   671-24-3561"
                 }
 
                 for key, value in customer_info.items():
@@ -3253,7 +3253,7 @@ elif selected_option_case_type == "Money Laundering":
                     "Address                                       ": "   123 Elm Street, Santa Barbara, California 94123",
                     "Phone                                           ": "   (619) 425-2972",
                     "A/C No.                                        ": "   4587236908230087",
-                    "SSN                                                ": "   653-30-9562"
+                    "SSN                                                ": "   671-24-3561"
                 }
 
                 for key, value in suspect_info.items():

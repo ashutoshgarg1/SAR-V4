@@ -1190,7 +1190,15 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                                
 
-                                st.table(res_df_gpt)
+                               
+                                keys = res_dict.keys()
+                                count = 1
+                                for value in keys:
+                                    st.markdown("**Insight " +str(count)+": "+str(value)+"**")
+                                    #st.markdown("**Insight: "+str(value)+"**")
+                                    st.write(str(res_dict[value]))
+                                    st.divider()
+                                    count = count+1
 
                                 # tmp_table_gpt = res_df_gpt
 
@@ -2571,11 +2579,12 @@ elif selected_option_case_type == "Money Laundering":
                                 
 
                                 ## Question-3
+                                
 
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
-                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions only from Credit_Card_statement within the given Data. Suspicious transactions can be:\n\n
+                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of each identified transactions as a numbered list of this format : "Description:  Date:  Debited ($):" . # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Do not give/add any extra Note, Explanation in answer.) '''
                                 
@@ -2594,10 +2603,9 @@ elif selected_option_case_type == "Money Laundering":
                                 #st.session_state["lineage_aml"][query] = context_1
                 
                                 context_1 = transactions_cc
-                                prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
+                                prompt_1 = f'''Act as a calculator and add up all the amounts in the given context.\n\
                                 Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
-                                Question: {query}\n\
                                 Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
 
 
@@ -2617,8 +2625,10 @@ elif selected_option_case_type == "Money Laundering":
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                   
 
-                                prompt_1=f''' Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions can be:\n\n
-                                High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions.Also, do not repeat the same transaction.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions from savings_account_statement.\n\
+                                Suspicious transactions can be:\n\
+                                High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
+                                Output the "Description", "Date" and "Credited ($)" of those identified transactions as a numbered list of this format : "Description:  Date:  Credited ($):". Also, do not repeat the same transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Strictly do not give/add any Note, Explanation in answer.) '''
                                 #st.write(context_1)
@@ -2703,7 +2713,14 @@ elif selected_option_case_type == "Money Laundering":
                                     st.exception(e)
 
                             
-                                st.table(res_df_gpt)
+                                keys = chat_history_1.keys()
+                                count = 1
+                                for value in keys:
+                                    st.markdown("**Insight " +str(count)+": "+str(value)+"**")
+                                    #st.markdown("**Insight: "+str(value)+"**")
+                                    st.write(str(chat_history_1[value]))
+                                    st.divider()
+                                    count = count+1
 
                                 # Display image in Streamlit app
                                # st.image(image, caption='DataFrame as Image', use_column_width=True)
@@ -3099,7 +3116,7 @@ elif selected_option_case_type == "Money Laundering":
                             ## using open ai:
                             #st.write(summary1)
 
-                            prompt_summ=f'''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            prompt_summ=f'''Provide an accurate and detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
                             Context: {summary1}  '''
                             system_prompt = wrap_prompt("You are a summarization tool", "system")
                             user_prompt = wrap_prompt(prompt_summ, "user")
@@ -3210,10 +3227,10 @@ elif selected_option_case_type == "Money Laundering":
                 # Add the customer information
                 customer_info = {
                     "Name                                           ": "   Sarah Jones",
-                    "Address                                       ": "   858 3rd Ave, Chula Vista, California, 91911 US",
+                    "Address                                       ": "   123 Elm Street, Santa Barbara, California 94123",
                     "Phone                                           ": "   (619) 425-2972",
                     "A/C No.                                        ": "   4587236908230087",
-                    "SSN                                                ": "   653-30-9562"
+                    "SSN                                                ": "   671-24-3561"
                 }
 
                 for key, value in customer_info.items():
@@ -3233,10 +3250,10 @@ elif selected_option_case_type == "Money Laundering":
                 runner.italic = True
                 suspect_info = {
                     "Name                                           ": "   Sarah Jones",
-                    "Address                                       ": "   858 3rd Ave, Chula Vista, California, 91911 US",
+                    "Address                                       ": "   123 Elm Street, Santa Barbara, California 94123",
                     "Phone                                           ": "   (619) 425-2972",
                     "A/C No.                                        ": "   4587236908230087",
-                    "SSN                                                ": "   653-30-9562"
+                    "SSN                                                ": "   671-24-3561"
                 }
 
                 for key, value in suspect_info.items():

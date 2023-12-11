@@ -2269,7 +2269,7 @@ elif selected_option_case_type == "Money Laundering":
         ## Defining some global varibales for AML
         # directoty_path="ml_doc/"
         # fetched_files = read_pdf_files(directoty_path)
-        directoty_path = "aml_docs/"
+        directoty_path = "aml_docs2/"
         fetched_files = read_pdf_files(directoty_path)
         
         
@@ -2335,7 +2335,7 @@ elif selected_option_case_type == "Money Laundering":
                         # st.markdown(files_frame.style.hide(axis="index").to_html(), unsafe_allow_html=True)
                     
                         #select box to select file
-                        fetch=["savings_account_statement.xlsx","credit_card_statement.xlsx","Transaction_Information.pdf","Customer_Relationship_Information.pdf","Blacklisted_Accounts.pdf"]
+                        fetch=["checking_account_statement.xlsx","credit_card_statement.xlsx","Transaction_Information.pdf","Customer_Relationship_Information.pdf","Blacklisted_Accounts.pdf"]
                         selected_file_name = st.selectbox(":blue[Select a file to View]",fetch)
                         st.write("Selected File: ", selected_file_name)
                         st.session_state.disabled = False
@@ -2430,7 +2430,7 @@ elif selected_option_case_type == "Money Laundering":
     
     
                 for fetched_pdf in fetched_files:
-                    directory_path="aml_docs/"
+                    directory_path="aml_docs2/"
         
                     
                     file_ext1 = tuple("pdf")
@@ -2453,7 +2453,7 @@ elif selected_option_case_type == "Money Laundering":
                     elif fetched_pdf.endswith(file_ext2):
                         selected_file_path = os.path.join(directory_path, fetched_pdf)
                         
-                        if selected_file_path.startswith("aml_docs/credit_card_statement"):
+                        if selected_file_path.startswith("aml_docs2/credit_card_statement"):
                             
                             json1=process_data_credit_card(selected_file_path)
                             #st.write("creditcard")
@@ -2462,10 +2462,10 @@ elif selected_option_case_type == "Money Laundering":
                             texts = text_to_docs(json1,file)
                             for i in texts:
                                 temp_file_path2.append(i)
-                        elif selected_file_path.startswith("aml_docs/savings_account_statement"):
+                        elif selected_file_path.startswith("aml_docs2/checking_account_statement"):
                             #selected_file_path = os.path.join(directory_path, fetched_pdf)
                             json2=process_data_saving(selected_file_path)
-                            #st.write("savings")
+                            #st.write("checking")
                             #st.write(json2)
                             #text = convert_image_to_searchable_pdf(selected_file_path)
                             texts = text_to_docs(json2,file)
@@ -2526,8 +2526,8 @@ elif selected_option_case_type == "Money Laundering":
                           "What are the products that are associated with this customer?",
                          "What are the associated suspicious transactions for Credit Card?",
                          # "What is the total amount associated with the money laundering activity for Credit card?",
-                          "What are the associated suspicious transactions for Savings account?",
-                         # "What is the total amount associated with the money laundering activity for Savings Account?",
+                          "What are the associated suspicious transactions for checking account?",
+                         # "What is the total amount associated with the money laundering activity for checking Account?",
                           #"What type of Money laundering activity is taking place?",
                           "What is the total amount associated with the Money Laundering ?"]}
             
@@ -2675,11 +2675,11 @@ elif selected_option_case_type == "Money Laundering":
 
              
 
-                                query = "What are the associated suspicious transactions for Savings account?"
+                                query = "What are the associated suspicious transactions for checking account?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                   
 
-                                prompt_1=f''' Your goal is to identify the suspicious transactions from savings_account_statement.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions from checking_account_statement.\n\
                                 Suspicious transactions can be:\n\
                                 High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
                                 Output the "Description", "Date" and "Credited ($)" of those identified transactions as a numbered list of this format : "Description:  Date:  Credited ($):". Also, do not repeat the same transaction.\n\
@@ -2701,14 +2701,14 @@ elif selected_option_case_type == "Money Laundering":
 
                                 ## Question-4.1
 
-                                query = "What is the total amount associated with the money laundering activity for Savings Account ?"
+                                query = "What is the total amount associated with the money laundering activity for checking Account ?"
                                 #st.session_state["lineage_aml"][query] = context_1
                                 context_1 = transactions_sa
                                 prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
                                 Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
                                 Question: {query}\n\
-                                Response: (Add this before the toal amount : "Total Money Laundering amount that can be associated with savings account is : ")'''
+                                Response: (Add this before the toal amount : "Total Money Laundering amount that can be associated with checking account is : ")'''
                                 
 
                                 response = usellm(prompt_1)
@@ -2739,7 +2739,7 @@ elif selected_option_case_type == "Money Laundering":
                                 context_1 = transactions_cc + transactions_sa
                                   
 
-                                prompt_1 = f'''Based on the Context, what is the relationship between the suspicious transactions of savings accounts and credit card transactions.\n\n\
+                                prompt_1 = f'''Based on the Context, what is the relationship between the suspicious transactions of checking accounts and credit card transactions.\n\n\
                                 Context: {context_1}\n\
                                 Response: (Give me a concise response in one sentence stating what TYPE of money laundering activity is taking place and WHY, along with the relationship found? Do not give me any Note etc).'''
 
@@ -2793,7 +2793,7 @@ elif selected_option_case_type == "Money Laundering":
                                 contexts = ', '.join(res_df_gpt['Answer'])
                                 prompt_2 = f"""Is this a case of Suspicious activity? If yes, then Find answer to the questions as truthfully as possible as per the available information only,\n\n\
                                 1.) why was the transaction triggered?\n\
-                                2.) what are the total amounts related to money laundering for savings account and credit cards?\n\
+                                2.) what are the total amounts related to money laundering for checking account and credit cards?\n\
                                 3.) what type of money laundering activity is taking place and why ?\n\n\                     
                                 Context: {contexts}\n\
                                 Also, add your concise recommendation whether SAR filling is required or not ?
@@ -2894,9 +2894,9 @@ elif selected_option_case_type == "Money Laundering":
 
                                 ## question-4
 
-                                query = "What are the associated suspicious transactions for Savings account?"
+                                query = "What are the associated suspicious transactions for checking account?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1 = f''' Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions can be:\n\n
+                                prompt_1 = f''' Your goal is to identify the suspicious transactions from checking_account_statement. Suspicious transactions can be:\n\n
                                 High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions.Also, do not repeat the same transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Strictly do not give/add any Note, Explanation in answer.) '''
@@ -2908,14 +2908,14 @@ elif selected_option_case_type == "Money Laundering":
 
                                 ## question-4.1
 
-                                query = "What is the total amount associated with the money laundering activity for Savings Account ?"
+                                query = "What is the total amount associated with the money laundering activity for checking Account ?"
                                 #st.session_state["lineage_aml_llama"][query] = context_1
                                 context_1 = transactions_sa_llama
                                 prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
                                 Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
                                 Question: {query}\n\
-                                Response: (Add this before the toal amount : "Total Money Laundering amount that can be associated with savings account is : ")'''
+                                Response: (Add this before the toal amount : "Total Money Laundering amount that can be associated with checking account is : ")'''
           
                                 response = llama_llm(llama_13b,prompt_1)
                                 response = response.replace("$", "USD ")
@@ -2943,7 +2943,7 @@ elif selected_option_case_type == "Money Laundering":
                                 query = "What is the total amount associated with the Money Laundering ?"
                                 st.session_state["lineage_aml_llama"][query] = context_1
                                 context_1 = transactions_cc_llama + transactions_sa_llama
-                                prompt_1 = f'''Based on the Context, what is the relationship between the suspicious transactions of savings accounts and credit card transactions.\n\n\
+                                prompt_1 = f'''Based on the Context, what is the relationship between the suspicious transactions of checking accounts and credit card transactions.\n\n\
                                 Context: {context_1}\n\
                                 Response: (Give me a concise response in one sentence stating the type of money laundering activity the can be taking place and on what patterns it is observed along with the relationship found. Do not give me any Note etc)'''
 
@@ -2982,7 +2982,7 @@ elif selected_option_case_type == "Money Laundering":
                                 contexts = question_1 + question_8
                                 prompt = f"""Give concise response to the each questions below within the given Context. \n\
                                 1.) transaction triggered\n\
-                                2.) amounts related to money laundering for savings account and credit cards\n\
+                                2.) amounts related to money laundering for checking account and credit cards\n\
                                 3.) Type of money laundering activity taking place and why ?\n\                          
                                 Context: {contexts}\n\
                                 Response: (Give a neatly formatted response for each question individually. Also, give your recommendation for the below Question.) 
@@ -3115,8 +3115,8 @@ elif selected_option_case_type == "Money Laundering":
                         "What are the products that are associated with this customer?",
                         "What are the associated suspicious transactions for Credit Card?",
                         #"What is the total amount associated with the money laundering activity for Credit card?",
-                        "What are the associated suspicious transactions for Savings account?",
-                        #"What is the total amount associated with the money laundering activity for Savings Account ?",
+                        "What are the associated suspicious transactions for checking account?",
+                        #"What is the total amount associated with the money laundering activity for checking Account ?",
                         #"What type of Money laundering activity is taking place?",
                         "What is the total amount associated with the Money Laundering ?",
                         ]
@@ -3415,7 +3415,7 @@ elif selected_option_case_type == "Money Laundering":
 #fetching file
                     for fetched_pdf in fetched_files:
                         # st.write(fetched_pdf)
-                        file_pth = os.path.join('aml_docs/', fetched_pdf)
+                        file_pth = os.path.join('aml_docs2/', fetched_pdf)
                         # st.write(file_pth)
                         file_paths.append(file_pth)
 
@@ -3462,7 +3462,7 @@ elif selected_option_case_type == "Money Laundering":
                     st.write("#### *SARA Recommendation*")
                     st.markdown("""<span style="font-size: 18px;">*Based on the following findings for the underlying case, under Bank Secrecy Act, it is recommended to file this case as a suspicious activity:*</span>""", unsafe_allow_html=True)
                     st.markdown("""<span style="font-size: 18px;">*1. A high-value transaction is made to a high-risk geography.*</span>""", unsafe_allow_html=True)
-                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with the involvement of multiple and frequent large cash deposits into Savings Account and corresponding debits through the Credit Card to a suspicious entity.*.</span>""", unsafe_allow_html=True)           
+                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with the involvement of multiple and frequent large cash deposits into checking Account and corresponding debits through the Credit Card to a suspicious entity.*.</span>""", unsafe_allow_html=True)           
                 
                     # query  = "Give your recommendation if SAR filling is required or not?"
                     # contexts = ', '.join(res_df_gpt['Answer'])
@@ -3492,7 +3492,7 @@ elif selected_option_case_type == "Money Laundering":
                     st.write("#### *SARA Recommendation*")
                     st.markdown("""<span style="font-size: 18px;">*Based on the following findings for the underlying case, under Bank Secrecy Act, it is recommended to file this case as a suspicious activity:*</span>""", unsafe_allow_html=True)
                     st.markdown("""<span style="font-size: 18px;">*1. A high-value transaction is made to a high-risk geography.*</span>""", unsafe_allow_html=True)
-                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with the involvement of multiple and frequent large cash deposits into Savings Account and corresponding debits through the Credit Card to a suspicious entity.*.</span>""", unsafe_allow_html=True)           
+                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with the involvement of multiple and frequent large cash deposits into checking Account and corresponding debits through the Credit Card to a suspicious entity.*.</span>""", unsafe_allow_html=True)           
                 
                     st.warning('Please carefully review the recommendation and case details before the final submission',icon="⚠️")         
     

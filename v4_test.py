@@ -3171,7 +3171,7 @@ elif selected_option_case_type == "Money Laundering":
                             ## using open ai:
                             #st.write(summary1)
 
-                            prompt_summ=f'''Provide an accurate and detailed summary of the below context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            prompt_summ=f'''Provide an accurate and detailed summary of the below context and make sure to include all the important information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
                             context: {summary1}  '''
                             system_prompt = wrap_prompt("You are a summarization tool", "system")
                             user_prompt = wrap_prompt(prompt_summ, "user")

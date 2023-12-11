@@ -3041,7 +3041,7 @@ elif selected_option_case_type == "Money Laundering":
  
                     li = ["Select question to get the lineage",
                         "Why was the transaction triggered?",
-                        "What are the products that are associsted with this customer?",
+                        "What are the products that are associated with this customer?",
                         "What are the associated suspicious transactions for Credit Card?",
                         #"What is the total amount associated with the money laundering activity for Credit card?",
                         "What are the associated suspicious transactions for Savings account?",

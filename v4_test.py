@@ -2625,10 +2625,10 @@ elif selected_option_case_type == "Money Laundering":
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                   
 
-                                prompt_1=f''' Your goal is to identify the suspicious transactions from savings_account_statement. \n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions only from savings_account_statement within the given context. \n\
                                 Suspicious transactions can be:\n\
                                 High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
-                                Output the "Description", "Date" and "Credited ($)" of those identified transactions. Also, do not repeat the same transaction.\n\
+                                Output the "Description", "Date" and "Credited ($)" of those identified transactions as "Description:  Date:  Credited ($):". Also, do not repeat the same transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Strictly do not give/add any Note, Explanation in answer.) '''
                                 #st.write(context_1)

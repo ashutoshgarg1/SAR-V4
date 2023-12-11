@@ -2691,7 +2691,7 @@ elif selected_option_case_type == "Money Laundering":
                             
                                 
                                 #Display table
-                                st.table(res_df_gpt)
+                                #st.table(res_df_gpt)
                                 #Display as question answer set
                                 keys = chat_history_1.keys()
                                 count = 1

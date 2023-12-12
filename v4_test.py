@@ -2964,7 +2964,7 @@ elif selected_option_case_type == "Money Laundering":
                                 
 
                                 query = "What is the total amount associated with the Money Laundering ?"
-                                st.session_state["lineage_aml_llama"][query] = context
+                                st.session_state["lineage_aml_llama"][query] = context_1
                                 context_1 = transactions_cc + transactions_sa
 
                                 prompt_1 = f'''You are a fraud analyst agent and should give output as human statements. Do not give any explanation or note. Based on the Context, what is the relationship between the suspicious transactions of savings accounts and credit card transactions.

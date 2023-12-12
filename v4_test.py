@@ -2876,12 +2876,12 @@ elif selected_option_case_type == "Money Laundering":
                                 ## Question-3
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-
-                                template = f"""Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\
-                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction\n\
-                                Context: {context_1} """
+                                prompt_1=f''' Your goal is to identify the suspicious transactions only from Credit_Card_statement within the given Data. Suspicious transactions can be:\n\n
+                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of each identified transactions as a numbered list strictly in this format : "Description:  Date:  Debited ($):" . # Strictly do not repeat any transaction.\n\
+                                Context: {context_1}\n\
+                                Response: (Do not give/add any extra Note, Explanation in answer.) '''
                                 
-                                response = zephyr_llm(zephyr_7b,template)
+                                response = zephyr_llm(zephyr_7b,prompt_1)
                             
                                 #response,context = run_chain_llm(template,query)
                                 chat_history_1[query] = response

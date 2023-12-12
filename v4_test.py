@@ -1870,7 +1870,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     prompt = PromptTemplate(template=template,input_variables=["text"])
                     llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
 
-                    text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
+                    text = ', '.join(res_df_zephyr['Answer']) + sara_recommendation_zephyr
                     response_summ_llama = llm_chain_llama.run(text)
                     return response_summ_llama
                 

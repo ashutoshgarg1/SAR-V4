@@ -2842,7 +2842,7 @@ elif selected_option_case_type == "Money Laundering":
                                 # question 1
                                 
 
-                                template = """ You should closely look into the transactions information data for the reason why was the transaction flagged as suspicious. \n\n\
+                                template = """ You should closely look into the transactions information data on why was the transaction flagged as suspicious. \n\n\
                                 """
                                 query = "Why was the transaction triggered?"
                             
@@ -2860,7 +2860,7 @@ elif selected_option_case_type == "Money Laundering":
                                 
                                 ## Question-2
 
-                                template = """ Your goal is to read customer relationship information and identify the products associated with the customer. \n\n\
+                                template = """ Your goal is to read customer relationship information and identify only the products that associated with the customer. just output those products. \n\n\
                                 """
                                 query = "What are the products that are associated with this customer?"
                             
@@ -2875,8 +2875,8 @@ elif selected_option_case_type == "Money Laundering":
 
                                 ## Question-3
 
-                                template = """ your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\
-                                Transactions made to a suspicious entity or a high risk geography. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction"""
+                                template = """Your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\
+                                Transactions made to a suspicious entity . Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction"""
                                 query = "What are the associated suspicious transactions for Credit Card?"
                             
                                 response,context = run_chain_llm(template,query)
@@ -2901,16 +2901,12 @@ elif selected_option_case_type == "Money Laundering":
                                 response = zephyr_llm(zephyr_7b,prompt_1)
                                 response = response.replace("$", "USD ")
                                 total_cc = response
-                                total_cc_array = response.split(" ")
-                                try:
-                                    total_cc_amount = find_numeric_string(total_cc_array)
-                                except:
-                                    total_cc_amount = "N/A"
+                            
 
                                 
                                 ## Question-4
 
-                                template = """ Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions are only Cash Deposit transactions in a short span of time. #Do not use any other transaction in your answer.\n\
+                                template = """ Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions are : Cash Deposit transactions in a short span of time.\n\
                                 Do not include any Paycheck transactions or Opening balance transaction as they are not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions. # Strictly do not repeat any transaction"""
                                 query = "What are the associated suspicious transactions for Savings account?"
                             
@@ -2939,11 +2935,7 @@ elif selected_option_case_type == "Money Laundering":
                                 #response = response.replace("33000", "USD 33000")
                                 response = response.replace("$", "USD ")
                                 total_sav =  response.replace("\n"," ")
-                                total_sav_array = total_sav.split(" ")
-                                try:
-                                    total_sav_amount = find_numeric_string(total_sav_array)
-                                except:
-                                    total_sav_amount = "N/A"
+                                
                                 # ## Question-5.1
 
                                 # query = "What type of Money laundering activity is taking place?"

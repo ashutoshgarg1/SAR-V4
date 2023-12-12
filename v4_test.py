@@ -2998,9 +2998,14 @@ elif selected_option_case_type == "Money Laundering":
                                 #st.table(res_df_llama)
                                 keys = chat_history_1.keys()
                                 for value in keys:
-                                    st.subheader("Question: "+str(value))
-                                    st.text((chat_history_1[value]))
+                                    st.markdown("**Insight " +str(count)+": "+str(value)+"**")
+                                    #st.markdown("**Insight: "+str(value)+"**")
+                                    st.write(str(chat_history_1[value]))
                                     st.divider()
+                                    count = count+1
+                                    # st.subheader("Question: "+str(value))
+                                    # st.text((chat_history_1[value]))
+                                    # st.divider()
                                 #st.markdown("Question")
                                 #copy in session state
                                 st.session_state["tmp_table_llama_aml"] = pd.concat([st.session_state.tmp_table_llama_aml, res_df_llama], ignore_index=True)

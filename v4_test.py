@@ -1499,7 +1499,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     
                             
                             
-                                sst.session_state["sara_recommendation_zephyr"] = response1
+                                st.session_state["sara_recommendation_zephyr"] = response1
                                 
                                 sara_recommendation_zephyr = response1 
                                         

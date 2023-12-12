@@ -1489,7 +1489,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 3. If a Suspect Name is mentioned in the context\n\n\
                                 Context: {contexts}\n\
                                 Please note that even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\
-                                based on that - add your concise recommendation whether SAR filling is required or not ?
+                                based on that - add your concise recommendation whether SAR filling is required or not ? \n\
                                 Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points."
                                                         
                                 response1 = zephyr_llm(zephyr_7b,prompt) 

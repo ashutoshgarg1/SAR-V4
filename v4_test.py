@@ -2898,7 +2898,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Response: '''
 
 
-                                response = zephyr_llm(zephyr_7b,prompt)
+                                response = zephyr_llm(zephyr_7b,prompt_1)
                                 response = response.replace("$", "USD ")
                                 total_cc = response
                                 total_cc_array = response.split(" ")
@@ -2933,7 +2933,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Response: '''
                                 
 
-                                response = zephyr_llm(zephyr_7b,prompt)
+                                response = zephyr_llm(zephyr_7b,prompt_1)
                                 
                                 #response = response.replace("33000", "USD 33000")
                                 response = response.replace("$", "USD ")
@@ -2971,7 +2971,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Response: (Give me a concise response in one sentence stating what TYPE of money laundering activity is taking place and WHY, along with the relationship found? Do not give me any Note or explanation).'''
 
                                 #response = usellm(prompt_1)
-                                response = zephyr_llm(zephyr_7b,prompt)
+                                response = zephyr_llm(zephyr_7b,prompt_1)
                                 response1 = " ".join(("Total Money Laundering amount that can be associated with savings account is : USD "+ total_sav_amount +  " and Total Money Laundering amount that can be associated with credit card is : USD "+ total_cc_amount + " ." + response).split())
                                 ques5 = response1
                                 chat_history_1[query] = response1
@@ -3019,7 +3019,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Context: {contexts}\n\
                                 Also, add your concise recommendation whether SAR filling is required or not ?
                                 Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions asked above as individual points."""
-                                response = llama_llm(llama_13b,prompt_1)
+                                response = zephyr_llm(zephyr_7b,prompt_2)
                                 response1 = response.replace("$", "USD ")
                                 sara_open_source=response1
                                 

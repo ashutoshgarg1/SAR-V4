@@ -1421,8 +1421,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
 
                                 query = "Identify if invoice is billed to cardholder or someone else?"
-                                response_3,docs = run_chain_llm(template,query)
-                                chat_history[query] = response_3
+                                analyse,docs = run_chain_llm(template,query)
+                                #chat_history[query] = response_3
                                 # st.write(response_3)
                                 # st.write(docs) 
                                 st.session_state["lineage_zephyr"] = lineage_dict_llama
@@ -1430,7 +1430,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 try:
                                     res_df_zephyr  = pd.DataFrame(list(chat_history.items()), columns=['Question','Answer'])
                                     res_df_zephyr .reset_index(drop=True, inplace=True)
-                                    index_ = pd.Series([1,2,3,4,5,6,7,8,9,10,11])
+                                    index_ = pd.Series([1,2,3,4,5,6,7,8,9,10])
                                     res_df_zephyr  = res_df_zephyr .set_index([index_])
                                     # st.write(res_df_llama)
                                 except IndexError: 
@@ -1482,14 +1482,15 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                                 
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
-                                contexts = st.session_state["tmp_table_zephyr"]['Answer']
-                                prompt = f"""Find answer to the questions as truthfully as possible as per the available information only,\n\n\
-                                1. what is the transaction/disputed amount and is The transaction/disputed amount > 5,000 USD value threshold. \n\
-                                2. Identify if invoice is billed to cardholder or someone else?\n\n\
-                                3. what is the suspect's name if identified ?\n\n\
-                                Please note that even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity.lso, add your concise recommendation whether SAR filling is required or not ? \n\                     
-                                Context: {contexts}\n\
-                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points."""
+                                contexts = ', '.join(res_df_zephyr['Answer'])
+                                prompt = f"You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                    1. Check if The transaction/disputed amount > 5,000 USD value threshold,If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
+                                    2. {analyse} analyse this response,if invoice is billed to cardholder then there is no suspicion else, it can be a suspicious activity.\n\n\
+                                    3. If a suspect is identified from above , then what is the suspect's name ? and then this can be considered as a suspicious activity else not.\n\n\
+                                    Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
+                                    Analyse above points properly and at last give your recommendation if SAR filing is required or not? \n\n\
+                                    Context: {contexts}\n\
+                                    Response (Give me a concise response in 3 points with numbering like [1,2])"
                                                         
                                 response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response1.replace("$", "")

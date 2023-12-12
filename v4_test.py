@@ -2898,10 +2898,10 @@ elif selected_option_case_type == "Money Laundering":
 
                                 query = "What is the total amount associated with the money laundering activity for Credit card?"
                                 context_1 = transactions_cc
-                                prompt_1 = f'''Act as a calculator and add up all the amounts in the given context.\n\
+                                prompt_1 = f'''Act as a calculator and add up all the amounts correctly from the given context.\n\
                                 Output the total calculated amount as answer to the question without any extra note or explanation.\n\
                                 Context: {context_1}\n\
-                                Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
+                                Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : " and output this only.)'''
 
 
                                 

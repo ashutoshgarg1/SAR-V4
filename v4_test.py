@@ -1335,7 +1335,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 lineage_dict_llama[query] = context
 
 
-                                template = """You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a concise response.\n\n\
+                                template = """You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a concise response in one sentence.\n\n\
                                     """
                                 
                                 query = "How was the bank notified?"
@@ -1357,7 +1357,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                                 template = """You are a Fraud analyst who needs to identify the type of fraud or suspicious activity has taken place.
                                 Mention only fraud type and fraud code. 
-                                Give a relevant, concise and short response.\n\n\
+                                Give a relevant, concise response in one sentence.\n\n\
                                     """
                                 
                                 query = "What is the Fraud Type?"
@@ -1377,7 +1377,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 lineage_dict_llama[query] = context    
 
 
-                                template = """ You need to act as a Financial analyst to identify the disputed amount mentioned in the context.Perform a mathematical calculation to check if the disputed amount is greater than 5000 USD or not.Given the context, give a relevant and concise response.\n\n\
+                                template = """ You need to act as a Financial analyst to identify the disputed amount mentioned in the context.Perform a mathematical calculation to check if the disputed amount is greater than 5000 USD or not and what is the disputed amount? Given the context, give a relevant and concise response.\n\n\
                                                     Take the provided information as accurate. \n\n\
                                     """
                                 
@@ -1484,11 +1484,12 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
                                 contexts = st.session_state["tmp_table_zephyr"]['Answer']
                                 prompt = f"You are professional Fraud Analyst who needs to find answer to the questions as truthfully as possible as per the given context only- Here is the context: {contexts}\n\n\
-                                Analyse below points properly and give your recommendation based on these points only-\n\n\
+                                Analyse below points properly and give answer to each question individually-\n\n\
                                     1. If The transaction/disputed amount > 5,000 USD value threshold, then check below points to make sure if it is a suspicious/fraud activity or not: \n\
                                     2. If invoice is billed to someone else.\n\n\
                                     3. If a Suspect Name is mentioned in the context\n\n\
                                     Please note that even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\
+                                    At Last give your recommendation if SAR filing is required or not ?\n\
                                     Response: (Provide a concise reasoning in 3-4 pointers.Start your response by saying- Based on the provided context and information, here is the recommendation-)"
                                                         
                                 response1 = zephyr_llm(zephyr_7b,prompt) 

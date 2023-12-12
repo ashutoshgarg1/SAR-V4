@@ -2842,7 +2842,7 @@ elif selected_option_case_type == "Money Laundering":
                                 # question 1
                                 
 
-                                template = """ You should closely look into the transactions information data on why was the transaction flagged as suspicious. \n\n\
+                                template = """ You should closely look into the transactions information data and answer below question in one single sentence. \n\n\
                                 """
                                 query = "Why was the transaction triggered?"
                             
@@ -2860,7 +2860,7 @@ elif selected_option_case_type == "Money Laundering":
                                 
                                 ## Question-2
 
-                                template = """ Your goal is to read customer relationship information and identify only the products that associated with the customer. just output those products. \n\n\
+                                template = """ Your goal is to read customer relationship information and answer below question in one single sentence. \n\n\
                                 """
                                 query = "What are the products that are associated with this customer?"
                             
@@ -2875,11 +2875,14 @@ elif selected_option_case_type == "Money Laundering":
 
                                 ## Question-3
 
-                                template = """Your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\
-                                Transactions made to a suspicious entity . Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction"""
+                                template = f"""Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\
+                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction\n\
+                                Context: {context_1} """
                                 query = "What are the associated suspicious transactions for Credit Card?"
+                                context_1 = docsearch2.similarity_search(query, k=5)
+                                response = zephyr_llm(zephyr_7b,template)
                             
-                                response,context = run_chain_llm(template,query)
+                                #response,context = run_chain_llm(template,query)
                                 chat_history_1[query] = response
                                 st.session_state["lineage_aml_llama"] = context
                                 transactions_cc = response

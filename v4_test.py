@@ -2842,10 +2842,10 @@ elif selected_option_case_type == "Money Laundering":
                                 query = "What are the products that are associated with this customer?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                 
-                                prompt_1 = f'''You are a fraud analyst agent and should give output as human statements. Answer in points. You are a Analyst and Your goal is read customer information and answer below quesion : \n\
+                                prompt_1 = f''' You are a Analyst and Your goal is to read customer information and answer below quesion from then Context : \n\
                                 Question: {query}\n\
                                 Context: {context_1}\n\
-                                Response: ((Output the identified Products only in a single sentence.))'''
+                                Response: (Output the identified Products only in a single sentence)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 
                                 
@@ -2858,7 +2858,7 @@ elif selected_option_case_type == "Money Laundering":
 
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f'''You are a fraud analyst agent and should give output as human statements. Do not include the transactions which are less than 5000. You are a Money laundering analyst and your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
+                                prompt_1=f'''You are a fraud analyst agent and should give output as human statements. You are a Money laundering analyst and your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
                                 Transactions made to a suspicious entity or a high risk geography. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Do not give/add any extra Note, Explanation in answer.) '''
@@ -2899,7 +2899,7 @@ elif selected_option_case_type == "Money Laundering":
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                   
 
-                                prompt_1=f''' You are a fraud analyst agent and should give output as human statements. Do not give any explanation to your answer. Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions are only Cash Deposit transactions >= 10000. #Do not use any other transaction in your answer.\n\
+                                prompt_1=f''' You are a fraud analyst agent and should give output as human statements. Do not give any explanation to your answer. Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions are only Cash Deposit transactions in a short span of time. #Do not use any other transaction in your answer.\n\
                                 Do not include any Paycheck transactions or Opening balance transaction as they are not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions. Remove any incomplete transaction generated. #Also, do not repeat the same transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Answer point-wise in single lines and Do not give/add any extra Note, Explanation in answer.) '''

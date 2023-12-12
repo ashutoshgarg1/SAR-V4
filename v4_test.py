@@ -2918,6 +2918,7 @@ elif selected_option_case_type == "Money Laundering":
                                 chat_history_1[query] = response
                                 st.session_state["lineage_aml_llama"] = context
                                 transactions_sa = response
+                                cont5 = context
 
              
 
@@ -2957,13 +2958,13 @@ elif selected_option_case_type == "Money Laundering":
                                 # Response: (Give me a concise response in one sentence stating the type of money laundering activity the can be taking place and on what patterns it is observed . Do not give me any Note etc)'''
 
                                 # response = usellm(prompt_1)
-                                
+                                #text_to_docs
                                 ## Question-5
 
                                 
 
                                 query = "What is the total amount associated with the Money Laundering ?"
-                                st.session_state["lineage_aml_llama"][query] = context_q5
+                                st.session_state["lineage_aml_llama"][query] = cont5
                                 context_1 = transactions_cc + transactions_sa
 
                                 prompt_1 = f'''You are a fraud analyst agent and should give output as human statements. Do not give any explanation or note. Based on the Context, what is the relationship between the suspicious transactions of savings accounts and credit card transactions.

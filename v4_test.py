@@ -2914,23 +2914,15 @@ elif selected_option_case_type == "Money Laundering":
                                 
                                 ## Question-4
 
-                                query = "What are the associated suspicious transactions for Checking account?"
-                                context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f''' Your goal is to identify all the suspicious transactions only from Checking_account_statement within the given data. Suspicious transactions can be:\n\n
-                                "High value Cash Deopsits". Output "Description", "Date" and "Debited ($)" of those identified transactions as a numbered list strictly in this format : "Description:  Date:  Debited ($):"  without repeating the transactions. Consider transactions from Checking account only.\n\
-                                Context: {context_1}\n\
-                                Response: (Do not add any NOTE in the ouput.) '''
                                 
-                                response = zephyr_llm(zephyr_7b,prompt_1)
                             
 
-                                # template = """ Your goal is to identify the suspicious transactions from Checking_account_statement.\n\
-                                # Suspicious transactions can be:\n\
-                                # High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
-                                # Output the "Description", "Date" and "Credited ($)" of those identified transactions as individual points in this format : "Description:  Date:  Credited ($):" without repeating the transactions. Do not add any note in the final output ."""
-                                # query = "What are the associated suspicious transactions for Checking account?"
+                                template = """ Your goal is to identify the suspicious transactions from Checking_account_statement.Suspicious transactions can be:\n\
+                                High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
+                                Output the "Description", "Date" and "Credited ($)" of those identified transactions as individual points in this format : "Description:  Date:  Credited ($):" without repeating the transactions. Do not add any note in the final output ."""
+                                query = "What are the associated suspicious transactions for Checking account?"
                             
-                                # response,context = run_chain_llm(template,query)
+                                response,context = run_chain_llm(template,query)
                                 chat_history_1[query] = response
                                 st.session_state["lineage_aml_llama"] = context
 

@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+
 import random,os,json,io,re,zipfile,tempfile
 import ssl
 import pandas as pd
@@ -107,23 +107,19 @@ login(token=st.secrets["HUGGINGFACEHUB_API_TOKEN"])
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
 
+#llama_13b = HuggingFaceHub(
+#            repo_id="meta-llama/Llama-2-13b-chat-hf",
+#            model_kwargs={"temperature":0.01, 
+#                        "min_new_tokens":50, 
+#                        "max_new_tokens":150, "seed":1000})
+
 llama_13b = HuggingFaceHub(
-            repo_id="meta-llama/Llama-2-13b-chat-hf",
-            model_kwargs= {"temperature":0.01,
-                        "min_new_tokens":100, 
-                        "max_new_tokens":300})
-
-zephyr_7b = HuggingFaceHub(
-            repo_id="HuggingFaceH4/zephyr-7b-alpha",
+            repo_id="HuggingFaceH4/zephyr-7b-beta",
             model_kwargs={"temperature":0.01, 
-                        "min_new_tokens":100, 
-                        "max_new_tokens":300,"seed":1000})
-@st.cache_data(show_spinner=False)
-def zephyr_llm(_llm,prompt):
-    response = _llm.predict(prompt)
-    return response
+                        "min_new_tokens":50, 
+                        "max_new_tokens":150,"seed":1000})
 
-memory = ConversationSummaryBufferMemory(llm= llama_13b, max_token_limit=500)
+memory = ConversationSummaryBufferMemory(llm= llama_13b, max_token_limit=200)
 conversation = ConversationChain(llm= llama_13b, memory=memory,verbose=False)
 
 
@@ -515,7 +511,11 @@ def process_documents(documents):
         docs_new.append(new_string)
     return docs_new
 
-
+def find_numeric_string(strings):
+    for s in strings:
+        if any(char.isdigit() for char in s):
+            return s
+    return None
 
 
 
@@ -589,22 +589,7 @@ if "lineage_gpt" not in st.session_state:
     st.session_state["lineage_gpt"] = {}
 if "lineage_gpt_llama" not in st.session_state:
     st.session_state["lineage_gpt_llama"] = {}
-if "lineage_llama_fd" not in st.session_state:
-    st.session_state["lineage_llama_fd"] = {}
-if "tmp_table_zephyr" not in st.session_state:
-    st.session_state.tmp_table_zephyr=pd.DataFrame()
-if "tmp_summary_gpt" not in st.session_state:
-    st.session_state["tmp_summary_gpt"] = ''
-if "tmp_summary_zephyr" not in st.session_state:
-    st.session_state["tmp_summary_zephyr"] = ''
-if "sara_recommendation_gpt" not in st.session_state:
-    st.session_state["sara_recommendation_gpt"] = ''
-if "sara_recommendation_zephyr" not in st.session_state:
-    st.session_state["sara_recommendation_zephyr"] = ''
-if "lineage_gpt" not in st.session_state:
-    st.session_state["lineage_gpt"] = {}
-if "lineage_zephyr" not in st.session_state:
-    st.session_state["lineage_zephyr"] = {}
+
 
 
 # Apply CSS styling to resize the buttons
@@ -1037,7 +1022,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                 with col1:
                     st.markdown("""<span style="font-size: 24px; ">Key Questions</span>""", unsafe_allow_html=True)
                     # Create a Pandas DataFrame with your data
-                    data = {'Questions': ["What is the customer's name?","What is the suspect's name?",' List the merchant name',' How was the bank notified?',' When was the bank notified?',' What is the fraud type?',' When did the fraud occur?',' Was the disputed amount greater than 5000 USD?','What type of network/card are involved?',' Was the police report filed?']}
+                    data = {'Questions': ["What is the customer's name?","What is the suspect's name?",' List the merchant name',' How was the bank notified?',' When was the bank notified?',' What is the fraud type?',' When did the fraud occur?',' Was the disputed amount greater than 5000 USD?','What type of network/card is used in transaction?',' Was the police report filed?']}
                     df_fixed = pd.DataFrame(data)
                     df_fixed.index = df_fixed.index +1
                 with col2:
@@ -1212,7 +1197,6 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                                
 
-                               
                                 st.table(res_df_gpt)
 
                                 # tmp_table_gpt = res_df_gpt
@@ -1279,164 +1263,125 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                                 
                             elif st.session_state.llm == "Open-Source":
-                                 
-                                
+
                                 chat_history = {}
-                                lineage_dict_llama = {}
-                                def run_chain_llm(instruction,query):
 
-
-                                    context = docsearch.similarity_search(query, k=5)
-
-                                    template = """
-                                    {instruction}
-                                    {query}
-                                    {context}
-                                    Answer: (Act as a professional and provide a concise, short response using the context.Do add anything out of the context provided.) """
-                                    
-                                    prompt = PromptTemplate(template=template, input_variables=['query','context','instruction'])
-                                
-
-                                    # Chain
-                                    chain = LLMChain(llm=zephyr_7b, prompt=prompt)
-
-                                    # Run
-                                    response = chain.run({'query':query,'context':context,'instruction':instruction})
-
-                                    return response,context
-
-                                template = """Perform Name Enitity Recognition to identify the cardholder name as accurately as possible, given the context. The customer can also be referenced as the cardholder with whom the Fraud has taken place.\n\n\
-                                Do not add any extra explanation, note. Give concise answer based on query only. \n\n\
-                                """
-                                query = "What is the customer name?"
-                            
-                                response,context = run_chain_llm(template,query)
+                                query = "What is the customer's name?"
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 = f'''You are a professional fraud analyst. Perform Name Enitity Recognition to identify the victim's name as accurately as possible, given the context. The victim can also be referenced as the customer with whom the Fraud has taken place.
+                                victim's name is the Name provided in Cardholder Information.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: (Give me response in one sentence. Do not give me any Explanation or Note)'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context
 
 
-                                template = """Act as a professional fraud analyst and provide response to the query asked as accurately as possible.You need to check the document provided and compare if any name discrepencies are present that points towards the suspect who used the card without the consent of the cardholder.
-                                            Perform Name Enitity Recognition to identify the Suspect Name given the context.Suspect is the person who has committed the fraud with the cardholder. If suspect name is not present, respond saying: Suspect name is not mentioned."""
-                                
                                 query = "What is the suspect's name?"
-                            
-                                response,context = run_chain_llm(template,query)
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 =  f'''Act as a professional fraud analyst.You need to check the document and compare if any name discrepencies are present that points towards the suspect who used the card without the consent of the cardholder.
+                                            Take the provided information as accurate. Reply the name of the person who is the suspect. \n\n\
+                                            Context: {context_1}\n\
+                                            Response: (Give a short response in a single sentence.Do not add any extra Information, Explanation,Note.)'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context
 
-
-                                template = """You are a professional fraud analyst, perform Name Enitity Recognition to identify Merchant as accurately as possible from the provided information.A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant response.\n\n\
-                                    """
+                                
                                 
                                 query = "List the merchant name"
-                            
-                                response,context = run_chain_llm(template,query)
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 = f'''You are a professional fraud analyst, perform Name Enitity Recognition to identify Merchant as accurately as possible from the provided information.A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant and short response.\n\n\
+                                Take the provided information as accurate.\n\n\
+                                            Question: {query}\n\
+                                            Context: {context_1}\n\
+                                            Response: (Give a short response in a single sentence. Do not add any extra Information,Explanation,Note.)'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context
 
 
-                                template = """You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a concise response in one sentence.\n\n\
-                                    """
-                                
                                 query = "How was the bank notified?"
-                            
-                                response,context = run_chain_llm(template,query)
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 =  f'''You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a concise response.\n\n\
+                                            Question: {query}\n\
+                                            Context: {context_1}\n\
+                                            Response: (Give me a concise response in one sentence. Do not give me any further Explanation, Note )'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context
-                                
-                                
-                                template = """You need to act as a Financial analyst to identify when the bank was notified of the Fraud. Look for the processing date. Given the context, provide a relevant and concise response.\n\n\
-                                    """
+
                                 
                                 query = "When was the bank notified?"
-                            
-                                response,context = run_chain_llm(template,query)
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 =  f'''You need to act as a Financial analyst to identify when the bank was notified of the Fraud. Look for the disputed date. Given the context, provide a relevant and concise response.\n\n\
+                                            Question: {query}\n\
+                                            Context: {context_1}\n\
+                                            Response: (Give me a concise response in one sentence.Do not add any prefix like 'Response' or 'Based on the document'. Do not add any extra Explanation, Note)'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context  
-
-
-                                template = """You are a Fraud analyst who needs to identify the type of fraud or suspicious activity has taken place.
-                                Mention only fraud type and fraud code. 
-                                Give a relevant, concise response in one sentence.\n\n\
-                                    """
                                 
+
+
                                 query = "What is the Fraud Type?"
-                            
-                                response,context = run_chain_llm(template,query)
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 =  f''' You need to act as a Financial analyst to identify the type of fraud or suspicious activity has taken place amd summarize it, within the given context. Also mention the exact fraud code. Give a relevant and concise response.\n\n\
+                                            Question: {query}\n\
+                                            Context: {context_1}\n\
+                                            Response: (Give me response in one sentence. Do not add prefix like 'Response' or 'based on the document. Do not give me any Explanation or Note)'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context     
 
 
-                                template = """ You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Transaction Date. Given the context, provide a relevant and concise response.\n\n\
-                                    """
-                                
+
+
                                 query = "When did the fraud occur?"
-                            
-                                response,context = run_chain_llm(template,query)
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 =  f''' You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Transaction Date. Given the context, provide a relevant and concise response.\n\n\
+                                            Question: {query}\n\
+                                            Context: {context_1}\n\
+                                            Response: (Give me a concise response in one sentence. Do not add prefix like 'based on the document. Do not add any further Explanation or Note.)'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context    
 
 
-                                template = """ You need to act as a Financial analyst to identify the disputed amount mentioned in the context.Perform a mathematical calculation to check if the disputed amount is greater than 5000 USD or not and what is the disputed amount? Given the context, give a relevant and concise response.\n\n\
-                                                    Take the provided information as accurate. \n\n\
-                                    """
-                                
                                 query = "Was the disputed amount greater than 5000 usd?"
-                            
-                                response,context = run_chain_llm(template,query)
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 =  f''' You need to act as a Financial analyst to identify the disputed amount.Perform a mathematical calculation to identify if the disputed amount is greater than 5000 USD or not.Given the context, give a relevant and concise response.\n\n\
+                                                Take the provided information as accurate. \n\n\
+                                            Question: {query}\n\
+                                            Context: {context_1}\n\
+                                            Response: (Give a short response in a single sentence. Do not give any extra Explanation, Note, Descricption, Information.)'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context     
 
 
-                                template = """ You are a Fraud analyst who needs to identify the type of card and card network involved in the transaction.
-                                On a higher level the card can be a Credit Visa, Debit Visa Card.
-                                Provide details about card type only.
-                                Give a concise and short response.\n\n\
-                                    """
-                                
-                                query = "What type of network/card are involved?"
-                            
-                                response,context = run_chain_llm(template,query)
+                                query = "What type of cards are involved?"
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 =  f''' You need to act as a Financial analyst to identify the type of card and card network involved, given the context. On a higher level the card can be a Credit Visa, Debit Visa Card.Based on the context give a relevant and concise response.\n\n\
+                                            Question: {query}\n\
+                                            Context: {context_1}\n\
+                                            Response: (Give me a concise response in one sentence.Do not add prefix like: ['based on the document']. Do not add any further Explanation, Note.')'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context 
 
 
-                                template = """ You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
-                                    """
-                                
                                 query = "Was the police report filed?"
-                            
-                                response,context = run_chain_llm(template,query)
+                                context_1 = docsearch.similarity_search(query, k=9)
+                                prompt_1 =  f''' You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
+                                            Question: {query}\n\
+                                            Context: {context_1}\n\
+                                            Response: (Provide a concise Response in a single sentence. Do not write any extra [Explanation, Note, Descricption].)'''
+                                response = llama_llm(llama_13b,prompt_1)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context  
-
-                                
-
-                                #This question is only used in recommendation
-                                template = """You are professional Fraud Analyst. Find answer to the questions as truthfully as possible as per given context only,\n\n\
-                                Identify cardholder name from cardholder information,cardholder is the owner of the card. \n\
-                                Identify to whom invoice is billed?\n\
-                                Compare both details and confirm if merchant invoice is billed to cardholder or someone else.\n\
-                                """
-
-
-                                query = "Identify if invoice is billed to cardholder or someone else?"
-                                analyse,docs = run_chain_llm(template,query)
-                                #chat_history[query] = response_3
-                                # st.write(response_3)
-                                # st.write(docs) 
-                                st.session_state["lineage_zephyr"] = lineage_dict_llama
 
                                 try:
-                                    res_df_zephyr  = pd.DataFrame(list(chat_history.items()), columns=['Question','Answer'])
-                                    res_df_zephyr .reset_index(drop=True, inplace=True)
+                                    res_df_llama = pd.DataFrame(list(chat_history.items()), columns=['Question','Answer'])
+                                    res_df_llama.reset_index(drop=True, inplace=True)
                                     index_ = pd.Series([1,2,3,4,5,6,7,8,9,10])
-                                    res_df_zephyr  = res_df_zephyr .set_index([index_])
+                                    res_df_llama = res_df_llama.set_index([index_])
                                     # st.write(res_df_llama)
                                 except IndexError: 
                                     pass
-                                st.table(res_df_zephyr)
-                                st.session_state["tmp_table_zephyr"] = pd.concat([st.session_state.tmp_table_zephyr, res_df_zephyr], ignore_index=True)
+                                st.table(res_df_llama)
+                                st.session_state["tmp_table_llama"] = pd.concat([st.session_state.tmp_table_llama, res_df_llama], ignore_index=True)
 
 
                                 # query ="Is invoice is billed to cardholder or someone else?"
@@ -1465,43 +1410,102 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 
                                 # #response1 = usellm(prompt) 
                                 
-                                query ="Is invoice is billed to cardholder or someone else?"
-                                contexts = docsearch.similarity_search(query, k=9)
-                                prompt = f" You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                cardholder's name,adress can be identified from cardholder information. Cardholder is the person who is the owner of the card, cardholder can also be referenced as the victim with whom fraud has taken place.\n\n\
-                                Identify to whom invoice is billed (Detials mentioned in invoice is of the person who made the transaction,it may be or may not be of the cardholder)\n\n\
-                                Compare both the details, if details mentioned in invoice matches the cardholder details, then invoice is billed to cardholder else it is billed to someone else who misued the card.\n\n\
-                                    Context: {contexts}\n\
-                                    Response (Give me a concise response.)"
-                                response_1 = zephyr_llm(zephyr_7b,prompt) 
+                                # # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)
+                                # response1 = response_1.replace("$", " ")
+                                # response1 = response1.replace("5,000", "5,000 USD")
+                                # response1 = response1.replace("5,600", "5,600 USD")
+                                # sara_open_source_gpt = response1
 
 
+
+                                ###
+
+                                retriever = docsearch.as_retriever(search_kwargs={"k": 9})
+
+                                def run_chain(template,query):
+                                
+                                    QA_CHAIN_PROMPT = PromptTemplate(
+                                        input_variables=["context", "query"],
+                                        template=template,
+                                    )
+                                
+                                    # Docs
+                                    docs = retriever.get_relevant_documents(query)
+
+                                    # Chain
+                                    chain = load_qa_chain(llama_13b, chain_type="stuff", prompt=QA_CHAIN_PROMPT)
+
+                                    # Run
+                                    response = chain({"input_documents": docs, "query": query}, return_only_outputs=True)
+
+                                    return response,docs
+                                
+
+                                # query 1
+
+                                # Prompt
+                                # template = """Act as a professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,
+                                # Identify cardholder's name,adress from cardholder information. Customer is the person who is the owner of the card and with whom fraud has taken place.
+                                # Identify name and address to whom merchant invoice is billed
+                                # Identify if Invoice is billed to cardholder or someone else based on above information.
+                                # If Invoice is billed to someone else, then that could be the potential suspect.
+                                # {context}
+                                # Question: {query}
+                                # Helpful Answer:"""
+
+
+                                template = """You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                cardholder's name,adress can be identified from cardholder information. Customer is the person who is the owner of the card, customer can also be referenced as the victim with home fraud has taken place.\n\n\
+                                Identify to whom merchant invoice is billed (Detials mentioned in invoice is of the person who made the transaction,it may be or may not be of the customer)\n\n\
+                                Compare both the details, if details mentioned in invoice matches the cardholder details, then invoice is billed to customer else it is billed to someone else who misued the card.\n\n\
+                                {context}
+                                Question: {query}
+                                Helpful Answer:"""
+
+
+                                query = "If Merchant Invoice is billed to cardholder or someone else?"
+
+                                response_3,docs = run_chain(template,query)
+                                
+                                analyse = response_3['output_text']
+                                # st.write(response_3)
+                                # st.write(docs)
+
+                                
+
+                                # SARA Recommendation
+                    
+                                # SARA Recommendation
 
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
-                                contexts = ', '.join(res_df_zephyr['Answer'])
-                                prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                    1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then what is the transasction/disputed amount. Also, check below points to make sure if it is a suspicious activity or not: \n\
-                                    2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
-                                    3. If a potential suspect name is identified or not? Suspect is a person who has commited the fraud, If identified then this can be a suspicious activity, else not.\n\n\
+                                contexts = ', '.join(res_df_llama['Answer'])
+                                prompt = f"You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                    1. Check if The transaction/disputed amount > 5,000 USD value threshold,If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
+                                    2. {analyse} analyse this response,if invoice is billed to cardholder then there is no suspicion else, it can be a suspicious activity.\n\n\
+                                    3. If a suspect is identified from above ,then this can be considered as a suspicious activity else not.\n\n\
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
-                                    Based on above points, give your concise recommendation in single sentence if SAR filing is required or not? \n\n\
+                                    Analyse above points properly and give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Context: {contexts}\n\
-                                    Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a single sentence, then answer all above 3 questions individually in points."
-                
-                                response1 = zephyr_llm(zephyr_7b,prompt) 
-                                response1 = response1.replace("$", "")
+                                    Response: (Give me a concise response in 3 points with numbering like [1,2])"
+                            
+                                                    
+                                response1 = llama_llm(llama_13b,prompt)
+                                response1 = response1.replace("$", "USD")
                                 response1 = response1.replace("5,000", "5,000")
-                                response1 = response1.replace("5,600", "5,600")       
+                                response_ = response1.replace("5,600", "5,600")      
                     
+                            
+                            
+                                st.session_state["sara_recommendation_llama"] = response1
+
+
                                 
-                                
-                                st.session_state["sara_recommendation_zephyr"] = response1   
-                                
-                                sara_recommendation_zephyr = response1 
+                                #st.session_state["sara_recommendation_gpt"] = response_  
+                                sara_recommendation_llama = response1 
                                         
                                 
                                 st.markdown("### SARA Recommendation")
-                                st.write(response1)
+                                st.write(response_)
 
                                 
                                 st.markdown("#### Recommendation Feedback:")
@@ -1811,39 +1815,21 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 st.session_state.tmp_table_llama.drop_duplicates(subset=['Question'])
 
             with col3_up:
-                    if st.session_state.llm == "Closed-Source":
-                            st.session_state.disabled=False
+                if st.session_state["lineage_gpt"] is not None:
+ 
+                    li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of network/card is used in transaction?","Was the police report filed?"]
                     
-                            li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of network/card is used in transaction?","Was the police report filed?"]
-                            
-                        
-                            selected_option = st.selectbox("", li)
-                            if selected_option in li[1:]:
-                                doc = st.session_state["lineage_gpt"][selected_option]
-                                for i in range(len(doc)):
-                                    #st.write(doc[i])
-                                    y=i+1
-                                    st.write(f":blue[Reference-{y}:]")
-                                    st_ = doc[i].page_content.replace("($)"," ")
-                                    st.write(":blue[Page Content:]",st_) 
-                                    st.write(":blue[Source:]",doc[i].metadata['source'])
-
-                    elif st.session_state.llm == "Open-Source":
-                            st.session_state.disabled=False
-                            li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of cards are involved?","Was the police report filed?"]
-                            
-                        
-                            selected_option = st.selectbox("", li)
-                            if selected_option in li[1:]:
-                                doc = st.session_state["lineage_llama_fd"][selected_option]
-                                for i in range(len(doc)):
-                                    #st.write(doc[i])
-                                    y=i+1
-                                    st.write(f":blue[Reference-{y}:]")
-                                    st_ = doc[i].page_content.replace("($)"," ")
-                                    st.write(":blue[Page Content:]",st_) 
-                                    st.write(":blue[Source:]",doc[i].metadata['source'])
-
+                   
+                    selected_option = st.selectbox("", li)
+                    if selected_option in li[1:]:
+                        doc = st.session_state["lineage_gpt"][selected_option]
+                        for i in range(len(doc)):
+                            #st.write(doc[i])
+                            y=i+1
+                            st.write(f":blue[Reference-{y}:]")
+                            st_ = doc[i].page_content.replace("($)"," ")
+                            st.write(":blue[Page Content:]",st_) 
+                            st.write(":blue[Source:]",doc[i].metadata['source'])
                                    
             with col4_up:
                 def summ_gpt_(tmp_table_gpt):
@@ -1863,16 +1849,6 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     #st.write(text)
                     return response_summ_gpt,summ_dict_gpt
                 
-                def summ_llama_():
-                    template = """Write a detailed summary of the below text provided in such way that it includes all relevant information.
-                    ```{text}```
-                    Response: (Return your response in a single paragraph.) """
-                    prompt = PromptTemplate(template=template,input_variables=["text"])
-                    llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
-
-                    text = ', '.join(res_df_zephyr['Answer']) + sara_recommendation_zephyr
-                    response_summ_llama = llm_chain_llama.run(text)
-                    return response_summ_llama
                 
                 if 'clicked2' not in st.session_state:
                     st.session_state.clicked2 = False
@@ -1882,15 +1858,14 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     st.session_state.disabled = True
                 st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
                 st.write()
-                st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled) 
+                st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled)    
                 with st.spinner("Summarization ..."):
-                
+                    # st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
+                    # st.write()
                     if st.session_state.clicked2:
 
                         if st.session_state.llm == "Closed-Source":
                             st.session_state.disabled=False
-
-                       
                             #summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
                             summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_gpt
                             
@@ -1918,45 +1893,22 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             # if st.button("Update Summary"):
                             #     st.session_state["fin_opt"] = usr_review
                             st.write(st.session_state["tmp_summary_gpt"])
-                            
 
 
                         elif st.session_state.llm == "Open-Source":
                             st.session_state.disabled=False
-
-                            response_summ_llama = summ_llama_()
-                            response_summ_llama = response_summ_llama.replace("$", "USD")
-                            response_summ_llama = response_summ_llama.replace("5,000", "5,000")
-                            response_summ_llama = response_summ_llama.replace("5,600", "5,600")
-                            st.session_state["tmp_summary_llama"] = response_summ_llama
-                            st.write(st.session_state["tmp_summary_llama"])
                             #summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_llama
-                            
-                            # template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
-                            # Context: {text}  '''
-                            # prompt = PromptTemplate(template=template,input_variables=["text"])
-                            # llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
+                            template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            Context: {text}  '''
+                            prompt = PromptTemplate(template=template,input_variables=["text"])
+                            llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
 
-                            
-                            #st.write(text)
+                            text = ', '.join(res_df_llama['Answer']) + sara_recommendation_llama
                             # text = []
                             # for key,value in summ_dict_llama.items():
                             #     text.append(value)
-                            #####
-                            #st.write(text)
-                        
-                            # prompt_1 =  f'''Act as a summarization tool and Output a detailed summary of below Context:\n\
-                            # Context: {text}'''
-                            # response = llama_llm(llama_13b,prompt_1)
-
-                            # ####
-                            # # result = llm_chain_llama.run(text)
-                            # st.session_state["tmp_summary_llama"] = response
-                            # st.write(text)
-                            # # st.write("summaryyyy")
-                            # st.write(response)
-                            
-                            #st.write(st.session_state["tmp_summary_llama"])
+                            st.session_state["tmp_summary_llama"] = llm_chain_llama.run(text)
+                            st.write(st.session_state["tmp_summary_llama"])
 
                     if st.session_state.clicked2:
                         st.markdown("#### Summarization Feedback:")
@@ -1971,9 +1923,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                         with col_2:
                             if st.button("👎🏻",key=6):
                                 st.write("*Feedback is recorded*")
-                            # st.markdown('<span style="font-size: 24px;">👎🏻</span>',unsafe_allow_html=True)   
-   
-                
+                            # st.markdown('<span style="font-size: 24px;">👎🏻</span>',unsafe_allow_html=True)
+
                     
                 tmp_summary = []
                 tmp_table = pd.DataFrame()
@@ -2252,7 +2203,7 @@ elif selected_option_case_type == "Money Laundering":
         ## Defining some global varibales for AML
         # directoty_path="ml_doc/"
         # fetched_files = read_pdf_files(directoty_path)
-        directoty_path = "aml_docs2/"
+        directoty_path = "aml_docs/"
         fetched_files = read_pdf_files(directoty_path)
         
         
@@ -2318,7 +2269,7 @@ elif selected_option_case_type == "Money Laundering":
                         # st.markdown(files_frame.style.hide(axis="index").to_html(), unsafe_allow_html=True)
                     
                         #select box to select file
-                        fetch=["checking_account_statement.xlsx","credit_card_statement.xlsx","Transaction_Information.pdf","Customer_Relationship_Information.pdf","Blacklisted_Accounts.pdf"]
+                        fetch=["savings_account_statement.xlsx","credit_card_statement.xlsx","Transaction_Information.pdf","Customer_Relationship_Information.pdf","Blacklisted_Accounts.pdf"]
                         selected_file_name = st.selectbox(":blue[Select a file to View]",fetch)
                         st.write("Selected File: ", selected_file_name)
                         st.session_state.disabled = False
@@ -2413,7 +2364,7 @@ elif selected_option_case_type == "Money Laundering":
     
     
                 for fetched_pdf in fetched_files:
-                    directory_path="aml_docs2/"
+                    directory_path="aml_docs/"
         
                     
                     file_ext1 = tuple("pdf")
@@ -2436,7 +2387,7 @@ elif selected_option_case_type == "Money Laundering":
                     elif fetched_pdf.endswith(file_ext2):
                         selected_file_path = os.path.join(directory_path, fetched_pdf)
                         
-                        if selected_file_path.startswith("aml_docs2/credit_card_statement"):
+                        if selected_file_path.startswith("aml_docs/credit_card_statement"):
                             
                             json1=process_data_credit_card(selected_file_path)
                             #st.write("creditcard")
@@ -2445,10 +2396,10 @@ elif selected_option_case_type == "Money Laundering":
                             texts = text_to_docs(json1,file)
                             for i in texts:
                                 temp_file_path2.append(i)
-                        elif selected_file_path.startswith("aml_docs2/checking_account_statement"):
+                        elif selected_file_path.startswith("aml_docs/savings_account_statement"):
                             #selected_file_path = os.path.join(directory_path, fetched_pdf)
                             json2=process_data_saving(selected_file_path)
-                            #st.write("checking")
+                            #st.write("savings")
                             #st.write(json2)
                             #text = convert_image_to_searchable_pdf(selected_file_path)
                             texts = text_to_docs(json2,file)
@@ -2509,8 +2460,8 @@ elif selected_option_case_type == "Money Laundering":
                           "What are the products that are associated with this customer?",
                          "What are the associated suspicious transactions for Credit Card?",
                          # "What is the total amount associated with the money laundering activity for Credit card?",
-                          "What are the associated suspicious transactions for Checking account?",
-                         # "What is the total amount associated with the money laundering activity for checking Account?",
+                          "What are the associated suspicious transactions for Savings account?",
+                         # "What is the total amount associated with the money laundering activity for Savings Account?",
                           #"What type of Money laundering activity is taking place?",
                           "What is the total amount associated with the Money Laundering ?"]}
             
@@ -2589,7 +2540,7 @@ elif selected_option_case_type == "Money Laundering":
                                 
                                 
                                 
-                                chat_history_1[query] = response
+                                chat_history_1[str(query)] = str(response)
                                 st.session_state["lineage_aml"][query] = context_1
                                
     
@@ -2610,20 +2561,19 @@ elif selected_option_case_type == "Money Laundering":
                                 response = res['choices'][0]['message']['content']
                                 
                                 
-                                chat_history_1[query] = response
+                                chat_history_1[str(query)] = str(response)
                                 st.session_state["lineage_aml"][query] = context_1
 
                                 
 
                                 ## Question-3
-                                
 
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f''' Your goal is to identify the suspicious transactions only from Credit_Card_statement within the given Data. Suspicious transactions can be:\n\n
-                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of each identified transactions as a numbered list strictly in this format : "Description:  Date:  Debited ($):" . # Strictly do not repeat any transaction.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
+                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions in one line each. #Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
-                                Response: (Do not give/add any extra Note, Explanation in answer.) '''
+                                Response: (Do not give/add any extra Note, Explanation in answer. ) '''
                                 
                                 # st.write(context_1)
                                 system_prompt = wrap_prompt("You are a Money Laundering Analyst.", "system")
@@ -2631,7 +2581,7 @@ elif selected_option_case_type == "Money Laundering":
                                 res = get_response([system_prompt, user_prompt])
                                 response = res['choices'][0]['message']['content']
                                 transactions_cc = response
-                                chat_history_1[query] = response
+                                chat_history_1[str(query)] = str(response)
                                 st.session_state["lineage_aml"][query] = context_1
 
                                 ## Question-3.1
@@ -2640,9 +2590,10 @@ elif selected_option_case_type == "Money Laundering":
                                 #st.session_state["lineage_aml"][query] = context_1
                 
                                 context_1 = transactions_cc
-                                prompt_1 = f'''Act as a calculator and add up all the amounts in the given context.\n\
+                                prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
                                 Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
+                                Question: {query}\n\
                                 Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
 
 
@@ -2658,14 +2609,12 @@ elif selected_option_case_type == "Money Laundering":
 
              
 
-                                query = "What are the associated suspicious transactions for Checking account?"
+                                query = "What are the associated suspicious transactions for Savings account?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                   
 
-                                prompt_1=f'''Your goal is to identify the suspicious transactions from Checking_account_statement.\n\
-                                Suspicious transactions can be:\n\
-                                High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
-                                Output the "Description", "Date" and "Credited ($)" of those identified transactions as a numbered list of this format : "Description:  Date:  Credited ($):". Also, do not repeat the same transaction.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions can be:\n\n
+                                High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions.Also, do not repeat the same transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Strictly do not give/add any Note, Explanation in answer.) '''
                                 #st.write(context_1)
@@ -2673,26 +2622,25 @@ elif selected_option_case_type == "Money Laundering":
                                 user_prompt = wrap_prompt(prompt_1, "user")
                                 res = get_response([system_prompt, user_prompt])
                                 response = res['choices'][0]['message']['content']
-                                #response = response.replace("$","USD")
                                 #response = usellm(prompt_1)
 
                                
                                 transactions_sa = response
                                 
-                                chat_history_1[query] = response
+                                chat_history_1[str(query)] = str(response)
                                 st.session_state["lineage_aml"][query] = context_1
                                 context_q5 = context_1
 
                                 ## Question-4.1
 
-                                query = "What is the total amount associated with the money laundering activity for Checking Account ?"
+                                query = "What is the total amount associated with the money laundering activity for Savings Account ?"
                                 #st.session_state["lineage_aml"][query] = context_1
                                 context_1 = transactions_sa
                                 prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
                                 Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
                                 Question: {query}\n\
-                                Response: (Add this before the toal amount : "Total Money Laundering amount that can be associated with Checking account is : ")'''
+                                Response: (Add this before the toal amount : "Total Money Laundering amount that can be associated with savings account is : ")'''
                                 
 
                                 response = usellm(prompt_1)
@@ -2723,7 +2671,7 @@ elif selected_option_case_type == "Money Laundering":
                                 context_1 = transactions_cc + transactions_sa
                                   
 
-                                prompt_1 = f'''Based on the Context, what is the relationship between the suspicious transactions of checking accounts and credit card transactions.\n\n\
+                                prompt_1 = f'''Based on the Context, what is the relationship between the suspicious transactions of savings accounts and credit card transactions.\n\n\
                                 Context: {context_1}\n\
                                 Response: (Give me a concise response in one sentence stating what TYPE of money laundering activity is taking place and WHY, along with the relationship found? Do not give me any Note etc).'''
 
@@ -2734,7 +2682,7 @@ elif selected_option_case_type == "Money Laundering":
                                 response = res['choices'][0]['message']['content']
                                 response1 = total_sav + " and "+ total_cc + "  ."+ response
                                 ques5 = response1
-                                chat_history_1[query] = response1
+                                chat_history_1[str(query)] = str(response1)
                                 
 
 
@@ -2751,6 +2699,10 @@ elif selected_option_case_type == "Money Laundering":
                                     st.exception(e)
 
                             
+                                
+                                #Display table
+                                st.table(res_df_gpt)
+                                #Display as question answer set
                                 keys = chat_history_1.keys()
                                 count = 1
                                 for value in keys:
@@ -2759,14 +2711,6 @@ elif selected_option_case_type == "Money Laundering":
                                     st.write(str(chat_history_1[value]))
                                     st.divider()
                                     count = count+1
-
-                                # Display image in Streamlit app
-                               # st.image(image, caption='DataFrame as Image', use_column_width=True)
-
-
-                               # st.image(image, caption='DataFrame as Image', use_column_width=True)
-
-                                # st.write(res_df_gpt.to_string(index=False))
 
                                 #copy in session state
                                 st.session_state["tmp_table_gpt_aml"] = pd.concat([st.session_state.tmp_table_gpt_aml, res_df_gpt], ignore_index=True)
@@ -2777,7 +2721,7 @@ elif selected_option_case_type == "Money Laundering":
                                 contexts = ', '.join(res_df_gpt['Answer'])
                                 prompt_2 = f"""Is this a case of Suspicious activity? If yes, then Find answer to the questions as truthfully as possible as per the available information only,\n\n\
                                 1.) why was the transaction triggered?\n\
-                                2.) what are the total amounts related to money laundering for checking account and credit cards?\n\
+                                2.) what are the total amounts related to money laundering for savings account and credit cards?\n\
                                 3.) what type of money laundering activity is taking place and why ?\n\n\                     
                                 Context: {contexts}\n\
                                 Also, add your concise recommendation whether SAR filling is required or not ?
@@ -2792,8 +2736,7 @@ elif selected_option_case_type == "Money Laundering":
               
 
 
-                                st.session_state["sara_recommendation_gpt_aml"] = response1
-                                saracommon = response1
+                                st.session_state["sara_recommendation_gpt_aml"] = response1                
                                 
                                 st.markdown("### SARA Recommendation")
                                 
@@ -2815,135 +2758,167 @@ elif selected_option_case_type == "Money Laundering":
 
                             elif st.session_state.llm == "Open-Source":
     
-                                chat_history = {}
+                                chat_history_1 = {}
 
-                                ## question-1 
-    
+
                                 query = "Why was the transaction triggered?"
+                                
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1 = f'''You should closely look into the transactions information data for the reason why was the transaction flagged as suspicious. \n\n
+                                #st.write(context_1)
+                                prompt_1 = f'''You are a fraud analyst agent. You should closely look into the transactions information data for the reason why was the transaction flagged as suspicious. \n\n
                                 Question: {query}\n\
                                 Context: {context_1}\n\
-                                Response: Give a concise response as reason in one sentence. '''
+                                Response: Produce a single sentence as output with sentence starting with The'''
                                 response = llama_llm(llama_13b,prompt_1)
-                                question_1 = response
-                                chat_history[query] = response
+                                ques1 = response
+                                
+                                
+                                
+                                
+                                chat_history_1[query] = "The" + response
                                 st.session_state["lineage_aml_llama"][query] = context_1
-
-                                ##question-2
-                  
+                               
     
-                                query = "What are the products that are associsted with this customer?"
+                                ## Question-2
+
+                                
+                                query = "What are the products that are associated with this customer?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1 = f'''Your goal is identify all the products that are associated with the customer. \n\
+                                
+                                prompt_1 = f'''You are a fraud analyst agent and should give output as human statements. Answer in points. You are a Analyst and Your goal is read customer information and answer below quesion : \n\
                                 Question: {query}\n\
                                 Context: {context_1}\n\
-                                Response: (Output the identified Products, Do not give/add any Explanation, Note, etc. in the answer.)'''
-
+                                Response: ((Output the identified Products only in a single sentence.))'''
                                 response = llama_llm(llama_13b,prompt_1)
-                                chat_history[query] = response
+                                
+                                
+                                chat_history_1[query] = response
                                 st.session_state["lineage_aml_llama"][query] = context_1
 
-                            
+                                
 
-                                #question-3
-                            
+                                ## Question-3
+
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1 = f''' Your goal is to identify the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
-                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
+                                prompt_1=f'''You are a fraud analyst agent and should give output as human statements. Do not include the transactions which are less than 5000. You are a Money laundering analyst and your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
+                                Transactions made to a suspicious entity or a high risk geography. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Do not give/add any extra Note, Explanation in answer.) '''
-
+                                
+                                # st.write(context_1)
                                 response = llama_llm(llama_13b,prompt_1)
-                                transactions_cc_llama = response
-                                chat_history[query] = response
+                                transactions_cc = response
+                                chat_history_1[query] = response
                                 st.session_state["lineage_aml_llama"][query] = context_1
 
-                                ## question-3.1
+                                ## Question-3.1
 
                                 query = "What is the total amount associated with the money laundering activity for Credit card?"
-                                #st.session_state["lineage_aml_llama"][query] = context_1
-                                context_1 = transactions_cc_llama
+                                #st.session_state["lineage_aml"][query] = context_1
+                
+                                context_1 = transactions_cc
                                 prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
                                 Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
-                                Question: {query}\n\
-                                Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
-          
+                                Response: '''
+
+
                                 response = llama_llm(llama_13b,prompt_1)
                                 response = response.replace("$", "USD ")
-                                total_cc_llama = response
-                                #chat_history[query] = response
+                                total_cc = response
+                                total_cc_array = response.split(" ")
+                                try:
+                                    total_cc_amount = find_numeric_string(total_cc_array)
+                                except:
+                                    total_cc_amount = "N/A"
 
-                                ## question-4
+                                
+                                ## Question-4
 
-                                query = "What are the associated suspicious transactions for Checking account?"
+             
+
+                                query = "What are the associated suspicious transactions for Savings account?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1 = f''' Your goal is to identify the suspicious transactions from Checking_account_statement. Suspicious transactions can be:\n\n
-                                High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions.Also, do not repeat the same transaction.\n\
-                                Context: {context_1}\n\
-                                Response: (Strictly do not give/add any Note, Explanation in answer.) '''
+                                  
 
+                                prompt_1=f''' You are a fraud analyst agent and should give output as human statements. Do not give any explanation to your answer. Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions are only Cash Deposit transactions >= 10000. #Do not use any other transaction in your answer.\n\
+                                Do not include any Paycheck transactions or Opening balance transaction as they are not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions. Remove any incomplete transaction generated. #Also, do not repeat the same transaction.\n\
+                                Context: {context_1}\n\
+                                Response: (Answer point-wise in single lines and Do not give/add any extra Note, Explanation in answer.) '''
+                                #st.write(context_1)
                                 response = llama_llm(llama_13b,prompt_1)
-                                transactions_sa_llama = response
-                                chat_history[query] = response
+
+                               
+                                transactions_sa = response
+                                
+                                chat_history_1[query] = response
                                 st.session_state["lineage_aml_llama"][query] = context_1
+                                context_q5 = context_1
 
-                                ## question-4.1
+                                ## Question-4.1
 
-                                query = "What is the total amount associated with the money laundering activity for Checking Account ?"
-                                #st.session_state["lineage_aml_llama"][query] = context_1
-                                context_1 = transactions_sa_llama
-                                prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
-                                Output the total calculated amount as answer to the question.
+                                query = "What is the total amount associated with the money laundering activity for Savings Account ?"
+                                #st.session_state["lineage_aml"][query] = context_1
+                                context_1 = transactions_sa
+                                prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context. Only produce one sentence in the output.\n\
+                                Output the total calculated amount as answer to the question.\n\
                                 Context: {context_1}\n\
-                                Question: {query}\n\
-                                Response: (Add this before the toal amount : "Total Money Laundering amount that can be associated with checking account is : ")'''
-          
-                                response = llama_llm(llama_13b,prompt_1)
-                                response = response.replace("$", "USD ")
-                                total_sav_llama = response
-                                #chat_history[query] = response
-
-                                ## question-5.1
-
-                                query = "What type of Money laundering activity is taking place?"
-                                context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1 = f'''You Are an Anti-Money Laundering Specialist, carefully observe the transaction statements pattern from both the transactions data of credit card and saving accounts statements combined. \
-                                The type of money laundering activities which can take place includes: Structuring or smurfing, layering, round tripping, etc.\ 
-                                Act as and Anti-Money Laundering analyst, observe the transactions statements data and give a concise answer with explanation of what type of money laundering activity could be taking place and on what pattern this activity is observed.\n\n
-                                Question: {query}\n\
-                                Context: {context_1}\n\
-                                Response: (Give me a concise response in one sentence stating the type of money laundering activity the can be taking place and on what patterns it is observed . Do not give me any Note etc)'''
+                                Response: '''
+                                
 
                                 response = llama_llm(llama_13b,prompt_1)
                                 
-                                # chat_history[query] = response
-                                # st.session_state["lineage_aml_llama"][query] = context_1
+                                #response = response.replace("33000", "USD 33000")
+                                response = response.replace("$", "USD ")
+                                total_sav =  response.replace("\n"," ")
+                                total_sav_array = total_sav.split(" ")
+                                try:
+                                    total_sav_amount = find_numeric_string(total_sav_array)
+                                except:
+                                    total_sav_amount = "N/A"
+                                # ## Question-5.1
 
-                                ## question-5
+                                # query = "What type of Money laundering activity is taking place?"
+                                # context_1 = docsearch.similarity_search(query, k=5)
+                                  
+
+                                # prompt_1=f'''You Are an Anti-Money Laundering Specialist, carefully observe the transaction statements pattern from both the transactions data of credit card and saving accounts statements combined. \
+                                # The type of money laundering activities which can take place includes: Structuring or smurfing, layering, round tripping, etc.\ 
+                                # Act as and Anti-Money Laundering analyst, observe the transactions statements data and give a concise answer with explanation of what type of money laundering activity could be taking place and on what pattern this activity is observed.\n\n
+                                # Question: {query}\n\
+                                # Context: {context_1}\n\
+                                # Response: (Give me a concise response in one sentence stating the type of money laundering activity the can be taking place and on what patterns it is observed . Do not give me any Note etc)'''
+
+                                # response = usellm(prompt_1)
+                                
+                                ## Question-5
 
                                 query = "What is the total amount associated with the Money Laundering ?"
-                                st.session_state["lineage_aml_llama"][query] = context_1
-                                context_1 = transactions_cc_llama + transactions_sa_llama
-                                prompt_1 = f'''Based on the Context, what is the relationship between the suspicious transactions of checking accounts and credit card transactions.\n\n\
-                                Context: {context_1}\n\
-                                Response: (Give me a concise response in one sentence stating the type of money laundering activity the can be taking place and on what patterns it is observed along with the relationship found. Do not give me any Note etc)'''
+                                st.session_state["lineage_aml_llama"][query] = context_q5
+                                context_1 = transactions_cc + transactions_sa
 
+                                prompt_1 = f'''You are a fraud analyst agent and should give output as human statements. Do not give any explanation or note. Based on the Context, what is the relationship between the suspicious transactions of savings accounts and credit card transactions.
+                                Context: {context_1}\n\
+                                Response: (Give me a concise response in one sentence stating what TYPE of money laundering activity is taking place and WHY, along with the relationship found? Do not give me any Note or explanation).'''
+
+                                #response = usellm(prompt_1)
                                 response = llama_llm(llama_13b,prompt_1)
-                                response = total_sav_llama + " and "+ total_cc_llama + "  ."+ response
-                                question_8 = response
-                                chat_history[query] = response
+                                response1 = " ".join(("Total Money Laundering amount that can be associated with savings account is : USD "+ total_sav_amount +  " and Total Money Laundering amount that can be associated with credit card is : USD "+ total_cc_amount + " ." + response).split())
+                                ques5 = response1
+                                chat_history_1[query] = response1
+                                
+###########
+                                
 
 
 
                             
                    
                                 try:
-                                    res_df_llama = pd.DataFrame(list(chat_history.items()), columns=['Question','Answer'])
+                                    res_df_llama = pd.DataFrame(list(chat_history_1.items()), columns=['Question','Answer'])
                                     res_df_llama.reset_index(drop=True, inplace=True)
-                                    index_ = pd.Series([1,2,3,4])
+                                    index_ = pd.Series([1,2,3,4,5])
                                     res_df_llama = res_df_llama.set_index([index_])
                                     # st.write(res_df_llama)
                             
@@ -2951,7 +2926,13 @@ elif selected_option_case_type == "Money Laundering":
                                     e = Exception("")
                                     st.exception(e)
 
-                                st.table(res_df_llama)
+                                #st.table(res_df_llama)
+                                keys = chat_history_1.keys()
+                                for value in keys:
+                                    st.subheader("Question: "+str(value))
+                                    st.text((chat_history_1[value]))
+                                    st.divider()
+                                #st.markdown("Question")
                                 #copy in session state
                                 st.session_state["tmp_table_llama_aml"] = pd.concat([st.session_state.tmp_table_llama_aml, res_df_llama], ignore_index=True)
 
@@ -2961,22 +2942,18 @@ elif selected_option_case_type == "Money Laundering":
 
                     
                     
-                                queries ="Give your recommendation if this is a Suspicious activity or not?"
-                    
-                                contexts = question_1 + question_8
-                                prompt = f"""Give concise response to the each questions below within the given Context. \n\
-                                1.) transaction triggered\n\
-                                2.) amounts related to money laundering for checking account and credit cards\n\
-                                3.) Type of money laundering activity taking place and why ?\n\                          
+                                query  = "Give your recommendation if this is a Suspicious activity or not?"
+                                contexts = ', '.join(res_df_llama['Answer'])
+                                prompt_2 = f"""Is this a case of Suspicious activity? If yes, then Find answer to the questions as truthfully as possible as per the available information only,\n\n\
+                                1.) why was the transaction triggered?\n\
+                                2.) what are the total amounts related to money laundering for savings account and credit cards?\n\
+                                3.) what type of money laundering activity is taking place and why ?\n\n\                     
                                 Context: {contexts}\n\
-                                Response: (Give a neatly formatted response for each question individually. Also, give your recommendation for the below Question.) 
-                                Question: {queries} """
-                                                    
-                                response1 = llama_llm(llama_13b,prompt)    
-                                
-                                response1 = response1.replace("$", "USD ") 
-                                sara_open_source = response1
-                                saracommon = response1  
+                                Also, add your concise recommendation whether SAR filling is required or not ?
+                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions asked above as individual points."""
+                                response = llama_llm(llama_13b,prompt_1)
+                                response1 = response.replace("$", "USD ")
+                                sara_open_source=response1
                                 
                                 
                                 st.session_state["sara_recommendation_llama_aml"] = response1                    
@@ -3096,11 +3073,11 @@ elif selected_option_case_type == "Money Laundering":
  
                     li = ["Select question to get the lineage",
                         "Why was the transaction triggered?",
-                        "What are the products that are associated with this customer?",
+                        "What are the products that are associsted with this customer?",
                         "What are the associated suspicious transactions for Credit Card?",
                         #"What is the total amount associated with the money laundering activity for Credit card?",
-                        "What are the associated suspicious transactions for Checking account?",
-                        #"What is the total amount associated with the money laundering activity for checking Account ?",
+                        "What are the associated suspicious transactions for Savings account?",
+                        #"What is the total amount associated with the money laundering activity for Savings Account ?",
                         #"What type of Money laundering activity is taking place?",
                         "What is the total amount associated with the Money Laundering ?",
                         ]
@@ -3154,8 +3131,8 @@ elif selected_option_case_type == "Money Laundering":
                             ## using open ai:
                             #st.write(summary1)
 
-                            prompt_summ=f'''Provide an accurate and detailed summary of the below context and make sure to include all the important information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
-                            context: {summary1}  '''
+                            prompt_summ=f'''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            Context: {summary1}  '''
                             system_prompt = wrap_prompt("You are a summarization tool", "system")
                             user_prompt = wrap_prompt(prompt_summ, "user")
                             res = get_response([system_prompt, user_prompt])
@@ -3264,11 +3241,11 @@ elif selected_option_case_type == "Money Laundering":
 
                 # Add the customer information
                 customer_info = {
-                    "Name                                           ": "   Sarah Jones",
-                    "Address                                       ": "   123 Elm Street, Santa Barbara, California 94123",
-                    "Phone                                           ": "   (619) 425-2972",
-                    "A/C No.                                        ": "   4587236908230087",
-                    "SSN                                                ": "   671-24-3561"
+                    "Name                                           ": " Sarah Jones",
+                    "Address                                      ": " 858 3rd Ave, Chula Vista, California, 91911 US",
+                    "Phone                                          ": " (619) 425-2972",
+                    "A/C No.                                        ": " 4587236908230087",
+                    "SSN                                               ": " 653-30-9562"
                 }
 
                 for key, value in customer_info.items():
@@ -3279,55 +3256,34 @@ elif selected_option_case_type == "Money Laundering":
                 subheader_paragraph.style = "Heading 2"
                 paragraph = doc.add_paragraph()
                 #""" Addition of a checkbox where unticked box imply unavailability of suspect info"""
-
-                # Add the customer information
-                sent_val = "Suspect has been reported."
-                paragraph = doc.add_paragraph()
-                runner = paragraph.add_run(sent_val)
-                runner.bold = True
-                runner.italic = True
-                suspect_info = {
-                    "Name                                           ": "   Sarah Jones",
-                    "Address                                       ": "   123 Elm Street, Santa Barbara, California 94123",
-                    "Phone                                           ": "   (619) 425-2972",
-                    "A/C No.                                        ": "   4587236908230087",
-                    "SSN                                                ": "   671-24-3561"
-                }
-
-                for key, value in suspect_info.items():
-                        doc.add_paragraph(f"{key}: {value}")
                 
                 doc.add_heading('Summary', level=2)
                 paragraph = doc.add_paragraph()
-                #st.write(tmp_summary)
                 doc.add_paragraph(tmp_summary)
                 paragraph = doc.add_paragraph()
                 doc.add_heading('Key Insights', level=2)
                 paragraph = doc.add_paragraph()
-                tab=tmp_table.drop_duplicates(subset=['Question'])
-                #st.write(tab)
-                columns = list(tab.columns)
+                columns = list(tmp_table.columns)
                 table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
                 table.autofit = True
+                
                 for col in range(len(columns)):
                     # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
                     table.cell(0, col).text = columns[col]
                 # doc.add_table(st.session_state.tmp_table.shape[0]+1, st.session_state.tmp_table.shape[1], style='Table Grid')
 
-                for i, row in enumerate(tab.itertuples()):
+                for i, row in enumerate(tmp_table.itertuples()):
                     table_row = table.add_row().cells # add new row to table
                     for col in range(len(columns)): # iterate over each column in row and add text
                         table_row[col].text = str(row[col+1]) # avoid index by adding col+1
                 # save document
                 # output_bytes = docx.Document.save(doc, 'output.docx')
                 # st.download_button(label='Download Report', data=output_bytes, file_name='evidence.docx', mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-
                 paragraph = doc.add_paragraph()
                 paragraph = doc.add_paragraph()
                 doc.add_heading('SARA Recommendation', level=2)
                 doc.add_paragraph()       
-                paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt_aml"])
-                #paragraph = doc.add_paragraph(saracommon)
+                paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt"])
 
                 bio = io.BytesIO()
                 doc.save(bio)
@@ -3399,7 +3355,7 @@ elif selected_option_case_type == "Money Laundering":
 #fetching file
                     for fetched_pdf in fetched_files:
                         # st.write(fetched_pdf)
-                        file_pth = os.path.join('aml_docs2/', fetched_pdf)
+                        file_pth = os.path.join('aml_docs/', fetched_pdf)
                         # st.write(file_pth)
                         file_paths.append(file_pth)
 
@@ -3446,7 +3402,7 @@ elif selected_option_case_type == "Money Laundering":
                     st.write("#### *SARA Recommendation*")
                     st.markdown("""<span style="font-size: 18px;">*Based on the following findings for the underlying case, under Bank Secrecy Act, it is recommended to file this case as a suspicious activity:*</span>""", unsafe_allow_html=True)
                     st.markdown("""<span style="font-size: 18px;">*1. A high-value transaction is made to a high-risk geography.*</span>""", unsafe_allow_html=True)
-                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with the involvement of multiple and frequent large cash deposits into Checking Account and corresponding debits through the Credit Card to a suspicious entity.*.</span>""", unsafe_allow_html=True)           
+                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with the involvement of multiple and frequent large cash deposits into Savings Account and corresponding debits through the Credit Card to a suspicious entity.*.</span>""", unsafe_allow_html=True)           
                 
                     # query  = "Give your recommendation if SAR filling is required or not?"
                     # contexts = ', '.join(res_df_gpt['Answer'])
@@ -3476,7 +3432,7 @@ elif selected_option_case_type == "Money Laundering":
                     st.write("#### *SARA Recommendation*")
                     st.markdown("""<span style="font-size: 18px;">*Based on the following findings for the underlying case, under Bank Secrecy Act, it is recommended to file this case as a suspicious activity:*</span>""", unsafe_allow_html=True)
                     st.markdown("""<span style="font-size: 18px;">*1. A high-value transaction is made to a high-risk geography.*</span>""", unsafe_allow_html=True)
-                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with the involvement of multiple and frequent large cash deposits into Checking Account and corresponding debits through the Credit Card to a suspicious entity.*.</span>""", unsafe_allow_html=True)           
+                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with the involvement of multiple and frequent large cash deposits into Savings Account and corresponding debits through the Credit Card to a suspicious entity.*.</span>""", unsafe_allow_html=True)           
                 
                     st.warning('Please carefully review the recommendation and case details before the final submission',icon="⚠️")         
     
@@ -3571,6 +3527,5 @@ st.markdown(f""" <style>
         padding-left: {padding}rem;
         padding-bottom: {padding}rem;
     }} </style> """, unsafe_allow_html=True)
-
 
 

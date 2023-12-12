@@ -2816,64 +2816,81 @@ elif selected_option_case_type == "Money Laundering":
                             elif st.session_state.llm == "Open-Source":
     
                                 chat_history_1 = {}
+                                lineage_aml_llama = {}
+                                def run_chain_llm(instruction,query):
 
 
+                                    context = docsearch.similarity_search(query, k=5)
+
+                                    template = """
+                                    {instruction}
+                                    {query}
+                                    {context}
+                                    Answer: (Act as a professional and provide a concise, short response using the context.Do add anything out of the context provided.) """
+                                    
+                                    prompt = PromptTemplate(template=template, input_variables=['query','context','instruction'])
+                                
+
+                                    # Chain
+                                    chain = LLMChain(llm=zephyr_7b, prompt=prompt)
+
+                                    # Run
+                                    response = chain.run({'query':query,'context':context,'instruction':instruction})
+
+                                    return response,context
+                                
+                                # question 1
+                                
+
+                                template = """ You should closely look into the transactions information data for the reason why was the transaction flagged as suspicious. \n\n\
+                                """
                                 query = "Why was the transaction triggered?"
-                                
-                                context_1 = docsearch2.similarity_search(query, k=5)
-                                #st.write(context_1)
-                                prompt_1 = f'''You are a fraud analyst agent. You should closely look into the transactions information data for the reason why was the transaction flagged as suspicious. \n\n
-                                Question: {query}\n\
-                                Context: {context_1}\n\
-                                Response: Produce a single sentence as output with sentence starting with The'''
-                                response = llama_llm(llama_13b,prompt_1)
-                                ques1 = response
+                            
+                                response,context = run_chain_llm(template,query)
+                                chat_history_1[query] = response
+                                st.session_state["lineage_aml_llama"] = context
+
+
+
                                 
                                 
                                 
                                 
-                                chat_history_1[query] = "The" + response
-                                st.session_state["lineage_aml_llama"][query] = context_1
-                               
-    
+                                
+                                
                                 ## Question-2
 
-                                
+                                template = """ Your goal is to read customer relationship information and identify the products associated with the customer. \n\n\
+                                """
                                 query = "What are the products that are associated with this customer?"
-                                context_1 = docsearch2.similarity_search(query, k=5)
-                                
-                                prompt_1 = f''' You are a Analyst and Your goal is to read customer relationship information and answer below quesion from then Context : \n\
-                                Question: {query}\n\
-                                Context: {context_1}\n\
-                                Response: ()'''
-                                response = llama_llm(llama_13b,prompt_1)
-                                
-                                
+                            
+                                response,context = run_chain_llm(template,query)
                                 chat_history_1[query] = response
-                                st.session_state["lineage_aml_llama"][query] = context_1
+                                st.session_state["lineage_aml_llama"] = context
+
+                                
+                                
 
                                 
 
                                 ## Question-3
 
+                                template = """ your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\
+                                Transactions made to a suspicious entity or a high risk geography. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction"""
                                 query = "What are the associated suspicious transactions for Credit Card?"
-                                context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f'''You are a Money laundering analyst and your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
-                                Transactions made to a suspicious entity or a high risk geography. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
-                                Context: {context_1}\n\
-                                Response: (Do not give/add any extra Note, Explanation in answer.) '''
-                                
-                                # st.write(context_1)
-                                response = llama_llm(llama_13b,prompt_1)
-                                transactions_cc = response
+                            
+                                response,context = run_chain_llm(template,query)
                                 chat_history_1[query] = response
-                                st.session_state["lineage_aml_llama"][query] = context_1
+                                st.session_state["lineage_aml_llama"] = context
+                                transactions_cc = response
 
+                                
+                               
                                 ## Question-3.1
 
+                                
+
                                 query = "What is the total amount associated with the money laundering activity for Credit card?"
-                                #st.session_state["lineage_aml"][query] = context_1
-                
                                 context_1 = transactions_cc
                                 prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
                                 Output the total calculated amount as answer to the question.
@@ -2881,7 +2898,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Response: '''
 
 
-                                response = llama_llm(llama_13b,prompt_1)
+                                response = zephyr_llm(zephyr_7b,prompt)
                                 response = response.replace("$", "USD ")
                                 total_cc = response
                                 total_cc_array = response.split(" ")
@@ -2893,26 +2910,18 @@ elif selected_option_case_type == "Money Laundering":
                                 
                                 ## Question-4
 
+                                template = """ Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions are only Cash Deposit transactions in a short span of time. #Do not use any other transaction in your answer.\n\
+                                Do not include any Paycheck transactions or Opening balance transaction as they are not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions. # Strictly do not repeat any transaction"""
+                                query = "What are the associated suspicious transactions for Savings account?"
+                            
+                                response,context = run_chain_llm(template,query)
+                                chat_history_1[query] = response
+                                st.session_state["lineage_aml_llama"] = context
+                                transactions_sa = response
+
              
 
-                                query = "What are the associated suspicious transactions for Savings account?"
-                                context_1 = docsearch2.similarity_search(query, k=5)
-                                  
-
-                                prompt_1=f''' You are a fraud analyst agent and should give output as human statements. Do not give any explanation to your answer. Your goal is to identify the suspicious transactions from savings_account_statement. Suspicious transactions are only Cash Deposit transactions in a short span of time. #Do not use any other transaction in your answer.\n\
-                                Do not include any Paycheck transactions or Opening balance transaction as they are not be considered as suspicious transactions. Output the "Description", "Date" and "Credited ($)" of those identified transactions. Remove any incomplete transaction generated. #Also, do not repeat the same transaction.\n\
-                                Context: {context_1}\n\
-                                Response: (Answer point-wise in single lines and Do not give/add any extra Note, Explanation in answer.) '''
-                                #st.write(context_1)
-                                response = llama_llm(llama_13b,prompt_1)
-
-                               
-                                transactions_sa = response
                                 
-                                chat_history_1[query] = response
-                                st.session_state["lineage_aml_llama"][query] = context_1
-                                context_q5 = context_1
-
                                 ## Question-4.1
 
                                 query = "What is the total amount associated with the money laundering activity for Savings Account ?"
@@ -2924,7 +2933,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Response: '''
                                 
 
-                                response = llama_llm(llama_13b,prompt_1)
+                                response = zephyr_llm(zephyr_7b,prompt)
                                 
                                 #response = response.replace("33000", "USD 33000")
                                 response = response.replace("$", "USD ")
@@ -2951,6 +2960,8 @@ elif selected_option_case_type == "Money Laundering":
                                 
                                 ## Question-5
 
+                                
+
                                 query = "What is the total amount associated with the Money Laundering ?"
                                 st.session_state["lineage_aml_llama"][query] = context_q5
                                 context_1 = transactions_cc + transactions_sa
@@ -2960,7 +2971,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Response: (Give me a concise response in one sentence stating what TYPE of money laundering activity is taking place and WHY, along with the relationship found? Do not give me any Note or explanation).'''
 
                                 #response = usellm(prompt_1)
-                                response = llama_llm(llama_13b,prompt_1)
+                                response = zephyr_llm(zephyr_7b,prompt)
                                 response1 = " ".join(("Total Money Laundering amount that can be associated with savings account is : USD "+ total_sav_amount +  " and Total Money Laundering amount that can be associated with credit card is : USD "+ total_cc_amount + " ." + response).split())
                                 ques5 = response1
                                 chat_history_1[query] = response1

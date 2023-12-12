@@ -1484,12 +1484,11 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
                                 contexts = st.session_state["tmp_table_zephyr"]['Answer']
                                 prompt = f"""Find answer to the questions as truthfully as possible as per the available information only,\n\n\
-                                1. If The transaction/disputed amount > 5,000 USD value threshold, then check below points to make sure if it is a suspicious/fraud activity or not: \n\
-                                2. If invoice is billed to someone else.\n\n\
-                                3. If a Suspect Name is mentioned in the context\n\n\
-                                Please note that even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\                     
+                                1. what is the transaction/disputed amount and is The transaction/disputed amount > 5,000 USD value threshold. \n\
+                                2. If invoice is billed to someone else ?\n\n\
+                                3. If a Suspect Name is mentioned in the context and who is the suspect ?\n\n\
+                                Please note that even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity.lso, add your concise recommendation whether SAR filling is required or not ? \n\                     
                                 Context: {contexts}\n\
-                                Also, add your concise recommendation whether SAR filling is required or not ?
                                 Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points."""
                                                         
                                 response1 = zephyr_llm(zephyr_7b,prompt) 

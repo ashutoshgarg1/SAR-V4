@@ -1490,7 +1490,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
                                     Analyse above points properly and at last give your concise recommendation if SAR filing is required or not? \n\n\
                                     Context: {contexts}\n\
-                                    Response (start the output with if it can be considered as a suspicious activity or not based on the avaliable information and then Give me a concise response in 3 points with numbering like [1,2])"
+                                    Response (start the output with if it can be considered as a suspicious activity or not based on the avaliable information and then anseer above questions in 3 points with numbering like [1,2])"
                                                         
                                 response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response1.replace("$", "")

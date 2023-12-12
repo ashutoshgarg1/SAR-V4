@@ -108,10 +108,20 @@ os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
 
 llama_13b = HuggingFaceHub(
-            repo_id="HuggingFaceH4/zephyr-7b-beta",
-            model_kwargs= {"temperature":0.1,
+            repo_id="meta-llama/Llama-2-13b-chat-hf",
+            model_kwargs= {"temperature":0.01,
                         "min_new_tokens":100, 
                         "max_new_tokens":300})
+
+zephyr_7b = HuggingFaceHub(
+            repo_id="HuggingFaceH4/zephyr-7b-alpha",
+            model_kwargs={"temperature":0.01,
+                          "min_new_tokens":100, 
+                          "max_new_tokens":300})
+@st.cache_data(show_spinner=False)
+def zephyr_llm(_llm,prompt):
+    response = _llm.predict(prompt)
+    return response
 
 memory = ConversationSummaryBufferMemory(llm= llama_13b, max_token_limit=500)
 conversation = ConversationChain(llm= llama_13b, memory=memory,verbose=False)
@@ -581,6 +591,20 @@ if "lineage_gpt_llama" not in st.session_state:
     st.session_state["lineage_gpt_llama"] = {}
 if "lineage_llama_fd" not in st.session_state:
     st.session_state["lineage_llama_fd"] = {}
+if "tmp_table_zephyr" not in st.session_state:
+    st.session_state.tmp_table_zephyr=pd.DataFrame()
+if "tmp_summary_gpt" not in st.session_state:
+    st.session_state["tmp_summary_gpt"] = ''
+if "tmp_summary_zephyr" not in st.session_state:
+    st.session_state["tmp_summary_zephyr"] = ''
+if "sara_recommendation_gpt" not in st.session_state:
+    st.session_state["sara_recommendation_gpt"] = ''
+if "sara_recommendation_zephyr" not in st.session_state:
+    st.session_state["sara_recommendation_zephyr"] = ''
+if "lineage_gpt" not in st.session_state:
+    st.session_state["lineage_gpt"] = {}
+if "lineage_zephyr" not in st.session_state:
+    st.session_state["lineage_zephyr"] = {}
 
 
 # Apply CSS styling to resize the buttons
@@ -1255,146 +1279,164 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                                 
                             elif st.session_state.llm == "Open-Source":
-
+                                 
+                                
                                 chat_history = {}
                                 lineage_dict_llama = {}
-
-                                query = "What is the customer's name?"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 = f'''You are a professional fraud analyst. Perform Name Enitity Recognition to identify the victim's name as accurately as possible, given the context. The victim can also be referenced as the customer with whom the Fraud has taken place.
-                                victim's name is the Name provided in Cardholder Information.\n\n\
-                                        Question: {query}\n\
-                                        Context: {context_1}\n\
-                                        Response: (Give me response in one sentence. Do not give me any Explanation or Note)'''
-                                response = llama_llm(llama_13b,prompt_1)
-                                chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
+                                def run_chain_llm(instruction,query):
 
 
-                                query = "What is the suspect's name?"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 =  f'''Act as a professional fraud analyst.You need to check the document and compare if any name discrepencies are present that points towards the suspect who used the card without the consent of the cardholder.
-                                            Take the provided information as accurate. Reply the name of the person who is the suspect. \n\n\
-                                            Context: {context_1}\n\
-                                            Response: (Give a short response in a single sentence.Do not add any extra Information, Explanation,Note.)'''
-                                response = llama_llm(llama_13b,prompt_1)
-                                chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
+                                    context = docsearch.similarity_search(query, k=5)
 
+                                    template = """
+                                    {instruction}
+                                    {query}
+                                    {context}
+                                    Answer: (Act as a professional and provide a concise, short response using the context.Do add anything out of the context provided.) """
+                                    
+                                    prompt = PromptTemplate(template=template, input_variables=['query','context','instruction'])
                                 
+
+                                    # Chain
+                                    chain = LLMChain(llm=zephyr_7b, prompt=prompt)
+
+                                    # Run
+                                    response = chain.run({'query':query,'context':context,'instruction':instruction})
+
+                                    return response,context
+
+                                template = """Perform Name Enitity Recognition to identify the cardholder name as accurately as possible, given the context. The customer can also be referenced as the cardholder with whom the Fraud has taken place.\n\n\
+                                Do not add any extra explanation, note. Give concise answer based on query only. \n\n\
+                                """
+                                query = "What is the customer name?"
+                            
+                                response,context = run_chain_llm(template,query)
+                                chat_history[query] = response
+                                lineage_dict_llama[query] = context
+
+
+                                template = """Act as a professional fraud analyst and provide response to the query asked as accurately as possible.You need to check the document provided and compare if any name discrepencies are present that points towards the suspect who used the card without the consent of the cardholder.
+                                            Perform Name Enitity Recognition to identify the Suspect Name given the context.Suspect is the person who has committed the fraud with the cardholder. If suspect name is not present, respond saying: Suspect name is not mentioned."""
+                                
+                                query = "What is the suspect's name?"
+                            
+                                response,context = run_chain_llm(template,query)
+                                chat_history[query] = response
+                                lineage_dict_llama[query] = context
+
+
+                                template = """You are a professional fraud analyst, perform Name Enitity Recognition to identify Merchant as accurately as possible from the provided information.A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant response.\n\n\
+                                    """
                                 
                                 query = "List the merchant name"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 = f'''You are a professional fraud analyst, perform Name Enitity Recognition to identify Merchant as accurately as possible from the provided information.A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant and short response.\n\n\
-                                Take the provided information as accurate.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Give a short response in a single sentence. Do not add any extra Information,Explanation,Note.)'''
-                                response = llama_llm(llama_13b,prompt_1)
+                            
+                                response,context = run_chain_llm(template,query)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
+                                lineage_dict_llama[query] = context
 
 
+                                template = """You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a concise response.\n\n\
+                                    """
+                                
                                 query = "How was the bank notified?"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 =  f'''You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Give me a concise response in one sentence. Do not give me any further Explanation, Note )'''
-                                response = llama_llm(llama_13b,prompt_1)
+                            
+                                response,context = run_chain_llm(template,query)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
-
+                                lineage_dict_llama[query] = context
+                                
+                                
+                                template = """You need to act as a Financial analyst to identify when the bank was notified of the Fraud. Look for the processing date. Given the context, provide a relevant and concise response.\n\n\
+                                    """
                                 
                                 query = "When was the bank notified?"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 =  f'''You need to act as a Financial analyst to identify when the bank was notified of the Fraud. Look for the disputed date. Given the context, provide a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Give me a concise response in one sentence.Do not add any prefix like 'Response' or 'Based on the document'. Do not add any extra Explanation, Note)'''
-                                response = llama_llm(llama_13b,prompt_1)
+                            
+                                response,context = run_chain_llm(template,query)
                                 chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
+                                lineage_dict_llama[query] = context  
+
+
+                                template = """You are a Fraud analyst who needs to identify the type of fraud or suspicious activity has taken place.
+                                Mention only fraud type and fraud code. 
+                                Give a relevant, concise and short response.\n\n\
+                                    """
+                                
+                                query = "What is the Fraud Type?"
+                            
+                                response,context = run_chain_llm(template,query)
+                                chat_history[query] = response
+                                lineage_dict_llama[query] = context     
+
+
+                                template = """ You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Transaction Date. Given the context, provide a relevant and concise response.\n\n\
+                                    """
+                                
+                                query = "When did the fraud occur?"
+                            
+                                response,context = run_chain_llm(template,query)
+                                chat_history[query] = response
+                                lineage_dict_llama[query] = context    
+
+
+                                template = """ You need to act as a Financial analyst to identify the disputed amount mentioned in the context.Perform a mathematical calculation to check if the disputed amount is greater than 5000 USD or not.Given the context, give a relevant and concise response.\n\n\
+                                                    Take the provided information as accurate. \n\n\
+                                    """
+                                
+                                query = "Was the disputed amount greater than 5000 usd?"
+                            
+                                response,context = run_chain_llm(template,query)
+                                chat_history[query] = response
+                                lineage_dict_llama[query] = context     
+
+
+                                template = """ You are a Fraud analyst who needs to identify the type of card and card network involved in the transaction.
+                                On a higher level the card can be a Credit Visa, Debit Visa Card.
+                                Provide details about card type only.
+                                Give a concise and short response.\n\n\
+                                    """
+                                
+                                query = "What type of network/card are involved?"
+                            
+                                response,context = run_chain_llm(template,query)
+                                chat_history[query] = response
+                                lineage_dict_llama[query] = context 
+
+
+                                template = """ You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
+                                    """
+                                
+                                query = "Was the police report filed?"
+                            
+                                response,context = run_chain_llm(template,query)
+                                chat_history[query] = response
+                                lineage_dict_llama[query] = context  
+
                                 
 
-
-                                query = "What is the Fraud Type?"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 =  f''' You need to act as a Financial analyst to identify the type of fraud or suspicious activity has taken place amd summarize it, within the given context. Also mention the exact fraud code. Give a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Give me response in one sentence. Do not add prefix like 'Response' or 'based on the document. Do not give me any Explanation or Note)'''
-                                response = llama_llm(llama_13b,prompt_1)
-                                chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
+                                #This question is only used in recommendation
+                                template = """You are professional Fraud Analyst. Find answer to the questions as truthfully as possible as per given context only,\n\n\
+                                Identify cardholder name from cardholder information,cardholder is the owner of the card. \n\
+                                Identify to whom invoice is billed?\n\
+                                Compare both details and confirm if merchant invoice is billed to cardholder or someone else.\n\
+                                """
 
 
-
-
-                                query = "When did the fraud occur?"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 =  f''' You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Transaction Date. Given the context, provide a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Give me a concise response in one sentence. Do not add prefix like 'based on the document. Do not add any further Explanation or Note.)'''
-                                response = llama_llm(llama_13b,prompt_1)
-                                chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
-
-
-                                query = "Was the disputed amount greater than 5000 usd?"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 =  f''' You need to act as a Financial analyst to identify the disputed amount.Perform a mathematical calculation to identify if the disputed amount is greater than 5000 USD or not.Given the context, give a relevant and concise response.\n\n\
-                                                Take the provided information as accurate. \n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Give a short response in a single sentence. Do not give any extra Explanation, Note, Descricption, Information.)'''
-                                response = llama_llm(llama_13b,prompt_1)
-                                chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
-
-
-                                query = "What type of cards are involved?"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 =  f''' You need to act as a Financial analyst to identify the type of card and card network involved, given the context. On a higher level the card can be a Credit Visa, Debit Visa Card.Based on the context give a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Give me a concise response in one sentence.Do not add prefix like: ['based on the document']. Do not add any further Explanation, Note.')'''
-                                response = llama_llm(llama_13b,prompt_1)
-                                chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
-
-
-                                query = "Was the police report filed?"
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                prompt_1 =  f''' You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Provide a concise Response in a single sentence. Do not write any extra [Explanation, Note, Descricption].)'''
-                                response = llama_llm(llama_13b,prompt_1)
-                                chat_history[query] = response
-                                lineage_dict_llama[query] = context_1
-                                st.session_state["lineage_llama_fd"][query] = context_1
+                                query = "Identify if invoice is billed to cardholder or someone else?"
+                                response_3,docs = run_chain_llm(template,query)
+                                chat_history[query] = response_3
+                                # st.write(response_3)
+                                # st.write(docs) 
+                                st.session_state["lineage_zephyr"] = lineage_dict_llama
 
                                 try:
-                                    res_df_llama = pd.DataFrame(list(chat_history.items()), columns=['Question','Answer'])
-                                    res_df_llama.reset_index(drop=True, inplace=True)
+                                    res_df_zephyr  = pd.DataFrame(list(chat_history.items()), columns=['Question','Answer'])
+                                    res_df_zephyr .reset_index(drop=True, inplace=True)
                                     index_ = pd.Series([1,2,3,4,5,6,7,8,9,10])
-                                    res_df_llama = res_df_llama.set_index([index_])
+                                    res_df_zephyr  = res_df_zephyr .set_index([index_])
                                     # st.write(res_df_llama)
                                 except IndexError: 
                                     pass
-                                st.table(res_df_llama)
-                                st.session_state["tmp_table_llama"] = pd.concat([st.session_state.tmp_table_llama, res_df_llama], ignore_index=True)
+                                st.table(res_df_zephyr)
+                                st.session_state["tmp_table_zephyr"] = pd.concat([st.session_state.tmp_table_zephyr, res_df_zephyr], ignore_index=True)
 
 
                                 # query ="Is invoice is billed to cardholder or someone else?"
@@ -1433,85 +1475,33 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                                 ###
 
-                                retriever = docsearch.as_retriever(search_kwargs={"k": 9})
-
-                                def run_chain(template,query):
-                                
-                                    QA_CHAIN_PROMPT = PromptTemplate(
-                                        input_variables=["context", "query"],
-                                        template=template,
-                                    )
-                                
-                                    # Docs
-                                    docs = retriever.get_relevant_documents(query)
-
-                                    # Chain
-                                    chain = load_qa_chain(llama_13b, chain_type="stuff", prompt=QA_CHAIN_PROMPT)
-
-                                    # Run
-                                    response = chain({"input_documents": docs, "query": query}, return_only_outputs=True)
-
-                                    return response,docs
+                         
                                 
 
-                                # query 1
 
-                                # Prompt
-                                # template = """Act as a professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,
-                                # Identify cardholder's name,adress from cardholder information. Customer is the person who is the owner of the card and with whom fraud has taken place.
-                                # Identify name and address to whom merchant invoice is billed
-                                # Identify if Invoice is billed to cardholder or someone else based on above information.
-                                # If Invoice is billed to someone else, then that could be the potential suspect.
-                                # {context}
-                                # Question: {query}
-                                # Helpful Answer:"""
-
-
-                                template = """You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                cardholder's name,adress can be identified from cardholder information. Customer is the person who is the owner of the card, customer can also be referenced as the victim with home fraud has taken place.\n\n\
-                                Identify to whom merchant invoice is billed (Detials mentioned in invoice is of the person who made the transaction,it may be or may not be of the customer)\n\n\
-                                Compare both the details, if details mentioned in invoice matches the cardholder details, then invoice is billed to customer else it is billed to someone else who misued the card.\n\n\
-                                {context}
-                                Question: {query}
-                                Helpful Answer:"""
-
-
-                                query = "If Merchant Invoice is billed to cardholder or someone else?"
-
-                                response_3,docs = run_chain(template,query)
-                                
-                                analyse = response_3['output_text']
-                                # st.write(response_3)
-                                # st.write(docs)
 
                                 
-
-                                # SARA Recommendation
-                    
-                                # SARA Recommendation
-
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
-                                contexts = docsearch.similarity_search(query, k=5)
-                                prompt = f"You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                    1. Check if The transaction/disputed amount > 5,000 USD value threshold,If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
-                                    2. {analyse} analyse this response,if invoice is billed to cardholder then there is no suspicion else, it can be a suspicious activity.\n\n\
-                                    3. If a suspect is identified from above , then what is the suspect's name ? and then this can be considered as a suspicious activity else not.\n\n\
-                                    Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
-                                    Analyse above points properly and at last give your recommendation if SAR filing is required or not? \n\n\
-                                    Context: {contexts}\n\
-                                    Response (Give me a concise response in 3 points with numbering like [1,2])"
-                            
-                                                    
-                                response1 = llama_llm(llama_13b,prompt)
-                                response1 = response1.replace("$", "USD")
+                                contexts = st.session_state["tmp_table_zephyr"]['Answer']
+                                prompt = f"You are professional Fraud Analyst who needs to find answer to the questions as truthfully as possible as per the given context only- Here is the context: {contexts}\n\n\
+                                Analyse below points properly and give your recommendation based on these points only-\n\n\
+                                    1. If The transaction/disputed amount > 5,000 USD value threshold, then check below points to make sure if it is a suspicious/fraud activity or not: \n\
+                                    2. If invoice is billed to someone else.\n\n\
+                                    3. If a Suspect Name is mentioned in the context\n\n\
+                                    Please note that even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\
+                                    Response: (Provide a concise reasoning in 3-4 pointers.Start your response by saying- Based on the provided context and information, here is the recommendation-)"
+                                                        
+                                response1 = zephyr_llm(zephyr_7b,prompt) 
+                                response1 = response1.replace("$", "")
                                 response1 = response1.replace("5,000", "5,000")
-                                response_ = response1.replace("5,600", "5,600")      
+                                response1 = response1.replace("5,600", "5,600")       
+         
                     
                             
                             
-                                st.session_state["sara_recommendation_llama"] = response1
+                                sst.session_state["sara_recommendation_zephyr"] = response1
                                 
-                                sara_recommendation_llama = response1 
+                                sara_recommendation_zephyr = response1 
                                         
                                 
                                 st.markdown("### SARA Recommendation")

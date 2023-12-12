@@ -1484,9 +1484,9 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
                                 contexts = st.session_state["tmp_table_zephyr"]['Answer']
                                 prompt = f"Is this a case of Suspicious activity? If yes, then Find answer to the questions as truthfully as possible as per the available information only,\n\n\
-                                1.) If The transaction/disputed amount > 5,000 USD value threshold, then check below points to make sure if it is a suspicious/fraud activity or not: \n\
-                                2.) If invoice is billed to someone else.\n\n\
-                                3.) If a Suspect Name is mentioned in the context. 
+                                1. If The transaction/disputed amount > 5,000 USD value threshold, then check below points to make sure if it is a suspicious/fraud activity or not: \n\
+                                2. If invoice is billed to someone else.\n\n\
+                                3. If a Suspect Name is mentioned in the context\n\n\
                                 Context: {contexts}\n\
                                 Please note that even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\
                                 based on that - add your concise recommendation whether SAR filling is required or not ?

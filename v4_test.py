@@ -2921,7 +2921,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Suspicious transactions can be:\n\
                                 High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
                                 Output the "Description", "Date" and "Credited ($)" of those identified transactions as numbered list in this format : "Description:  Date:  Credited ($):".\n\
-                                Strictly - Do not add any Note in the output."""
+                                output the identified transactions in pointers."""
                                 query = "What are the associated suspicious transactions for Checking account?"
                             
                                 response,context = run_chain_llm(template,query)

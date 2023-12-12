@@ -1484,7 +1484,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
                                     3. If a potential suspect name is identified or not? Suspect is a person who has commited the fraud, If identified then this can be a suspicious activity, else not.\n\n\
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
-                                    Based on above points, give your concise recommendation in single sentence if this is a case of suspicious activity or not? \n\n\
+                                    Based on above points, give your concise recommendation in single sentence if SAR filing is required or not? \n\n\
                                     Context: {contexts}\n\
                                     Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a single sentence, then answer all above 3 questions individually in points."
                 

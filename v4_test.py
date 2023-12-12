@@ -2842,10 +2842,10 @@ elif selected_option_case_type == "Money Laundering":
                                 query = "What are the products that are associated with this customer?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                 
-                                prompt_1 = f''' You are a Analyst and Your goal is to read customer information and answer below quesion from then Context : \n\
+                                prompt_1 = f''' You are a Analyst and Your goal is to read customer relationship information and answer below quesion from then Context : \n\
                                 Question: {query}\n\
                                 Context: {context_1}\n\
-                                Response: (Output the identified Products only in a single sentence without any note or explanation.)'''
+                                Response: ()'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 
                                 

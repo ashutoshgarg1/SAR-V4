@@ -111,7 +111,7 @@ llama_13b = HuggingFaceHub(
             repo_id="meta-llama/Llama-2-13b-chat-hf",
             model_kwargs= {"temperature":0.01,
                         "min_new_tokens":50, 
-                        "max_new_tokens":150, "seed":1000})
+                        "max_new_tokens":250, "seed":1000})
 
 zephyr_7b = HuggingFaceHub(
             repo_id="HuggingFaceH4/zephyr-7b-alpha",

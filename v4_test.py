@@ -2877,7 +2877,7 @@ elif selected_option_case_type == "Money Laundering":
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
                                 prompt_1=f''' Your goal is to identify all the suspicious transactions only from Credit_Card_statement within the given data. Suspicious transactions can be:\n\n
-                                Transactions made to a high risk geography. Output "Description", "Date" and "Debited ($)" of each identified transactions as a numbered list strictly in this format : "Description:  Date:  Debited ($):" . # Strictly do not repeat any transaction. Do not add any note in the final output\n\
+                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of each identified transactions as a numbered list strictly in this format : "Description:  Date:  Debited ($):"  without repeating the transactions. Do not add any note in the final output\n\
                                 Context: {context_1}\n\
                                 Response: (Do not add any NOTE in the ouput.) '''
                                 

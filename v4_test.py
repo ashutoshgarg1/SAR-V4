@@ -2997,6 +2997,7 @@ elif selected_option_case_type == "Money Laundering":
 
                                 #st.table(res_df_llama)
                                 keys = chat_history_1.keys()
+                                count = 1
                                 for value in keys:
                                     st.markdown("**Insight " +str(count)+": "+str(value)+"**")
                                     #st.markdown("**Insight: "+str(value)+"**")

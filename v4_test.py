@@ -1864,7 +1864,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     return response_summ_gpt,summ_dict_gpt
                 
                 def summ_llama_():
-                    template = """Write a detailed summary of the text provided.
+                    template = """Write a detailed summary of the below text provided in such way that it includes all relevant information.
                     ```{text}```
                     Response: (Return your response in a single paragraph.) """
                     prompt = PromptTemplate(template=template,input_variables=["text"])

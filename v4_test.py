@@ -1465,33 +1465,29 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 
                                 # #response1 = usellm(prompt) 
                                 
-                                # # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)
-                                # response1 = response_1.replace("$", " ")
-                                # response1 = response1.replace("5,000", "5,000 USD")
-                                # response1 = response1.replace("5,600", "5,600 USD")
-                                # sara_open_source_gpt = response1
+                                query ="Is invoice is billed to cardholder or someone else?"
+                                contexts = docsearch.similarity_search(query, k=9)
+                                prompt = f" You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                cardholder's name,adress can be identified from cardholder information. Cardholder is the person who is the owner of the card, cardholder can also be referenced as the victim with whom fraud has taken place.\n\n\
+                                Identify to whom invoice is billed (Detials mentioned in invoice is of the person who made the transaction,it may be or may not be of the cardholder)\n\n\
+                                Compare both the details, if details mentioned in invoice matches the cardholder details, then invoice is billed to cardholder else it is billed to someone else who misued the card.\n\n\
+                                    Context: {contexts}\n\
+                                    Response (Give me a concise response.)"
+                                response_1 = zephyr_llm(zephyr_7b,prompt) 
 
 
 
-                                ###
-
-                         
-                                
-
-
-
-                                
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
                                 contexts = ', '.join(res_df_zephyr['Answer'])
-                                prompt = f"You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                    1. Check if The transaction/disputed amount > 5,000 USD value threshold,If Yes, then check below points to make sure if it is a suspicious activity or not: \n\
-                                    2. {analyse} analyse this response,if invoice is not billed to cardholder then it can be a suspicious activity.\n\n\
-                                    3. what is the suspect's name and this can be considered as a suspicious activity if suspect's name is identified.\n\n\
+                                prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                    1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then what is the transasction/disputed amount. Also, check below points to make sure if it is a suspicious activity or not: \n\
+                                    2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
+                                    3. If a potential suspect name is identified or not? Suspect is a person who has commited the fraud, If identified then this can be a suspicious activity, else not.\n\n\
                                     Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
-                                    Analyse above points properly and at last give your concise recommendation if SAR filing is required or not? \n\n\
+                                    Based on above points, give your recommendation if this is a case of suspicious activity or not? \n\n\
                                     Context: {contexts}\n\
-                                    Response (start the output with if it can be considered as a suspicious activity or not based on the avaliable information and then anseer above questions as individual points)"
-                                                        
+                                    Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions individually."
+                
                                 response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response1.replace("$", "")
                                 response1 = response1.replace("5,000", "5,000")

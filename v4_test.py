@@ -2965,7 +2965,7 @@ elif selected_option_case_type == "Money Laundering":
 
                                 #response = usellm(prompt_1)
                                 response = zephyr_llm(zephyr_7b,prompt_1)
-                                response1 = " ".join(("Total Money Laundering amount that can be associated with savings account is : USD "+ total_sav_amount +  " and Total Money Laundering amount that can be associated with credit card is : USD "+ total_cc_amount + " ." + response).split())
+                                response1 = " ".join(("Total Money Laundering amount  "+ total_sav +  " and Total Money Laundering amount "+ total_cc + " ." + response).split())
                                 ques5 = response1
                                 chat_history_1[query] = response1
                                 

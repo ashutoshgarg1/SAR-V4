@@ -2820,7 +2820,7 @@ elif selected_option_case_type == "Money Laundering":
                                 def run_chain_llm(instruction,query):
 
 
-                                    context = docsearch.similarity_search(query, k=5)
+                                    context = docsearch2.similarity_search(query, k=5)
 
                                     template = """
                                     {instruction}

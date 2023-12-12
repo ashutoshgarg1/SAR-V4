@@ -1495,11 +1495,10 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 response1 = response1.replace("$", "")
                                 response1 = response1.replace("5,000", "5,000")
                                 response1 = response1.replace("5,600", "5,600")       
-         
                     
-                            
-                            
-                                st.session_state["sara_recommendation_zephyr"] = response1
+                                
+                                
+                                st.session_state["sara_recommendation_zephyr"] = response1   
                                 
                                 sara_recommendation_zephyr = response1 
                                         

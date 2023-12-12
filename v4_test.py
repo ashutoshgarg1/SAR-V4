@@ -2920,7 +2920,7 @@ elif selected_option_case_type == "Money Laundering":
                                 template = """ Your goal is to identify the suspicious transactions from Checking_account_statement.\n\
                                 Suspicious transactions can be:\n\
                                 High Value Cash Deposits in a short span of time. Strictly do not include any Paycheck transactions and Opening balance transaction as they may not be considered as suspicious transactions. \n\\
-                                Output the "Description", "Date" and "Credited ($)" of those identified transactions as individual points in this format : "Description:  Date:  Credited ($):" without repeating the transactions. Do not add any note in the final output ."""
+                                Output the "Description", "Date" and "Credited ($)" of those identified transactions as individual points in this format : "Description:  Date:  Credited ($):" . Do not add any note in the final output ."""
                                 query = "What are the associated suspicious transactions for Checking account?"
                             
                                 response,context = run_chain_llm(template,query)

@@ -110,8 +110,8 @@ os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 llama_13b = HuggingFaceHub(
             repo_id="meta-llama/Llama-2-13b-chat-hf",
             model_kwargs= {"temperature":0.01,
-                        "min_new_tokens":50, 
-                        "max_new_tokens":250, "seed":1000})
+                        "min_new_tokens":100, 
+                        "max_new_tokens":300, "seed":1000})
 
 zephyr_7b = HuggingFaceHub(
             repo_id="HuggingFaceH4/zephyr-7b-alpha",
@@ -2845,7 +2845,7 @@ elif selected_option_case_type == "Money Laundering":
                                 prompt_1 = f''' You are a Analyst and Your goal is to read customer information and answer below quesion from then Context : \n\
                                 Question: {query}\n\
                                 Context: {context_1}\n\
-                                Response: (Output the identified Products only in a single sentence)'''
+                                Response: (Output the identified Products only in a single sentence without any note or explanation.)'''
                                 response = llama_llm(llama_13b,prompt_1)
                                 
                                 
@@ -2858,7 +2858,7 @@ elif selected_option_case_type == "Money Laundering":
 
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f'''You are a fraud analyst agent and should give output as human statements. You are a Money laundering analyst and your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
+                                prompt_1=f'''You are a Money laundering analyst and your goal is to identify all the suspicious transactions from Credit_Card_statement. Suspicious transactions can be:\n\n
                                 Transactions made to a suspicious entity or a high risk geography. Output "Description", "Date" and "Debited ($)" of those identified transactions. # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
                                 Response: (Do not give/add any extra Note, Explanation in answer.) '''

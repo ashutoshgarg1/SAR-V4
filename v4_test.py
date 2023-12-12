@@ -2876,11 +2876,10 @@ elif selected_option_case_type == "Money Laundering":
                                 ## Question-3
                                 query = "What are the associated suspicious transactions for Credit Card?"
                                 context_1 = docsearch2.similarity_search(query, k=5)
-                                prompt_1=f''' Your goal is to identify all the suspicious transactions only from Credit_Card_statement within the given context. Suspicious transactions can be:\n\n
-                                Transactions made to a suspicious entity or a high risk geography. Output "Description", "Date" and "Debited ($)" of each identified transactions as a numbered list strictly in this format : "Description:  Date:  Debited ($):" .\n\
-                                      # Strictly Do not REPEAT any transaction. Also do not add any "Note" in the output.\n\
+                                prompt_1=f''' Your goal is to identify the suspicious transactions only from Credit_Card_statement within the given Data. Suspicious transactions can be:\n\n
+                                Transactions made to a suspicious entity. Output "Description", "Date" and "Debited ($)" of each identified transactions as a numbered list strictly in this format : "Description:  Date:  Debited ($):" . # Strictly do not repeat any transaction.\n\
                                 Context: {context_1}\n\
-                                Response: (Do not add any Note, Explanation in output.) '''
+                                Response: (Do not give/add any extra Note, Explanation in answer.) '''
                                 
                                 response = zephyr_llm(zephyr_7b,prompt_1)
                             
@@ -2991,7 +2990,7 @@ elif selected_option_case_type == "Money Laundering":
 
                                 #response = usellm(prompt_1)
                                 response = zephyr_llm(zephyr_7b,prompt_1)
-                                response1 = " ".join(("Total Money Laundering amount  "+ total_sav +  " and Total Money Laundering amount "+ total_cc + " ." + response).split())
+                                response1 = " ".join(( total_sav +   total_cc + " ." + response).split())
                                 ques5 = response1
                                 chat_history_1[query] = response1
                                 

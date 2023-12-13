@@ -2895,15 +2895,17 @@ elif selected_option_case_type == "Money Laundering":
                                  ## question 3.1
 
                                 query = "What is the total amount associated with the money laundering activity for Credit card?"
-                                #st.session_state["lineage_aml_llama"][query] = context_1
+                                #st.session_state["lineage_aml"][query] = context_1
+                
                                 context_1 = transactions_cc
-                                prompt_1 = f'''Act as a calculator and add up each transactions amount in the context accuratley and output the total.\n\
+                                prompt_1 = f'''Act as a calculator and add up all the amounts in the given context.\n\
+                                Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
-                                Question: {query}\n\
-                                Response: '''
+                                Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
+
           
-                                response = llama_llm(llama_13b,prompt_1)
-                                response = response.replace("$", "USD ")
+                                response = zephyr_llm(zephyr_7b,prompt_1)
+                                # response = response.replace("$", "USD ")
 
                                 
 

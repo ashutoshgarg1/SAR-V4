@@ -2898,10 +2898,10 @@ elif selected_option_case_type == "Money Laundering":
                                 #st.session_state["lineage_aml"][query] = context_1
                 
                                 context_1 = transactions_cc
-                                prompt_1 = f'''Act as a calculator and add up all the amounts in the given context.\n\
+                                prompt_1 = f'''Act as a calculator and Accurately add up each of the amounts in the given Context.\n\
                                 Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
-                                Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
+                                Response: (Add this before the total calculated amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
 
           
                                 response = zephyr_llm(zephyr_7b,prompt_1)

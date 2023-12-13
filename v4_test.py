@@ -2908,7 +2908,8 @@ elif selected_option_case_type == "Money Laundering":
                                 context_1 = amounts
                                 st.write(context_1)
                                 prompt_1 = f'''You are a calculator and your goal is add up all the numbers in the below context and output that total as "total calculated amount".\n\
-                                Context: {context_1}'''
+                                Context: {context_1}
+                                Response: ()'''
 
 
                                 

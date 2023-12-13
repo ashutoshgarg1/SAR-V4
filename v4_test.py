@@ -2898,7 +2898,7 @@ elif selected_option_case_type == "Money Laundering":
                                 #st.session_state["lineage_aml"][query] = context_1
                 
                                 context_1 = transactions_cc
-                                prompt_1 = f'''Question: What is the total amount debited to all the transactions made in the below Context for the given period? 
+                                prompt_1 = f'''Question: What is the total amount debited to all the transactions made in the below Context using Credit card for the given period? 
                                 Context: {context_1}
                                 Answer:'''
 

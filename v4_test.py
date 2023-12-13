@@ -2890,22 +2890,14 @@ elif selected_option_case_type == "Money Laundering":
                                 transactions_cc = response
 
                                 
-                               
-                                ## Question-3.1
-                                pattern = r'Debited \(\$?\): (\d+)'
+       
 
-                                # Find all amounts using re.findall
-                                amounts = re.findall(pattern, transactions_cc)
-
-                                # Convert amounts to integers
-                                amounts = [int(amount) for amount in amounts]
-
-                                
+                                 ## question 3.1
 
                                 
 
                                 query = "What is the total amount associated with the money laundering activity for Credit card?"
-                                context_1 = transactions_sa
+                                context_1 = transactions_cc
                                 prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context sequentially and correctly. Only produce one sentence in the output.\n\
                                 Output the total calculated amount as answer to the question.\n\
                                 Context: {context_1}\n\

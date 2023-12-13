@@ -2907,9 +2907,8 @@ elif selected_option_case_type == "Money Laundering":
                                 query = "What is the total amount associated with the money laundering activity for Credit card?"
                                 context_1 = amounts
                                 st.write(context_1)
-                                prompt_1 = f'''You are a calculator and your goal is add up all the numbers in the below context as "total calculated amount".\n\
-                                Context: {context_1}\n\
-                                Response: (just output the "total calculated amount".)'''
+                                prompt_1 = f'''You are a calculator and your goal is add up all the numbers in the below context and output that total as "total calculated amount".\n\
+                                Context: {context_1}'''
 
 
                                 

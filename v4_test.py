@@ -2898,10 +2898,9 @@ elif selected_option_case_type == "Money Laundering":
                                 #st.session_state["lineage_aml_llama"][query] = context_1
                                 context_1 = transactions_cc
                                 prompt_1 = f'''Act as a calculator and add up each transactions amount in the context accuratley as a calculator.\n\
-                                Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
                                 Question: {query}\n\
-                                Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
+                                Response: (give your answer in one sentence)'''
           
                                 response = llama_llm(llama_13b,prompt_1)
                                 response = response.replace("$", "USD ")

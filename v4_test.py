@@ -2909,7 +2909,6 @@ elif selected_option_case_type == "Money Laundering":
                                 prompt_1 = f'''Act as a calculator and add up all the debited amounts listed in the context. Only produce one sentence in the output.\n\
                                 Output the total calculated amount as answer to the question. Only generate response. Do not generate reason.\n\
                                 Context: {context_1}\n\
-                                #Question: {query}\n\
                                 Response: '''
 
 

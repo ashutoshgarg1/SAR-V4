@@ -2898,9 +2898,9 @@ elif selected_option_case_type == "Money Laundering":
                                 #st.session_state["lineage_aml"][query] = context_1
                 
                                 context_1 = transactions_cc
-                                prompt_1 = f'''Act as a Computer and and accurately do the addition of each of the each amounts in the given Context.\n\
-                                Output the computed amount as answer to the question in one liner.
-                                Context: {context_1}'''
+                                prompt_1 = f'''Question: What is the total amount debited to all the transactions made in the below Context for the given period? 
+                                Context: {context_1}
+                                Answer:'''
 
           
                                 response = zephyr_llm(zephyr_7b,prompt_1)

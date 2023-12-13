@@ -2909,7 +2909,7 @@ elif selected_option_case_type == "Money Laundering":
                                 st.write(context_1)
                                 prompt_1 = f'''You are a calculator and your goal is add up all the numbers in the below context as "total calculated amount".\n\
                                 Context: {context_1}\n\
-                                Response: (Add this before the total calculated amount : "Total Money Laundering amount that can be associated with credit card is : ". do not ouput any other text .)'''
+                                Response: (just output the "total calculated amount".)'''
 
 
                                 

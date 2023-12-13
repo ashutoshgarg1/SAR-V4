@@ -2894,21 +2894,33 @@ elif selected_option_case_type == "Money Laundering":
 
                                  ## question 3.1
 
-                                
-
                                 query = "What is the total amount associated with the money laundering activity for Credit card?"
-                                context_1 = transactions_cc
-                                prompt_1 = f'''Act as a calculator and add up each amounts in the context one by one. Only produce one sentence in the output.\n\
-                                Output the total calculated amount as answer to the question.\n\
+                                #st.session_state["lineage_aml_llama"][query] = context_1
+                                context_1 = transactions_cc_llama
+                                prompt_1 = f'''Act as a calculator and add up all the transactions amount in the context.\n\
+                                Output the total calculated amount as answer to the question.
                                 Context: {context_1}\n\
-                                Response: '''
-
-
-                                
-
-
+                                Question: {query}\n\
+                                Response: (Add this before the total amount : "Total Money Laundering amount that can be associated with credit card is : ")'''
+          
                                 response = llama_llm(llama_13b,prompt_1)
                                 response = response.replace("$", "USD ")
+
+                                
+
+                                # query = "What is the total amount associated with the money laundering activity for Credit card?"
+                                # context_1 = transactions_cc
+                                # prompt_1 = f'''Act as a calculator and add up each amounts in the context one by one. Only produce one sentence in the output.\n\
+                                # Output the total calculated amount as answer to the question.\n\
+                                # Context: {context_1}\n\
+                                # Response: '''
+
+
+                                
+
+
+                                # response = llama_llm(llama_13b,prompt_1)
+                                # response = response.replace("$", "USD ")
                                 total_cc = response
                             
 

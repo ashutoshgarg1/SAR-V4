@@ -2907,7 +2907,7 @@ elif selected_option_case_type == "Money Laundering":
                                 
 
 
-                                response = zephyr_llm(zephyr_7b,prompt_1)
+                                response = llama_llm(llama_13b,prompt_1)
                                 response = response.replace("$", "USD ")
                                 total_cc = response
                             
@@ -2967,7 +2967,7 @@ elif selected_option_case_type == "Money Laundering":
                                 Response: '''
                                 
 
-                                response = llama_llm(llama_13b,prompt_1)
+                                response = zephyr_llm(zephyr_7b,prompt_1)
                                 
                                 #response = response.replace("33000", "USD 33000")
                                 response = response.replace("$", "USD ")

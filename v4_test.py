@@ -2895,7 +2895,7 @@ elif selected_option_case_type == "Money Laundering":
                                 pattern = r'Debited \(\$?\): (\d+)'
 
                                 # Find all amounts using re.findall
-                                amounts = re.findall(pattern, text)
+                                amounts = re.findall(pattern, transactions_cc)
 
                                 # Convert amounts to integers
                                 amounts = [int(amount) for amount in amounts]

@@ -16,6 +16,7 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 import openai 
 import fitz
+import re
 import docx
 from gtts import gTTS
 import PyPDF2
@@ -2891,6 +2892,13 @@ elif selected_option_case_type == "Money Laundering":
                                 
                                
                                 ## Question-3.1
+                                pattern = r'Debited \(\$?\): (\d+)'
+
+                                # Find all amounts using re.findall
+                                amounts = re.findall(pattern, text)
+
+                                # Convert amounts to integers
+                                amounts = [int(amount) for amount in amounts]
 
                                 
 
@@ -2899,7 +2907,7 @@ elif selected_option_case_type == "Money Laundering":
                                 query = "What is the total amount associated with the money laundering activity for Credit card?"
                                 context_1 = transactions_cc
                                 prompt_1 = f'''You are a calculator and your goal is to add up all the amounts carefully from the given context.\n\
-                                Context: {context_1}\n\
+                                Context: {amounts}\n\
                                 Response: (Add this before the total calculated amount : "Total Money Laundering amount that can be associated with credit card is : ".)'''
 
 

@@ -2900,7 +2900,7 @@ elif selected_option_case_type == "Money Laundering":
                                 prompt_1 = f'''Act as a calculator and add up each transactions amount in the context accuratley and output the total.\n\
                                 Context: {context_1}\n\
                                 Question: {query}\n\
-                                Response: (give your answer in one sentence)'''
+                                Response: '''
           
                                 response = llama_llm(llama_13b,prompt_1)
                                 response = response.replace("$", "USD ")

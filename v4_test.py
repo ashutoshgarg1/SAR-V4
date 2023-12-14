@@ -1435,10 +1435,12 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     res_df_zephyr  = pd.DataFrame(list(chat_history.items()), columns=['Question','Answer'])
                                     res_df_zephyr .reset_index(drop=True, inplace=True)
                                     index_ = pd.Series([1,2,3,4,5,6,7,8,9,10])
-                                    res_df_zephyr  = res_df_zephyr .set_index([index_])
+                                    res_df_zephyr  = res_df_zephyr.set_index([index_])
                                     # st.write(res_df_llama)
-                                except IndexError: 
-                                    pass
+                                except:
+                                    e = Exception("")
+                                    st.exception(e)
+
                                 st.table(res_df_zephyr)
                                 st.session_state["tmp_table_zephyr"] = pd.concat([st.session_state.tmp_table_zephyr, res_df_zephyr], ignore_index=True)
 

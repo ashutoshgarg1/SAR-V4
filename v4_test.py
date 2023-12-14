@@ -3094,7 +3094,7 @@ elif selected_option_case_type == "Money Laundering":
                                 3.) check the type of money laundering activity is taking place and why \n\n\                     
                                 Context: {contexts}\n\
                                 Also, add your concise recommendation whether SAR filling is required or not ?
-                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points."""
+                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points without mentioning the questions in the output."""
                                 response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response1.replace("$", "USD ")
                                 sara_open_source=response1

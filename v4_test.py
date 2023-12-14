@@ -3088,12 +3088,13 @@ elif selected_option_case_type == "Money Laundering":
                     
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
                                 contexts = ', '.join(res_df_llama['Answer'])
-                                prompt = f"""Give concise response to the each questions below within the given Context. \n\
-                                1.) transaction triggered\n\
-                                2.) amounts related to money laundering for checking account and credit cards\n\
-                                3.) Type of money laundering activity taking place and why ?\n\                          
+                                prompt = f"""Is this a case of Suspicious activity? If yes, then Find answer to the questions as truthfully as possible as per the available information only,\n\n\
+                                1.) why was the transaction triggered?\n\
+                                2.) what are the total amounts related to money laundering for checking account and credit cards?\n\
+                                3.) what type of money laundering activity is taking place and why ?\n\n\                     
                                 Context: {contexts}\n\
-                                Response: (Give a neatly formatted response for each question individually. Also, give your recommendation for the below Question.)"""
+                                Also, add your concise recommendation whether SAR filling is required or not ?
+                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points."""
                                 response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response.replace("$", "USD ")
                                 sara_open_source=response1

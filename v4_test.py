@@ -3094,8 +3094,9 @@ elif selected_option_case_type == "Money Laundering":
                                 3.) what type of money laundering activity is taking place and why \n\n\                     
                                 Context: {contexts}\n\
                                 Also, add your concise recommendation whether SAR filling is required or not ?
-                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the above points individually."""
-                                response = llama_llm(llama_13b,prompt_2)
+                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the above points individually.\n\
+                                   ## Do not mention the question , while answering the them - just mention answers of that question."""
+                                response = zephyr_llm(zephyr_7b,prompt_2)
                                 response1 = response.replace("$", "USD ")
                                 sara_open_source=response1
                                 
@@ -3309,11 +3310,13 @@ elif selected_option_case_type == "Money Laundering":
                             Response: """
                             prompt = PromptTemplate(template=template,input_variables=["text"])
                             llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
+                            summ2 = customer_details + ', '.join(res_df_llama['Answer']) + sara_open_source
 
                             summ_dict_llama = st.session_state.tmp_table_llama_aml.set_index('Question')['Answer']
                             text = []
-                            for key,value in summ_dict_llama.items():
-                                text.append(value)
+                            # for key,value in summ_dict_llama.items():
+                            #     text.append(value)
+                            text = summ2
                             st.session_state["tmp_summary_llama_aml"] = llm_chain_llama.run(text)
                             st.session_state["tmp_summary_llama_aml"]=st.session_state["tmp_summary_llama_aml"].replace("$", "USD ")
                             #Display summary

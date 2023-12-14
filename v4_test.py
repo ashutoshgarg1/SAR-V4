@@ -1961,8 +1961,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                     elif st.session_state.llm == "Open-Source":
                         st.session_state.disabled=False
-                        tmp_summary.append(st.session_state["tmp_summary_zephyr"])
-                        tmp_table = pd.concat([tmp_table, st.session_state["tmp_summary_zephyr"]], ignore_index=True)
+                        tmp_summary.append(st.session_state["tmp_table_zephyr"])
+                        tmp_table = pd.concat([tmp_table, st.session_state["tmp_table_zephyr"]], ignore_index=True)
                         tmp_table.drop_duplicates(inplace=True)
 
                 except:

@@ -1259,6 +1259,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 sara_open_source_gpt = response1
                                 st.session_state["sara_recommendation_gpt"] = response1  
                                 sara_recommendation_gpt = response1 
+                                sara_report = response1
                                         
                                 
                                 st.markdown("### SARA Recommendation")
@@ -1473,7 +1474,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response1.replace("$", "")
                                 response1 = response1.replace("5,000", "5,000")
-                                response1 = response1.replace("5,600", "5,600")       
+                                response1 = response1.replace("5,600", "5,600") 
+                                sara_report = response1    
                     
                                 
                                 
@@ -2061,7 +2063,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     paragraph = doc.add_paragraph()
                     doc.add_heading('SARA Recommendation', level=2)
                     doc.add_paragraph()       
-                    paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt"])
+                    paragraph = doc.add_paragraph(sara_report)
 
                     bio = io.BytesIO()
                     doc.save(bio)
@@ -2764,6 +2766,7 @@ elif selected_option_case_type == "Money Laundering":
                                 #response1 = usellm(prompt)
                                 response1 = response.replace("$", "USD ")
                                 sara_close_source=response1
+                                sara_report_aml = response1
               
 
 
@@ -3031,6 +3034,7 @@ elif selected_option_case_type == "Money Laundering":
                                 response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response1.replace("$", "USD ")
                                 sara_open_source=response1
+                                sara_report_aml = response1
                                 
                                 
                                 st.session_state["sara_recommendation_llama_aml"] = response1                    
@@ -3398,7 +3402,7 @@ elif selected_option_case_type == "Money Laundering":
                 paragraph = doc.add_paragraph()
                 doc.add_heading('SARA Recommendation', level=2)
                 doc.add_paragraph()       
-                paragraph = doc.add_paragraph(st.session_state["sara_recommendation_gpt_aml"])
+                paragraph = doc.add_paragraph(sara_report_aml)
                 #paragraph = doc.add_paragraph(saracommon)
 
                 bio = io.BytesIO()

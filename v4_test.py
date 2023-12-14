@@ -2895,13 +2895,12 @@ elif selected_option_case_type == "Money Laundering":
                                  ## question 3.1
 
                                 query = "What is the total amount associated with the money laundering activity for Credit card?"
-                                #st.session_state["lineage_aml"][query] = context_1
-                
                                 context_1 = transactions_cc
-                                prompt_1 = f'''Act as a Computer and and accurately do the addition of each of the each amounts in the given Context.\n\
-                                Output the computed amount as answer to the question in one liner.
-                                Context: {context_1}'''
-
+                                prompt_1 = f'''Act as a calculator and add up all the debited amounts listed in the context. Only produce one sentence in the output.\n\
+                                Output the total calculated amount as answer to the question. Only generate response. Do not generate reason.\n\
+                                Context: {context_1}\n\
+                                Question: {query}\n\
+                                Response: '''
                                 # query = "What is the total amount associated with the money laundering activity for Credit card?"
                                 # #st.session_state["lineage_aml"][query] = context_1
                 

@@ -3088,7 +3088,7 @@ elif selected_option_case_type == "Money Laundering":
                     
                                 query  = "Give your recommendation if this is a Suspicious activity or not?"
                                 contexts = ', '.join(res_df_llama['Answer'])
-                                prompt_2 = f"""Is this a case of Suspicious activity? If yes, then Find answer to the questions as truthfully as possible as per the available information only,\n\n\
+                                prompt_2 = f"""Is this a case of Suspicious activity? If yes, then Find answer to the below points as truthfully as possible as per the available information only,\n\n\
                                 1.) why was the transaction triggered?\n\
                                 2.) what are the total amounts related to money laundering/suspicious for Checkings account and credit cards?\n\
                                 3.) what type of money laundering activity is taking place and why ?\n\n\                     

@@ -3268,7 +3268,7 @@ elif selected_option_case_type == "Money Laundering":
                             #st.write(text)
                             prompt = f'''Provide an accurate and detailed summary of the below context and make sure to include all the important information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
                             context: {text} \n\
-                            Response: (Provide the detailed summary in one big paragraph such that it includes all the details.)'''
+                            Response: (Provide the detailed summary in one large paragraph such that it includes all the details.)'''
                             response1 = zephyr_llm(zephyr_7b,prompt) 
                             
 

@@ -3086,16 +3086,17 @@ elif selected_option_case_type == "Money Laundering":
 
                     
                     
-                                query  = "Give your recommendation if this is a Suspicious activity or not?"
+                                query ="Give your recommendation if this is a Suspicious activity or not?"
                                 contexts = ', '.join(res_df_llama['Answer'])
-                                prompt_2 = f"""Is this a case of Suspicious activity? If yes, then Find answer to the below points as truthfully as possible as per the available information only,\n\n\
-                                1.) why was the transaction triggered\n\
-                                2.) what are the total amounts related to money laundering/suspicious for Checkings account and credit cards\n\
-                                3.) what type of money laundering activity is taking place and why \n\n\                     
-                                Context: {contexts}\n\
-                                Also, add your concise recommendation whether SAR filling is required or not ?
-                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then "without mentioning the questions in the output" - Answer above questions individually as points."""
-                                response = zephyr_llm(zephyr_7b,prompt_2)
+                                prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                    1. Check why was the transaction triggered  \n\
+                                    2. amounts related to money laundering for checking account and credit cards.\n\n\
+                                    3. Type of money laundering activity taking place and why ?\n\n\
+                                    Based on above points, give your concise recommendation in single sentence if SAR filing is required or not? \n\n\
+                                    Context: {contexts}\n\
+                                    Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a single sentence, then answer all above 3 questions individually in points."
+                
+                                response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response.replace("$", "USD ")
                                 sara_open_source=response1
                                 

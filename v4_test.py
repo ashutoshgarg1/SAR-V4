@@ -1432,11 +1432,11 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 st.session_state["lineage_zephyr"] = lineage_dict_zephyr
 
                                 try:
-                                    res_df_zephyr  = pd.DataFrame(list(chat_history.items()), columns=['Question','Answer'])
+                                    res_df_zephyr  = pd.DataFrame(list(chat_history.items()),columns=['Question','Answer'])
                                     res_df_zephyr.reset_index(drop=True, inplace=True)
                                     index_ = pd.Series([1,2,3,4,5,6,7,8,9,10])
                                     res_df_zephyr = res_df_zephyr.set_index([index_])
-                                    st.write(res_df_zephyr)
+                                    
                                 except:
                                     e = Exception("")
                                     st.exception(e)

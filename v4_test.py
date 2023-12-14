@@ -1332,7 +1332,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 template = """You are a professional fraud analyst, perform Name Enitity Recognition to identify Merchant as accurately as possible from the provided information.A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant response.\n\n\
                                     """
                                 
-                                query = "List the merchant name"
+                                query = "List the Merchant Name"
                             
                                 response,context = run_chain_llm(template,query)
                                 chat_history[query] = response
@@ -1364,7 +1364,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 Give a relevant, concise response in one sentence.\n\n\
                                     """
                                 
-                                query = "What is the Fraud Type?"
+                                query = "What type of fraud is taking place?"
                             
                                 response,context = run_chain_llm(template,query)
                                 chat_history[query] = response
@@ -1774,8 +1774,17 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     if st.session_state.llm == "Closed-Source":
                             st.session_state.disabled=False
                     
-                            li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of network/card are involved?","Was the police report filed?"]
-                            
+                            li = ["Select question to get the lineage","What is the customer's name?",
+                                    "What is the suspect's name?",
+                                    "List the Merchant Name",
+                                    "How was the bank notified?",
+                                    "When was the bank notified?",
+                                    "What type of fraud is taking place?",
+                                    "When did the fraud occur?",
+                                    "Was the disputed amount greater than 5000 usd?",
+                                    "What type of network/card are involved?",
+                                    "Was the police report filed?"]
+                                                                
                         
                             selected_option = st.selectbox("", li)
                             if selected_option in li[1:]:
@@ -1790,8 +1799,16 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                     elif st.session_state.llm == "Open-Source":
                             st.session_state.disabled=False
-                            li = ["Select question to get the lineage","What is the customer's name?","What is the suspect's name?","List the Merchant Name","How was the bank notified?","When was the bank notified?","What type of fraud is taking place?","When did the fraud occur?","Was the disputed amount greater than 5000 usd?","What type of network/card are involved?","Was the police report filed?"]
-                            
+                            li = ["Select question to get the lineage","What is the customer's name?",
+                                    "What is the suspect's name?",
+                                    "List the Merchant Name",
+                                    "How was the bank notified?",
+                                    "When was the bank notified?",
+                                    "What type of fraud is taking place?",
+                                    "When did the fraud occur?",
+                                    "Was the disputed amount greater than 5000 usd?",
+                                    "What type of network/card are involved?",
+                                    "Was the police report filed?"]
                         
                             selected_option = st.selectbox("", li)
                             if selected_option in li[1:]:

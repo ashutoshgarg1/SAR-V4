@@ -2901,9 +2901,12 @@ elif selected_option_case_type == "Money Laundering":
                                 Context: {context_1}\n\
                                 Question: {query}\n\
                                 Response: '''
+                                
+
                                 response = zephyr_llm(zephyr_7b,prompt_1)
                                 response = response.replace("$", "USD ")
                                 total_cc = response
+                                
                                 # query = "What is the total amount associated with the money laundering activity for Credit card?"
                                 # #st.session_state["lineage_aml"][query] = context_1
                 

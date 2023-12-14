@@ -1840,16 +1840,16 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     #st.write(text)
                     return response_summ_gpt,summ_dict_gpt
                 
-                def summ_zephyr_():
-                    template = """Write a detailed summary of the below text provided in such way that it includes all relevant information.
-                    ```{text}```
-                    Response: (Return your response in a single paragraph.) """
-                    prompt = PromptTemplate(template=template,input_variables=["text"])
-                    llm_chain_llama = LLMChain(prompt=prompt,llm=zephyr_7b)
+                # def summ_zephyr_():
+                #     template = """Write a detailed summary of the below text provided in such way that it includes all relevant information.
+                #     ```{text}```
+                #     Response: (Return your response in one paragraph with all the details.) """
+                #     prompt = PromptTemplate(template=template,input_variables=["text"])
+                #     llm_chain_llama = LLMChain(prompt=prompt,llm=zephyr_7b)
 
-                    text = ', '.join(res_df_zephyr['Answer']) + sara_recommendation_zephyr
-                    response_summ_llama = llm_chain_llama.run(text)
-                    return response_summ_llama
+                #     text = ', '.join(res_df_zephyr['Answer']) + sara_recommendation_zephyr
+                #     response_summ_llama = llm_chain_llama.run(text)
+                #     return response_summ_llama
                 
                 if 'clicked2' not in st.session_state:
                     st.session_state.clicked2 = False
@@ -1894,13 +1894,29 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                         elif st.session_state.llm == "Open-Source":
                             st.session_state.disabled=False
+                            ###################
+                            summary2 = ', '.join(res_df_zephyr['Answer']) + sara_recommendation_zephyr
+                            
+                            text1 = summary2
+                            #st.write(text)
+                            prompt = f'''Provide an accurate and detailed summary of the below context and make sure to include all the important information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            context: {text1} \n\
+                            Response: (Provide the detailed summary in one paragraph.)'''
+                            response1 = zephyr_llm(zephyr_7b,prompt) 
+                            
 
-                            response_summ_zephyr = summ_zephyr_()
-                            response_summ_zephyr = response_summ_zephyr.replace("$", "USD")
-                            response_summ_zephyr = response_summ_zephyr.replace("5,000", "5,000")
-                            response_summ_zephyr = response_summ_zephyr.replace("5,600", "5,600")
-                            st.session_state["tmp_summary_zephyr"] = response_summ_zephyr
+                            
+                            st.session_state["tmp_summary_zephyr"] = response1
+                            st.session_state["tmp_summary_zephyr"]=st.session_state["tmp_summary_zephyr"].replace("$", "USD ")
                             st.write(st.session_state["tmp_summary_zephyr"])
+                            ##################
+
+                            # response_summ_zephyr = summ_zephyr_()
+                            # response_summ_zephyr = response_summ_zephyr.replace("$", "USD")
+                            # response_summ_zephyr = response_summ_zephyr.replace("5,000", "5,000")
+                            # response_summ_zephyr = response_summ_zephyr.replace("5,600", "5,600")
+                            # st.session_state["tmp_summary_zephyr"] = response_summ_zephyr
+                            
                             #summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_llama
                             
                             # template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\

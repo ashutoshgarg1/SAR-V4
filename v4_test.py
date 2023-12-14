@@ -3094,7 +3094,7 @@ elif selected_option_case_type == "Money Laundering":
                                 3.) the type of money laundering activity is taking place  \n\n\                     
                                 Context: {contexts}\n\
                                 Also, add your concise recommendation whether SAR filling is required or not ?
-                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points without mentioning the questions in the output."""
+                                Response: start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions as individual points."""
                                 response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response1.replace("$", "USD ")
                                 sara_open_source=response1
@@ -3303,20 +3303,18 @@ elif selected_option_case_type == "Money Laundering":
 
 
                         elif st.session_state.llm == "Open-Source":
-                            st.session_state.disabled=False
-                            template = """ You are a summarization tool and your goal is to summarize the data provided in such a way that it includes all the relevant information. # DO not use words such as AI or tool
-                            ```{text}```
-                            Response: """
-                            prompt = PromptTemplate(template=template,input_variables=["text"])
-                            llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
-                            summ2 = customer_details + ', '.join(res_df_llama['Answer']) + sara_open_source
 
-                            summ_dict_llama = st.session_state.tmp_table_llama_aml.set_index('Question')['Answer']
-                            text = []
-                            # for key,value in summ_dict_llama.items():
-                            #     text.append(value)
+                            st.session_state.disabled=False
+                            summ2 = customer_details + ', '.join(res_df_llama['Answer']) + sara_open_source
+                            
                             text = summ2
-                            st.session_state["tmp_summary_llama_aml"] = llm_chain_llama.run(text)
+                            prompt = f'''Provide an accurate and detailed summary of the below context and make sure to include all the important information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            context: {text} '''
+                            response1 = zephyr_llm(zephyr_7b,prompt) 
+                            
+
+                            
+                            st.session_state["tmp_summary_llama_aml"] = response1
                             st.session_state["tmp_summary_llama_aml"]=st.session_state["tmp_summary_llama_aml"].replace("$", "USD ")
                             #Display summary
                             st.write(st.session_state["tmp_summary_llama_aml"])

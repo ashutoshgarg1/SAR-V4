@@ -1312,7 +1312,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                 template = """Perform Name Enitity Recognition to identify the cardholder name as accurately as possible, given the context. The customer can also be referenced as the cardholder with whom the Fraud has taken place.\n\n\
                                 Do not add any extra explanation, note. Give concise answer based on query only. \n\n\
                                 """
-                                query = "What is the customer name?"
+                                query = "What is the customer's name?"
                             
                                 response,context = run_chain_llm(template,query)
                                 chat_history[query] = response

@@ -3088,14 +3088,12 @@ elif selected_option_case_type == "Money Laundering":
                     
                                 query ="Give your recommendation if this is a Suspicious activity or not?"
                                 contexts = ', '.join(res_df_llama['Answer'])
-                                prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                    1. Check why was the transaction triggered  \n\
-                                    2. amounts related to money laundering for checking account and credit cards.\n\n\
-                                    3. Type of money laundering activity taking place and why ?\n\n\
-                                    Based on above points, give your concise recommendation in single sentence if SAR filing is required or not? \n\n\
-                                    Context: {contexts}\n\
-                                    Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a single sentence, then answer all above 3 questions individually in points."
-                
+                                prompt = f"""Give concise response to the each questions below within the given Context. \n\
+                                1.) transaction triggered\n\
+                                2.) amounts related to money laundering for checking account and credit cards\n\
+                                3.) Type of money laundering activity taking place and why ?\n\                          
+                                Context: {contexts}\n\
+                                Response: (Give a neatly formatted response for each question individually. Also, give your recommendation for the below Question.)"""
                                 response1 = zephyr_llm(zephyr_7b,prompt) 
                                 response1 = response.replace("$", "USD ")
                                 sara_open_source=response1

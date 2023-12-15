@@ -1907,7 +1907,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             
                             text1 = summary2
                             #st.write(text)
-                            prompt = f'''Provide an accurate and detailed summary of the below context and make sure to include all the important information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                            prompt = f'''Provide a detailed summary of the below context and make sure to include all the important information (like names, transactions, involved parties, amounts involved, etc). Don't include words like these: 'chat summary', 'includes information' or 'AI' in the final summary.\n\n\
                             context: {text1} \n\
                             Response: '''
                             response1 = zephyr_llm(zephyr_7b,prompt) 

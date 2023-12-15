@@ -914,7 +914,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
         ## Defining some global variables for fraud transaction
 
-        directoty_path = "data/"
+        directoty_path = "data2/"
         fetched_files = read_pdf_files(directoty_path)
         
 

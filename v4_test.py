@@ -873,6 +873,47 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
         ## Defining some global variables for fraud transaction
 
+        directoty_path = "data2/"
+        fetched_files = read_pdf_files(directoty_path)
+
+    elif selected_option == "SAR-2023-13579":
+        st.session_state.case_num = "SAR-2023-13579"
+        # st.header("Merge Documents")
+        # st.write("Upload multiple document files and merge them into one doc.")
+
+        # Upload PDF files
+        # st.subheader("Upload Case Files")
+        # st.markdown(f"**Case No: {st.session_state.case_num}**")
+        # st.markdown("""
+        #     | Case No.                  | Case Type                 | Customer Name             | Case Status             | Open Date              |
+        #     | ------------------------  | ------------------------- | ------------------------- | ------------------------|------------------------|
+        #     | SAR-2023-24680            | Fraud Transaction Dispute | John Brown                | In Progress             | 12/10/2020             |
+        #     """)
+
+        col1,col2 = st.columns(2)
+        # Row 1
+        with col1:
+            st.markdown("##### **Case number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:** SAR-2023-13579")
+            st.markdown("##### **Customer name  :** John Brown")
+
+
+        with col2:
+            st.markdown("##### **Case open date&nbsp;&nbsp;&nbsp;&nbsp;:** Feb 02, 2021")
+            st.markdown("##### **Case type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:** Fraud transaction")
+
+
+        # Row 2
+        with col1:
+            st.markdown("##### **Customer ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:** 9659754")
+
+
+        with col2:
+            st.markdown("##### **Case Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:** Open")
+        
+        st.markdown("---")
+
+        ## Defining some global variables for fraud transaction
+
         directoty_path = "data/"
         fetched_files = read_pdf_files(directoty_path)
         

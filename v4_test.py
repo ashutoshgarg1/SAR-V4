@@ -3030,7 +3030,7 @@ elif selected_option_case_type == "Money Laundering":
                                 contexts = ', '.join(res_df_llama['Answer'])
                                 prompt = f"""Is this a case of Suspicious activity? If yes, then Find answer to the below points as truthfully as possible as per the available information only,\n\n\
                                 1.) the transaction triggered\n\
-                                2.) total amounts of suspicious transactions/money laundering for checking account and Credit cards.\n\
+                                2.) total amounts of suspicious transactions for checking account and Credit cards in details.\n\
                                 3.) the type of money laundering activity is taking place  \n\n\                     
                                 Context: {contexts}\n\
                                 Also, add your concise recommendation whether SAR filling is required or not ?

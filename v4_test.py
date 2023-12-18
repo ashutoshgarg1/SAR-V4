@@ -2255,7 +2255,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     elif st.session_state.case_num == "SAR-2023-13579":
                     
                         # st.write(fetched_pdf)
-                        doc = save_report1(tmp_table,tmp_summary,sara_doc)
+                        doc = save_report2(tmp_table,tmp_summary,sara_doc)
                         bio = io.BytesIO()
                         doc.save(bio)
 

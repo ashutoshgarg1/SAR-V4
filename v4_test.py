@@ -1055,7 +1055,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
                 #         pass   
 
 
-            temp_file_path = pytesseract_code(directoty_path,fetched_files)        
+            temp_file_path = pytesseract_code(directoty_path,fetched_files)  
+            st.write(temp_file_path)      
 
             with col2_up:
                 #This is the embedding model

@@ -1126,7 +1126,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                         if temp_file_path is not None:
                         # File handling logic
                             _, docsearch = embedding_store_fd(temp_file_path,hf_embeddings)
-                            st.write(temp_file_path)
+                            #st.write(temp_file_path)
                             res_dict = {}
                             lineage_dict = {}
                 

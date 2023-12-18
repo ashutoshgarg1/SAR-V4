@@ -918,8 +918,8 @@ elif selected_option_case_type == "Fraud transaction dispute":
         fetched_files = read_pdf_files(directoty_path)
         
 
-    if True:
     
+    if selected_option is not None:
         if selected_option:
             
             col1_up, col2_up, col3_up, col4_up, col5_up, col6_up = st.tabs(["Data", "Generate Insights","Lineage","Summarization","Download Report", "Make a Decision"])

@@ -2245,16 +2245,17 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             }
                         </style>
                     """, unsafe_allow_html=True)
+                    sara_doc = st.session_state["sara_doc"]
                     if st.session_state.case_num == "SAR-2023-24680":
                     
                         # st.write(fetched_pdf)
-                        doc = save_report1(tmp_table,tmp_summary,sara_recommendation_gpt)
+                        doc = save_report1(tmp_table,tmp_summary,sara_doc)
                         bio = io.BytesIO()
                         doc.save(bio)
                     elif st.session_state.case_num == "SAR-2023-13579":
                     
                         # st.write(fetched_pdf)
-                        doc = save_report1(tmp_table,tmp_summary,sara_recommendation_gpt)
+                        doc = save_report1(tmp_table,tmp_summary,sara_doc)
                         bio = io.BytesIO()
                         doc.save(bio)
 

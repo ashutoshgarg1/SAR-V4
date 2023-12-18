@@ -831,6 +831,8 @@ if selected_option_case_type == "Select Case Type":
 ## Fraud Transaction Code started
 elif selected_option_case_type == "Fraud transaction dispute":
     st.markdown("### :blue[Fraud transaction dispute]")
+    directoty_path = ""
+
 
 # st.markdown('---')
 
@@ -876,6 +878,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
         directoty_path = "data/"
         fetched_files = read_pdf_files(directoty_path)
 
+    
     elif selected_option == "SAR-2023-13579":
         st.session_state.case_num = "SAR-2023-13579"
         # st.header("Merge Documents")
@@ -917,9 +920,11 @@ elif selected_option_case_type == "Fraud transaction dispute":
         directoty_path = "data2/"
         fetched_files = read_pdf_files(directoty_path)
         
-
     
-    if selected_option is not None:
+    
+    if directoty_path != "":
+        
+
         if selected_option:
             
             col1_up, col2_up, col3_up, col4_up, col5_up, col6_up = st.tabs(["Data", "Generate Insights","Lineage","Summarization","Download Report", "Make a Decision"])

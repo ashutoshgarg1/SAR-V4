@@ -47,7 +47,7 @@ def embed(model_name):
     return hf_embeddings
 
 @st.cache_data(show_spinner=False)
-def embedding_store(_doc,_hf_embeddings):
+def embedding_store_fd(_doc,_hf_embeddings):
     docsearch = FAISS.from_documents(_doc, _hf_embeddings)
     return _doc, docsearch
 

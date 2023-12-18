@@ -2235,7 +2235,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                 col_d1, col_d2 = st.tabs(["Download Report", "Download Case Package"])
 
                 with col_d1:
-                    st.write(doc)
+                    #st.write(doc)
                 # Applying to download button -> download_button
                     st.markdown("""
                         <style>

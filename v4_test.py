@@ -2274,7 +2274,7 @@ elif selected_option_case_type == "Money Laundering":
         ## Defining some global varibales for AML
         # directoty_path="ml_doc/"
         # fetched_files = read_pdf_files(directoty_path)
-        directoty_path = "aml_docs2/"
+        directoty_path = "aml_docs/"
         fetched_files = read_pdf_files(directoty_path)
         
         
@@ -2435,7 +2435,7 @@ elif selected_option_case_type == "Money Laundering":
     
     
                 for fetched_pdf in fetched_files:
-                    directory_path="aml_docs2/"
+                    directory_path="aml_docs/"
         
                     
                     file_ext1 = tuple("pdf")
@@ -2458,7 +2458,7 @@ elif selected_option_case_type == "Money Laundering":
                     elif fetched_pdf.endswith(file_ext2):
                         selected_file_path = os.path.join(directory_path, fetched_pdf)
                         
-                        if selected_file_path.startswith("aml_docs2/credit_card_statement"):
+                        if selected_file_path.startswith("aml_docs/credit_card_statement"):
                             
                             json1=process_data_credit_card(selected_file_path)
                             #st.write("creditcard")
@@ -2467,7 +2467,7 @@ elif selected_option_case_type == "Money Laundering":
                             texts = text_to_docs(json1,file)
                             for i in texts:
                                 temp_file_path2.append(i)
-                        elif selected_file_path.startswith("aml_docs2/checking_account_statement"):
+                        elif selected_file_path.startswith("aml_docs/checking_account_statement"):
                             #selected_file_path = os.path.join(directory_path, fetched_pdf)
                             json2=process_data_saving(selected_file_path)
                             #st.write("checking")
@@ -3520,7 +3520,7 @@ elif selected_option_case_type == "Money Laundering":
 #fetching file
                     for fetched_pdf in fetched_files:
                         # st.write(fetched_pdf)
-                        file_pth = os.path.join('aml_docs2/', fetched_pdf)
+                        file_pth = os.path.join('aml_docs/', fetched_pdf)
                         # st.write(file_pth)
                         file_paths.append(file_pth)
 

@@ -920,667 +920,777 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
 
     
-        if selected_option:
-            
-            col1_up, col2_up, col3_up, col4_up, col5_up, col6_up = st.tabs(["Data", "Generate Insights","Lineage","Summarization","Download Report", "Make a Decision"])
-
-            with col1_up:
+    if selected_option:
         
-                bt1_up, bt2_up = st.tabs(["Fetch Evidence", "Upload Evidence"])
+        col1_up, col2_up, col3_up, col4_up, col5_up, col6_up = st.tabs(["Data", "Generate Insights","Lineage","Summarization","Download Report", "Make a Decision"])
 
-                with bt1_up:
-                    # Set the color
-                    # st.markdown(
-                    #     """
-                    #     <div style="display: flex; justify-content: center; align-items: center; height: 48px; border: 1px solid #ccc; border-radius: 5px; background-color: #f2f2f2;">
-                    #         <span style="font-size: 16px;  ">Fetch Evidence</span>
-                    #     </div>
-                    #     """,
-                    #     unsafe_allow_html=True
-                    # )
-                    if 'clicked' not in st.session_state:
-                        st.session_state.clicked = False
+        with col1_up:
+    
+            bt1_up, bt2_up = st.tabs(["Fetch Evidence", "Upload Evidence"])
+
+            with bt1_up:
+                # Set the color
+                # st.markdown(
+                #     """
+                #     <div style="display: flex; justify-content: center; align-items: center; height: 48px; border: 1px solid #ccc; border-radius: 5px; background-color: #f2f2f2;">
+                #         <span style="font-size: 16px;  ">Fetch Evidence</span>
+                #     </div>
+                #     """,
+                #     unsafe_allow_html=True
+                # )
+                if 'clicked' not in st.session_state:
+                    st.session_state.clicked = False
+                
+                def set_clicked():
+                    st.session_state.clicked = True
+                    st.session_state.disabled = True
+                st.write("") #for the gap
+                st.button('Fetch Evidence', on_click=set_clicked)
+
+                if st.session_state.clicked:
+                    # st.write("Evidence Files:") 
+                    # st.markdown(html_str, unsafe_allow_html=True)
                     
-                    def set_clicked():
-                        st.session_state.clicked = True
-                        st.session_state.disabled = True
-                    st.write("") #for the gap
-                    st.button('Fetch Evidence', on_click=set_clicked)
+                    # Showing files
+                    # show_files = fetched_files.copy()
+                    # show_files = show_files + ['Other.pdf']
+                    # files_frame = pd.DataFrame(show_files, columns=["File Name"])
+                    # # files_frame["Select"] = [True for _ in range(len(files_frame))]
+                    # files_frame = files_frame.reset_index(drop=True)
 
-                    if st.session_state.clicked:
-                        # st.write("Evidence Files:") 
-                        # st.markdown(html_str, unsafe_allow_html=True)
-                        
-                        # Showing files
-                        # show_files = fetched_files.copy()
-                        # show_files = show_files + ['Other.pdf']
-                        # files_frame = pd.DataFrame(show_files, columns=["File Name"])
-                        # # files_frame["Select"] = [True for _ in range(len(files_frame))]
-                        # files_frame = files_frame.reset_index(drop=True)
-
-                        # # Add checkboxes to the DataFrame
-                        # df_with_checkboxes = add_checkboxes_to_dataframe(files_frame)
-                        
-                        # # Iterate through each row and add checkboxes
-                        # for index, row in df_with_checkboxes.iterrows():
-                        #     if index < len(df_with_checkboxes) - 1:
-                        #         checkbox_state = st.checkbox(f" {row['File Name']}", value=True)
-                        #         df_with_checkboxes.loc[index, 'Select'] = checkbox_state
-                        #     else:
-                        #         st.checkbox(f"{row['File Name']}", value=False)
+                    # # Add checkboxes to the DataFrame
+                    # df_with_checkboxes = add_checkboxes_to_dataframe(files_frame)
+                    
+                    # # Iterate through each row and add checkboxes
+                    # for index, row in df_with_checkboxes.iterrows():
+                    #     if index < len(df_with_checkboxes) - 1:
+                    #         checkbox_state = st.checkbox(f" {row['File Name']}", value=True)
+                    #         df_with_checkboxes.loc[index, 'Select'] = checkbox_state
+                    #     else:
+                    #         st.checkbox(f"{row['File Name']}", value=False)
 
 
 
-                        # st.dataframe(files_frame)
-                        # st.write(df_reset.to_html(index=False), unsafe_allow_html=True)
-                        # st.markdown(files_frame.style.hide(axis="index").to_html(), unsafe_allow_html=True)
-                        
-                        
-                        
-                        #select box to select file
-                        selected_file_name = st.selectbox(":blue[Select a file to View]",fetched_files)
-                        st.write("Selected File: ", selected_file_name)
+                    # st.dataframe(files_frame)
+                    # st.write(df_reset.to_html(index=False), unsafe_allow_html=True)
+                    # st.markdown(files_frame.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+                    
+                    
+                    
+                    #select box to select file
+                    selected_file_name = st.selectbox(":blue[Select a file to View]",fetched_files)
+                    st.write("Selected File: ", selected_file_name)
+                    st.session_state.disabled = False
+                    file_ext = tuple("pdf")
+                    if selected_file_name.endswith(file_ext):
+                        selected_file_path = os.path.join(directoty_path, selected_file_name)
+                        #converting pdf data to bytes so that render_pdf_as_images could read it
+                        file = pdf_to_bytes(selected_file_path)
+                        pdf_images = render_pdf_as_images(file)
+                        #showing content of the pdf
+                        st.subheader(f"Contents of {selected_file_name}")
+                        for img_bytes in pdf_images:
+                            st.image(img_bytes, use_column_width=True)
+                    else:
+                        selected_file_path = os.path.join(directoty_path, selected_file_name)
+                        # This is showing png,jpeg files
+                        st.image(selected_file_path, use_column_width=True)
+
+
+
+            with bt2_up:
+                pdf_files = st.file_uploader("", type=["pdf","png","jpeg","docx","xlsx"], accept_multiple_files=True)
+                st.session_state.pdf_files = pdf_files
+                # showing files
+                for uploaded_file in pdf_files:
+                    #This code is to show pdf files
+                    file_ext = tuple("pdf")
+                    if uploaded_file.name.endswith(file_ext):
+                        # Show uploaded files in a dropdown
+                        # if pdf_files:
+                        st.subheader("Uploaded Files")
+                        file_names = [file.name for file in pdf_files]
+                        selected_file = st.selectbox(":blue[Select a file]", file_names)
+                        # Enabling the button
                         st.session_state.disabled = False
-                        file_ext = tuple("pdf")
-                        if selected_file_name.endswith(file_ext):
-                            selected_file_path = os.path.join(directoty_path, selected_file_name)
-                            #converting pdf data to bytes so that render_pdf_as_images could read it
-                            file = pdf_to_bytes(selected_file_path)
-                            pdf_images = render_pdf_as_images(file)
-                            #showing content of the pdf
-                            st.subheader(f"Contents of {selected_file_name}")
+                        # Display selected PDF contents
+                        if selected_file:
+                            selected_pdf = [pdf for pdf in pdf_files if pdf.name == selected_file][0]
+                            pdf_images = render_pdf_as_images(selected_pdf)
+                            st.subheader(f"Contents of {selected_file}")
                             for img_bytes in pdf_images:
                                 st.image(img_bytes, use_column_width=True)
-                        else:
-                            selected_file_path = os.path.join(directoty_path, selected_file_name)
-                            # This is showing png,jpeg files
-                            st.image(selected_file_path, use_column_width=True)
 
-
-
-                with bt2_up:
-                    pdf_files = st.file_uploader("", type=["pdf","png","jpeg","docx","xlsx"], accept_multiple_files=True)
-                    st.session_state.pdf_files = pdf_files
-                    # showing files
-                    for uploaded_file in pdf_files:
-                        #This code is to show pdf files
-                        file_ext = tuple("pdf")
-                        if uploaded_file.name.endswith(file_ext):
-                            # Show uploaded files in a dropdown
-                            # if pdf_files:
-                            st.subheader("Uploaded Files")
-                            file_names = [file.name for file in pdf_files]
-                            selected_file = st.selectbox(":blue[Select a file]", file_names)
-                            # Enabling the button
-                            st.session_state.disabled = False
-                            # Display selected PDF contents
-                            if selected_file:
-                                selected_pdf = [pdf for pdf in pdf_files if pdf.name == selected_file][0]
-                                pdf_images = render_pdf_as_images(selected_pdf)
-                                st.subheader(f"Contents of {selected_file}")
-                                for img_bytes in pdf_images:
-                                    st.image(img_bytes, use_column_width=True)
-
-                        else:
-                            # This is showing png,jpeg files
-                            st.image(uploaded_file, use_column_width=True)
-
-            #creating temp directory to have all the files at one place for accessing
-                # tmp_dir_ = tempfile.mkdtemp()
-                # temp_file_path= []
-
-
-                # for uploaded_file in pdf_files:
-                #     file_ext = tuple("pdf")
-                #     if uploaded_file.name.endswith(file_ext):
-                #         file_pth = os.path.join(tmp_dir_, uploaded_file.name)
-                #         with open(file_pth, "wb") as file_opn:
-                #             file_opn.write(uploaded_file.getbuffer())
-                #             temp_file_path.append(file_pth)
-                #     else:
-                #         pass
-
-                # for fetched_pdf in fetched_files:
-                #     file_ext = tuple("pdf")
-                #     if fetched_pdf.endswith(file_ext):
-                #         file_pth = os.path.join('data/', fetched_pdf)
-                #         # st.write(file_pth)
-                #         temp_file_path.append(file_pth) 
-                #     else:
-                #         pass   
-
-
-            temp_file_path = pytesseract_code(directoty_path,fetched_files)        
-
-            with col2_up:
-                #This is the embedding model
-                model_name = "sentence-transformers/all-MiniLM-L6-v2"
-                # model_name = "hkunlp/instructor-large"
-                
-                # Memory setup for gpt-3.5
-                llm = ChatOpenAI(temperature=0.1)
-                memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=500)
-                conversation = ConversationChain(llm=llm, memory =memory,verbose=False)
-                
-                
-                # Adding condition on embedding
-                try:
-                    if temp_file_path:
-                        hf_embeddings = embed(model_name) 
                     else:
-                        pass
-                except NameError:
+                        # This is showing png,jpeg files
+                        st.image(uploaded_file, use_column_width=True)
+
+        #creating temp directory to have all the files at one place for accessing
+            # tmp_dir_ = tempfile.mkdtemp()
+            # temp_file_path= []
+
+
+            # for uploaded_file in pdf_files:
+            #     file_ext = tuple("pdf")
+            #     if uploaded_file.name.endswith(file_ext):
+            #         file_pth = os.path.join(tmp_dir_, uploaded_file.name)
+            #         with open(file_pth, "wb") as file_opn:
+            #             file_opn.write(uploaded_file.getbuffer())
+            #             temp_file_path.append(file_pth)
+            #     else:
+            #         pass
+
+            # for fetched_pdf in fetched_files:
+            #     file_ext = tuple("pdf")
+            #     if fetched_pdf.endswith(file_ext):
+            #         file_pth = os.path.join('data/', fetched_pdf)
+            #         # st.write(file_pth)
+            #         temp_file_path.append(file_pth) 
+            #     else:
+            #         pass   
+
+
+        temp_file_path = pytesseract_code(directoty_path,fetched_files)        
+
+        with col2_up:
+            #This is the embedding model
+            model_name = "sentence-transformers/all-MiniLM-L6-v2"
+            # model_name = "hkunlp/instructor-large"
+            
+            # Memory setup for gpt-3.5
+            llm = ChatOpenAI(temperature=0.1)
+            memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=500)
+            conversation = ConversationChain(llm=llm, memory =memory,verbose=False)
+            
+            
+            # Adding condition on embedding
+            try:
+                if temp_file_path:
+                    hf_embeddings = embed(model_name) 
+                else:
                     pass
+            except NameError:
+                pass
+            
+            # Chunking with overlap
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size = 1000,
+                chunk_overlap  = 100,
+                length_function = len,
+                separators=["\n\n", "\n", " ", ""]
+            )
+            
+
+            # Creating header
+            col1,col2 = st.columns(2)
+            with col1:
+                st.markdown("""<span style="font-size: 24px; ">Key Questions</span>""", unsafe_allow_html=True)
+                # Create a Pandas DataFrame with your data
+                data = {'Questions': ["What is the customer's name?","What is the suspect's name?",' List the merchant name',' How was the bank notified?',' When was the bank notified?',' What is the fraud type?',' When did the fraud occur?',' Was the disputed amount greater than 5000 USD?','What type of network/card are involved?',' Was the police report filed?']}
+                df_fixed = pd.DataFrame(data)
+                df_fixed.index = df_fixed.index +1
+            with col2:
+                # Create a checkbox to show/hide the table
+                cols1, cols2, cols3, cols4 = st.columns([1,1,1,1])
+                with cols1:
+                    show_table1 = tog.st_toggle_switch(label="", 
+                                        key="Key1", 
+                                        default_value=False, 
+                                        label_after = False, 
+                                        inactive_color = '#D3D3D3', 
+                                        active_color="#11567f", 
+                                        track_color="#29B5E8"
+                                        )
+                # Show the table if the checkbox is ticked
+                if show_table1:
+                    df_fixed["S.No."] = df_fixed.index
+                    df_fixed = df_fixed.loc[:,['S.No.','Questions']]
+                    st.markdown(df_fixed.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+
+            with st.spinner('Wait for it...'):
+                if 'clicked1' not in st.session_state:
                 
-                # Chunking with overlap
-                text_splitter = RecursiveCharacterTextSplitter(
-                    chunk_size = 1000,
-                    chunk_overlap  = 100,
-                    length_function = len,
-                    separators=["\n\n", "\n", " ", ""]
-                )
-               
-
-               # Creating header
-                col1,col2 = st.columns(2)
-                with col1:
-                    st.markdown("""<span style="font-size: 24px; ">Key Questions</span>""", unsafe_allow_html=True)
-                    # Create a Pandas DataFrame with your data
-                    data = {'Questions': ["What is the customer's name?","What is the suspect's name?",' List the merchant name',' How was the bank notified?',' When was the bank notified?',' What is the fraud type?',' When did the fraud occur?',' Was the disputed amount greater than 5000 USD?','What type of network/card are involved?',' Was the police report filed?']}
-                    df_fixed = pd.DataFrame(data)
-                    df_fixed.index = df_fixed.index +1
-                with col2:
-                    # Create a checkbox to show/hide the table
-                    cols1, cols2, cols3, cols4 = st.columns([1,1,1,1])
-                    with cols1:
-                        show_table1 = tog.st_toggle_switch(label="", 
-                                            key="Key1", 
-                                            default_value=False, 
-                                            label_after = False, 
-                                            inactive_color = '#D3D3D3', 
-                                            active_color="#11567f", 
-                                            track_color="#29B5E8"
-                                            )
-                    # Show the table if the checkbox is ticked
-                    if show_table1:
-                        df_fixed["S.No."] = df_fixed.index
-                        df_fixed = df_fixed.loc[:,['S.No.','Questions']]
-                        st.markdown(df_fixed.style.hide(axis="index").to_html(), unsafe_allow_html=True)
-
-                with st.spinner('Wait for it...'):
-                    if 'clicked1' not in st.session_state:
+                    st.session_state.clicked1 = False
+            
+                def set_clicked1():
+                    st.session_state.clicked1 = True
+                    st.session_state.disabled = True
+                st.button("Generate Insights",key=2,on_click=set_clicked1,disabled=st.session_state.disabled)
+                if st.session_state.clicked1:
+                    if temp_file_path is not None:
+                    # File handling logic
+                        _, docsearch = embedding_store(temp_file_path,hf_embeddings)
+                        res_dict = {}
+                        lineage_dict = {}
+            
+                        if st.session_state.llm == "Closed-Source":
+                            query = "What is the customer's name?"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f'''Perform Name Enitity Recognition to identify the cardholder name as accurately as possible, given the context. The customer can also be referenced as the cardholder with whom the Fraud has taken place.\n\n\ 
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response
+                            lineage_dict[query] = context_1
+                            st.session_state["lineage_gpt"][query] = context_1
+                        
+                                
+                            query = "What is the suspect's name?"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f'''Perform Name Enitity Recognition to identify the suspect name as accurately as possible, given the context. Suspect is the Person who has committed the fraud with the Customer. Respond saying "The Suspect Name is not Present" if there is no suspect in the given context.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response
+                            lineage_dict[query] = context_1
+                            st.session_state["lineage_gpt"][query] = context_1
                     
-                       st.session_state.clicked1 = False
-                
-                    def set_clicked1():
-                        st.session_state.clicked1 = True
-                        st.session_state.disabled = True
-                    st.button("Generate Insights",key=2,on_click=set_clicked1,disabled=st.session_state.disabled)
-                    if st.session_state.clicked1:
-                        if temp_file_path is not None:
-                        # File handling logic
-                            _, docsearch = embedding_store(temp_file_path,hf_embeddings)
-                            res_dict = {}
-                            lineage_dict = {}
-                
-                            if st.session_state.llm == "Closed-Source":
-                                query = "What is the customer's name?"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f'''Perform Name Enitity Recognition to identify the cardholder name as accurately as possible, given the context. The customer can also be referenced as the cardholder with whom the Fraud has taken place.\n\n\ 
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: '''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response
-                                lineage_dict[query] = context_1
-                                st.session_state["lineage_gpt"][query] = context_1
-                            
+
                                     
-                                query = "What is the suspect's name?"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f'''Perform Name Enitity Recognition to identify the suspect name as accurately as possible, given the context. Suspect is the Person who has committed the fraud with the Customer. Respond saying "The Suspect Name is not Present" if there is no suspect in the given context.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: '''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response
-                                lineage_dict[query] = context_1
-                                st.session_state["lineage_gpt"][query] = context_1
+                            query = "List the Merchant Name"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f'''Perform Name Enitity Recognition to identify all the Merchant Organizations as accurately as possible, given the context. A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response
+                            lineage_dict[query] = context_1
+                            st.session_state["lineage_gpt"][query] = context_1
+
+
+                                
+                            query = "How was the bank notified?"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f''' You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: (Give a concise response in one sentence.)'''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response
+                            lineage_dict[query] = context_1
+                            st.session_state["lineage_gpt"][query] = context_1
+                        
+
+
+                            query = "When was the bank notified?"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f''' You need to act as a Financial analyst to Identify the processing date when bank was notified of the fraud?. Given the context, provide a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response  
+                            lineage_dict[query] = context_1  
+                            st.session_state["lineage_gpt"][query] = context_1           
+
+                                
+                            query = "What type of fraud is taking place?"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f''' You need to act as a Financial analyst to identify the type of fraud or suspicious activity has taken place amd summarize it, within the given context. Also mention the exact fraud code. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: (Prvide me a concise and relevant response)'''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response  
+                            lineage_dict[query] = context_1
+                            st.session_state["lineage_gpt"][query] = context_1
+                            
+                            query = "When did the fraud occur?"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f''' You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Dispute Date. Given the context, provide a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response 
+                            lineage_dict[query] = context_1 
+                            st.session_state["lineage_gpt"][query] = context_1
+                                    
+                            query = "Was the disputed amount greater than 5000 usd?"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f''' You need to act as a Financial analyst to identify the disputed amount and perform a mathematical calculation to check if the disputed amount is greater than 5000 or no, given the context. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response  
+                            lineage_dict[query] = context_1
+                            st.session_state["lineage_gpt"][query] = context_1
+
+                                
+                            query = "What type of network/card are involved?"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f''' You need to act as a Financial analyst to identify the type of card and card's brand involved, given the context. On a higher level the card can be a Credit or Debit Card. VISA, MasterCard or American Express, Citi Group, etc. are the different brands with respect to a Credit card or Debit Card . Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: (Prvide me a concise and relevant response)'''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response  
+                            lineage_dict[query] = context_1
+                            st.session_state["lineage_gpt"][query] = context_1
                         
 
                                         
-                                query = "List the Merchant Name"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f'''Perform Name Enitity Recognition to identify all the Merchant Organizations as accurately as possible, given the context. A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: '''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response
-                                lineage_dict[query] = context_1
-                                st.session_state["lineage_gpt"][query] = context_1
+                            query = "Was the police report filed?"
+                            context_1 = docsearch.similarity_search(query, k=5)
+                            prompt_1 = f''' You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: (Prvide me a concise and relevant response)'''
+                            response = usellm(prompt_1)
+                            res_dict[query] = response 
+                            lineage_dict[query] = context_1
+                            st.session_state["lineage_gpt"][query] = context_1
+
+                            #st.session_state["lineage_gpt"] = lineage_dict
 
 
+            
+                            try:
+                                #resp_dict_obj = json.loads(response)
+                                res_df_gpt = pd.DataFrame(res_dict.items(), columns=['Question','Answer'])
+                                res_df_gpt.reset_index(drop=True, inplace=True)
+                                index_ = pd.Series([1,2,3,4,5,6,7,8,9,10])
+                                res_df_gpt = res_df_gpt.set_index([index_])   
+                            except:
+                                e = Exception("")
+                                st.exception(e)
+
+                            
+
+                            
+                            st.table(res_df_gpt)
+
+                            # tmp_table_gpt = res_df_gpt
+
+                            st.session_state["tmp_table_gpt"] = pd.concat([st.session_state.tmp_table_gpt, res_df_gpt], ignore_index=True)
+                            
+                            query ="Is invoice is billed to cardholder or someone else?"
+                            contexts = docsearch.similarity_search(query, k=9)
+                            prompt = f" You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                            cardholder's name,adress can be identified from cardholder information. Cardholder is the person who is the owner of the card, cardholder can also be referenced as the victim with whom fraud has taken place.\n\n\
+                            Identify to whom invoice is billed (Detials mentioned in invoice is of the person who made the transaction,it may be or may not be of the cardholder)\n\n\
+                            Compare both the details, if details mentioned in invoice matches the cardholder details, then invoice is billed to cardholder else it is billed to someone else who misued the card.\n\n\
+                                Context: {contexts}\n\
+                                Response (Give me a concise response.)"
+                            response_1 = usellm(prompt)
+
+
+
+                            query ="Give your recommendation if this is a Suspicious activity or not?"
+                            contexts = ', '.join(res_df_gpt['Answer'])
+                            prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then what is the transasction/disputed amount. Also, check below points to make sure if it is a suspicious activity or not: \n\
+                                2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
+                                3. If a potential suspect name is identified or not? Suspect is a person who has commited the fraud, If identified then this can be a suspicious activity, else not.\n\n\
+                                Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
+                                Based on above points, give your recommendation if this is a case of suspicious activity or not? \n\n\
+                                Context: {contexts}\n\
+                                Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions individually."
+                            system_prompt = wrap_prompt(" You are professional Fraud Analyst.", "system")
+                            user_prompt = wrap_prompt(prompt, "user")
+                            res = get_response([system_prompt, user_prompt])
+                            response1 = res['choices'][0]['message']['content']
+                            
+                            #response1 = usellm(prompt) 
+                            
+                            # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)
+                            response1 = response1.replace("$", " ")
+                            response1 = response1.replace("5,000", "5,000 USD")
+                            response1 = response1.replace("5,600", "5,600 USD")
+                            sara_open_source_gpt = response1
+                            st.session_state["sara_recommendation_gpt"] = response1  
+                            sara_recommendation_gpt = response1 
+                            st.session_state["sara_doc"] = response1
                                     
-                                query = "How was the bank notified?"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f''' You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Give a concise response in one sentence.)'''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response
-                                lineage_dict[query] = context_1
-                                st.session_state["lineage_gpt"][query] = context_1
                             
+                            st.markdown("### SARA Recommendation")
+                            st.markdown(response1)
 
-
-                                query = "When was the bank notified?"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f''' You need to act as a Financial analyst to Identify the processing date when bank was notified of the fraud?. Given the context, provide a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: '''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response  
-                                lineage_dict[query] = context_1  
-                                st.session_state["lineage_gpt"][query] = context_1           
-
-                                    
-                                query = "What type of fraud is taking place?"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f''' You need to act as a Financial analyst to identify the type of fraud or suspicious activity has taken place amd summarize it, within the given context. Also mention the exact fraud code. Give a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Prvide me a concise and relevant response)'''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response  
-                                lineage_dict[query] = context_1
-                                st.session_state["lineage_gpt"][query] = context_1
-                                
-                                query = "When did the fraud occur?"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f''' You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Dispute Date. Given the context, provide a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: '''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response 
-                                lineage_dict[query] = context_1 
-                                st.session_state["lineage_gpt"][query] = context_1
-                                        
-                                query = "Was the disputed amount greater than 5000 usd?"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f''' You need to act as a Financial analyst to identify the disputed amount and perform a mathematical calculation to check if the disputed amount is greater than 5000 or no, given the context. Give a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: '''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response  
-                                lineage_dict[query] = context_1
-                                st.session_state["lineage_gpt"][query] = context_1
-
-                                    
-                                query = "What type of network/card are involved?"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f''' You need to act as a Financial analyst to identify the type of card and card's brand involved, given the context. On a higher level the card can be a Credit or Debit Card. VISA, MasterCard or American Express, Citi Group, etc. are the different brands with respect to a Credit card or Debit Card . Give a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Prvide me a concise and relevant response)'''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response  
-                                lineage_dict[query] = context_1
-                                st.session_state["lineage_gpt"][query] = context_1
                             
+                            st.markdown("#### Recommendation Feedback:")
+                            col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
 
-                                            
-                                query = "Was the police report filed?"
-                                context_1 = docsearch.similarity_search(query, k=5)
-                                prompt_1 = f''' You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
-                                            Question: {query}\n\
-                                            Context: {context_1}\n\
-                                            Response: (Prvide me a concise and relevant response)'''
-                                response = usellm(prompt_1)
-                                res_dict[query] = response 
-                                lineage_dict[query] = context_1
-                                st.session_state["lineage_gpt"][query] = context_1
-
-                                #st.session_state["lineage_gpt"] = lineage_dict
-
-
-                
-                                try:
-                                    #resp_dict_obj = json.loads(response)
-                                    res_df_gpt = pd.DataFrame(res_dict.items(), columns=['Question','Answer'])
-                                    res_df_gpt.reset_index(drop=True, inplace=True)
-                                    index_ = pd.Series([1,2,3,4,5,6,7,8,9,10])
-                                    res_df_gpt = res_df_gpt.set_index([index_])   
-                                except:
-                                    e = Exception("")
-                                    st.exception(e)
-
-                               
-
-                               
-                                st.table(res_df_gpt)
-
-                                # tmp_table_gpt = res_df_gpt
-
-                                st.session_state["tmp_table_gpt"] = pd.concat([st.session_state.tmp_table_gpt, res_df_gpt], ignore_index=True)
-                                
-                                query ="Is invoice is billed to cardholder or someone else?"
-                                contexts = docsearch.similarity_search(query, k=9)
-                                prompt = f" You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                cardholder's name,adress can be identified from cardholder information. Cardholder is the person who is the owner of the card, cardholder can also be referenced as the victim with whom fraud has taken place.\n\n\
-                                Identify to whom invoice is billed (Detials mentioned in invoice is of the person who made the transaction,it may be or may not be of the cardholder)\n\n\
-                                Compare both the details, if details mentioned in invoice matches the cardholder details, then invoice is billed to cardholder else it is billed to someone else who misued the card.\n\n\
-                                    Context: {contexts}\n\
-                                    Response (Give me a concise response.)"
-                                response_1 = usellm(prompt)
-
-
-
-                                query ="Give your recommendation if this is a Suspicious activity or not?"
-                                contexts = ', '.join(res_df_gpt['Answer'])
-                                prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                    1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then what is the transasction/disputed amount. Also, check below points to make sure if it is a suspicious activity or not: \n\
-                                    2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
-                                    3. If a potential suspect name is identified or not? Suspect is a person who has commited the fraud, If identified then this can be a suspicious activity, else not.\n\n\
-                                    Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
-                                    Based on above points, give your recommendation if this is a case of suspicious activity or not? \n\n\
-                                    Context: {contexts}\n\
-                                    Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a sentence, then answer all the questions individually."
-                                system_prompt = wrap_prompt(" You are professional Fraud Analyst.", "system")
-                                user_prompt = wrap_prompt(prompt, "user")
-                                res = get_response([system_prompt, user_prompt])
-                                response1 = res['choices'][0]['message']['content']
-                                
-                                #response1 = usellm(prompt) 
-                                
-                                # This replace text is basically to stop rendering of $ to katex (that creates the text messy, hence replacing $)
-                                response1 = response1.replace("$", " ")
-                                response1 = response1.replace("5,000", "5,000 USD")
-                                response1 = response1.replace("5,600", "5,600 USD")
-                                sara_open_source_gpt = response1
-                                st.session_state["sara_recommendation_gpt"] = response1  
-                                sara_recommendation_gpt = response1 
-                                st.session_state["sara_doc"] = response1
-                                        
-                                
-                                st.markdown("### SARA Recommendation")
-                                st.markdown(response1)
-
-                                
-                                st.markdown("#### Recommendation Feedback:")
-                                col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
-
-                                with col_1:
-                                    if st.button("👍🏻",key=3):
-                                        st.write("*Feedback is recorded*")
-                        
-
-                                with col_2:
-                                    if st.button("👎🏻",key=4):
-                                        st.write("*Feedback is recorded*")
-
-                                                        
-                            
-                                    
-
-                                
-                            elif st.session_state.llm == "Open-Source":
-                                 
-                                
-                                chat_history = {}
-                                lineage_dict_zephyr = {}
-                                def run_chain_llm(instruction,query):
-
-
-                                    context = docsearch.similarity_search(query, k=5)
-
-                                    template = """
-                                    {instruction}
-                                    {query}
-                                    {context}
-                                    Answer: (Act as a professional and provide a concise, short response using the context.Do add anything out of the context provided.) """
-                                    
-                                    prompt = PromptTemplate(template=template, input_variables=['query','context','instruction'])
-                                
-
-                                    # Chain
-                                    chain = LLMChain(llm=zephyr_7b, prompt=prompt)
-
-                                    # Run
-                                    response = chain.run({'query':query,'context':context,'instruction':instruction})
-
-                                    return response,context
-
-                                template = """Perform Name Enitity Recognition to identify the cardholder name as accurately as possible, given the context. The customer can also be referenced as the cardholder with whom the Fraud has taken place.\n\n\
-                                Do not add any extra explanation, note. Give concise answer based on query only. \n\n\
-                                """
-                                query = "What is the customer's name?"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context
-
-
-                                template = """Act as a professional fraud analyst and provide response to the query asked as accurately as possible.You need to check the document provided and compare if any name discrepencies are present that points towards the suspect who used the card without the consent of the cardholder.
-                                            Perform Name Enitity Recognition to identify the Suspect Name given the context.Suspect is the person who has committed the fraud with the cardholder. If suspect name is not present, respond saying: Suspect name is not mentioned."""
-                                
-                                query = "What is the suspect's name?"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context
-
-
-                                template = """You are a professional fraud analyst, perform Name Enitity Recognition to identify Merchant as accurately as possible from the provided information.A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant response.\n\n\
-                                    """
-                                
-                                query = "List the Merchant Name"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context
-
-
-                                template = """You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a concise response in one sentence.\n\n\
-                                    """
-                                
-                                query = "How was the bank notified?"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context
-                                
-                                
-                                template = """You need to act as a Financial analyst to identify when the bank was notified of the Fraud. Look for the processing date. Given the context, provide a relevant and concise response.\n\n\
-                                    """
-                                
-                                query = "When was the bank notified?"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context  
-
-
-                                template = """You are a Fraud analyst who needs to identify the type of fraud or suspicious activity has taken place.
-                                Mention only fraud type and fraud code. 
-                                Give a relevant, concise response in one sentence.\n\n\
-                                    """
-                                
-                                query = "What type of fraud is taking place?"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context     
-
-
-                                template = """ You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Transaction Date. Given the context, provide a relevant and concise response.\n\n\
-                                    """
-                                
-                                query = "When did the fraud occur?"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context    
-
-
-                                template = """ You need to act as a Financial analyst to identify the disputed amount mentioned in the context.Perform a mathematical calculation to check if the disputed amount is greater than 5000 USD or not and what is the disputed amount? Given the context, give a relevant and concise response.\n\n\
-                                                    Take the provided information as accurate. \n\n\
-                                    """
-                                
-                                query = "Was the disputed amount greater than 5000 usd?"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context     
-
-
-                                template = """ You are a Fraud analyst who needs to identify the type of card and card network involved in the transaction.
-                                On a higher level the card can be a Credit Visa, Debit Visa Card.
-                                Provide details about card type only.
-                                Give a concise and short response.\n\n\
-                                    """
-                                
-                                query = "What type of network/card are involved?"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context 
-
-
-                                template = """ You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
-                                    """
-                                
-                                query = "Was the police report filed?"
-                            
-                                response,context = run_chain_llm(template,query)
-                                chat_history[query] = response
-                                lineage_dict_zephyr[query] = context  
-
-                                
-
-                                #This question is only used in recommendation
-                                template = """You are professional Fraud Analyst. Find answer to the questions as truthfully as possible as per given context only,\n\n\
-                                Identify cardholder name from cardholder information,cardholder is the owner of the card. \n\
-                                Identify to whom invoice is billed?\n\
-                                Compare both details and confirm if merchant invoice is billed to cardholder or someone else.\n\
-                                """
-
-
-                                query = "Identify if invoice is billed to cardholder or someone else?"
-                                analyse,docs = run_chain_llm(template,query)
-                                #chat_history[query] = response_3
-                                # st.write(response_3)
-                                # st.write(docs) 
-                                st.session_state["lineage_zephyr"] = lineage_dict_zephyr
-
-                                try:
-                                    res_df_zephyr  = pd.DataFrame(list(chat_history.items()),columns=['Question','Answer'])
-                                    res_df_zephyr.reset_index(drop=True, inplace=True)
-                                    index_ = pd.Series([1,2,3,4,5,6,7,8,9,10])
-                                    res_df_zephyr = res_df_zephyr.set_index([index_])
-                                    
-                                except:
-                                    e = Exception("")
-                                    st.exception(e)
-
-                                st.table(res_df_zephyr)
-                                st.session_state["tmp_table_zephyr"] = pd.concat([st.session_state.tmp_table_zephyr, res_df_zephyr], ignore_index=True)
-
-
-                                
-                                
-                                query ="Is invoice is billed to cardholder or someone else?"
-                                contexts = docsearch.similarity_search(query, k=9)
-                                prompt = f" You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                cardholder's name,adress can be identified from cardholder information. Cardholder is the person who is the owner of the card, cardholder can also be referenced as the victim with whom fraud has taken place.\n\n\
-                                Identify to whom invoice is billed (Detials mentioned in invoice is of the person who made the transaction,it may be or may not be of the cardholder)\n\n\
-                                Compare both the details, if details mentioned in invoice matches the cardholder details, then invoice is billed to cardholder else it is billed to someone else who misued the card.\n\n\
-                                    Context: {contexts}\n\
-                                    Response (Give me a concise response.)"
-                                response_1 = zephyr_llm(zephyr_7b,prompt) 
-
-
-
-                                query ="Give your recommendation if this is a Suspicious activity or not?"
-                                contexts = ', '.join(res_df_zephyr['Answer'])
-                                prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
-                                    1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then what is the transasction/disputed amount. Also, check below points to make sure if it is a suspicious activity or not: \n\
-                                    2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
-                                    3. If a potential suspect name is identified or not? Suspect is a person who has commited the fraud, If identified then this can be a suspicious activity, else not.\n\n\
-                                    Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
-                                    Based on above points, give your concise recommendation in single sentence if SAR filing is required or not? \n\n\
-                                    Context: {contexts}\n\
-                                    Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a single sentence, then answer all above 3 questions individually in points."
-                
-                                response1 = zephyr_llm(zephyr_7b,prompt) 
-                                response1 = response1.replace("$", "")
-                                response1 = response1.replace("5,000", "5,000")
-                                response1 = response1.replace("5,600", "5,600") 
-                                st.session_state["sara_doc"] = response1
+                            with col_1:
+                                if st.button("👍🏻",key=3):
+                                    st.write("*Feedback is recorded*")
                     
-                                
-                                
-                                st.session_state["sara_recommendation_zephyr"] = response1   
-                                
-                                sara_recommendation_zephyr = response1 
-                                        
-                                
-                                st.markdown("### SARA Recommendation")
-                                st.write(response1)
 
-                                
-                                st.markdown("#### Recommendation Feedback:")
-                                col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
+                            with col_2:
+                                if st.button("👎🏻",key=4):
+                                    st.write("*Feedback is recorded*")
 
-                                with col_1:
-                                    if st.button("👍🏻",key=3):
-                                        st.write("*Feedback is recorded*")
+                                                    
                         
-
-                                with col_2:
-                                    if st.button("👎🏻",key=4):
-                                        st.write("*Feedback is recorded*")
-
-
                                 
-                        
-    
 
-                               
                             
-                               
+                        elif st.session_state.llm == "Open-Source":
+                                
+                            
+                            chat_history = {}
+                            lineage_dict_zephyr = {}
+                            def run_chain_llm(instruction,query):
+
+
+                                context = docsearch.similarity_search(query, k=5)
+
+                                template = """
+                                {instruction}
+                                {query}
+                                {context}
+                                Answer: (Act as a professional and provide a concise, short response using the context.Do add anything out of the context provided.) """
+                                
+                                prompt = PromptTemplate(template=template, input_variables=['query','context','instruction'])
+                            
+
+                                # Chain
+                                chain = LLMChain(llm=zephyr_7b, prompt=prompt)
+
+                                # Run
+                                response = chain.run({'query':query,'context':context,'instruction':instruction})
+
+                                return response,context
+
+                            template = """Perform Name Enitity Recognition to identify the cardholder name as accurately as possible, given the context. The customer can also be referenced as the cardholder with whom the Fraud has taken place.\n\n\
+                            Do not add any extra explanation, note. Give concise answer based on query only. \n\n\
+                            """
+                            query = "What is the customer's name?"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context
+
+
+                            template = """Act as a professional fraud analyst and provide response to the query asked as accurately as possible.You need to check the document provided and compare if any name discrepencies are present that points towards the suspect who used the card without the consent of the cardholder.
+                                        Perform Name Enitity Recognition to identify the Suspect Name given the context.Suspect is the person who has committed the fraud with the cardholder. If suspect name is not present, respond saying: Suspect name is not mentioned."""
+                            
+                            query = "What is the suspect's name?"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context
+
+
+                            template = """You are a professional fraud analyst, perform Name Enitity Recognition to identify Merchant as accurately as possible from the provided information.A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant response.\n\n\
+                                """
+                            
+                            query = "List the Merchant Name"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context
+
+
+                            template = """You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a concise response in one sentence.\n\n\
+                                """
+                            
+                            query = "How was the bank notified?"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context
+                            
+                            
+                            template = """You need to act as a Financial analyst to identify when the bank was notified of the Fraud. Look for the processing date. Given the context, provide a relevant and concise response.\n\n\
+                                """
+                            
+                            query = "When was the bank notified?"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context  
+
+
+                            template = """You are a Fraud analyst who needs to identify the type of fraud or suspicious activity has taken place.
+                            Mention only fraud type and fraud code. 
+                            Give a relevant, concise response in one sentence.\n\n\
+                                """
+                            
+                            query = "What type of fraud is taking place?"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context     
+
+
+                            template = """ You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Transaction Date. Given the context, provide a relevant and concise response.\n\n\
+                                """
+                            
+                            query = "When did the fraud occur?"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context    
+
+
+                            template = """ You need to act as a Financial analyst to identify the disputed amount mentioned in the context.Perform a mathematical calculation to check if the disputed amount is greater than 5000 USD or not and what is the disputed amount? Given the context, give a relevant and concise response.\n\n\
+                                                Take the provided information as accurate. \n\n\
+                                """
+                            
+                            query = "Was the disputed amount greater than 5000 usd?"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context     
+
+
+                            template = """ You are a Fraud analyst who needs to identify the type of card and card network involved in the transaction.
+                            On a higher level the card can be a Credit Visa, Debit Visa Card.
+                            Provide details about card type only.
+                            Give a concise and short response.\n\n\
+                                """
+                            
+                            query = "What type of network/card are involved?"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context 
+
+
+                            template = """ You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
+                                """
+                            
+                            query = "Was the police report filed?"
+                        
+                            response,context = run_chain_llm(template,query)
+                            chat_history[query] = response
+                            lineage_dict_zephyr[query] = context  
+
+                            
+
+                            #This question is only used in recommendation
+                            template = """You are professional Fraud Analyst. Find answer to the questions as truthfully as possible as per given context only,\n\n\
+                            Identify cardholder name from cardholder information,cardholder is the owner of the card. \n\
+                            Identify to whom invoice is billed?\n\
+                            Compare both details and confirm if merchant invoice is billed to cardholder or someone else.\n\
+                            """
+
+
+                            query = "Identify if invoice is billed to cardholder or someone else?"
+                            analyse,docs = run_chain_llm(template,query)
+                            #chat_history[query] = response_3
+                            # st.write(response_3)
+                            # st.write(docs) 
+                            st.session_state["lineage_zephyr"] = lineage_dict_zephyr
+
+                            try:
+                                res_df_zephyr  = pd.DataFrame(list(chat_history.items()),columns=['Question','Answer'])
+                                res_df_zephyr.reset_index(drop=True, inplace=True)
+                                index_ = pd.Series([1,2,3,4,5,6,7,8,9,10])
+                                res_df_zephyr = res_df_zephyr.set_index([index_])
+                                
+                            except:
+                                e = Exception("")
+                                st.exception(e)
+
+                            st.table(res_df_zephyr)
+                            st.session_state["tmp_table_zephyr"] = pd.concat([st.session_state.tmp_table_zephyr, res_df_zephyr], ignore_index=True)
+
+
+                            
+                            
+                            query ="Is invoice is billed to cardholder or someone else?"
+                            contexts = docsearch.similarity_search(query, k=9)
+                            prompt = f" You are professional Fraud Analyst. Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                            cardholder's name,adress can be identified from cardholder information. Cardholder is the person who is the owner of the card, cardholder can also be referenced as the victim with whom fraud has taken place.\n\n\
+                            Identify to whom invoice is billed (Detials mentioned in invoice is of the person who made the transaction,it may be or may not be of the cardholder)\n\n\
+                            Compare both the details, if details mentioned in invoice matches the cardholder details, then invoice is billed to cardholder else it is billed to someone else who misued the card.\n\n\
+                                Context: {contexts}\n\
+                                Response (Give me a concise response.)"
+                            response_1 = zephyr_llm(zephyr_7b,prompt) 
+
+
+
+                            query ="Give your recommendation if this is a Suspicious activity or not?"
+                            contexts = ', '.join(res_df_zephyr['Answer'])
+                            prompt = f" Find answer to the questions as truthfully and in as detailed as possible as per given context only,\n\n\
+                                1. Check if The transaction/disputed amount > 5,000 USD value threshold, If Yes, then what is the transasction/disputed amount. Also, check below points to make sure if it is a suspicious activity or not: \n\
+                                2. {response_1} analyse this response,if details matches or not? If matches then there is no suspicion else, it can be a suspicious activity. (Concisely mention only the mismatched details).\n\n\
+                                3. If a potential suspect name is identified or not? Suspect is a person who has commited the fraud, If identified then this can be a suspicious activity, else not.\n\n\
+                                Even if transaction/disputed amount > 5,000 USD but if above criteria does not met, then this can not be considered as a suspicious activity. \n\n\
+                                Based on above points, give your concise recommendation in single sentence if SAR filing is required or not? \n\n\
+                                Context: {contexts}\n\
+                                Response: Start the output answering if it can be considered as a suspicious activity or not based on the avaliable information in a single sentence, then answer all above 3 questions individually in points."
+            
+                            response1 = zephyr_llm(zephyr_7b,prompt) 
+                            response1 = response1.replace("$", "")
+                            response1 = response1.replace("5,000", "5,000")
+                            response1 = response1.replace("5,600", "5,600") 
+                            st.session_state["sara_doc"] = response1
+                
+                            
+                            
+                            st.session_state["sara_recommendation_zephyr"] = response1   
+                            
+                            sara_recommendation_zephyr = response1 
+                                    
+                            
+                            st.markdown("### SARA Recommendation")
+                            st.write(response1)
+
+                            
+                            st.markdown("#### Recommendation Feedback:")
+                            col_1, col_2, col_3, col_4, col_5, col_6 = st.columns(6)
+
+                            with col_1:
+                                if st.button("👍🏻",key=3):
+                                    st.write("*Feedback is recorded*")
+                    
+
+                            with col_2:
+                                if st.button("👎🏻",key=4):
+                                    st.write("*Feedback is recorded*")
+
+
+                            
+                    
+
+
+                            
+                        
+                            
 
 
 
 
-                st.markdown("---")
+            st.markdown("---")
 
-                # For input box outside of template4
-                try:
-                    if temp_file_path:
-                        docs, docsearch = embedding_store(temp_file_path,hf_embeddings)
-                    else:
-                        pass
-                except Exception:
+            # For input box outside of template4
+            try:
+                if temp_file_path:
+                    docs, docsearch = embedding_store(temp_file_path,hf_embeddings)
+                else:
                     pass
+            except Exception:
+                pass
 
 
-                # Text Input
-                # st.markdown("""<span style="font-size: 24px; ">Ask Additional Questions</span>""", unsafe_allow_html=True)
-                query = st.text_input(':black[Ask Additional Questions]',disabled=st.session_state.disabled)
-                text_dict = {}
+            # Text Input
+            # st.markdown("""<span style="font-size: 24px; ">Ask Additional Questions</span>""", unsafe_allow_html=True)
+            query = st.text_input(':black[Ask Additional Questions]',disabled=st.session_state.disabled)
+            text_dict = {}
 
-                @st.cache_data
-                def LLM_Response():
-                    llm_chain = LLMChain(prompt=prompt, llm=llm)
-                    response = llm_chain.run({"query":query, "context":context})
-                    return response
+            @st.cache_data
+            def LLM_Response():
+                llm_chain = LLMChain(prompt=prompt, llm=llm)
+                response = llm_chain.run({"query":query, "context":context})
+                return response
 
-                if st.session_state.llm == "Closed-Source":
+            if st.session_state.llm == "Closed-Source":
+                with st.spinner('Getting you information...'):      
+                    if query:
+                        # Text input handling logic
+                        #st.write("Text Input:")
+                        #st.write(text_input)
+
+                        context_1 = docsearch.similarity_search(query, k=9)
+                        st.session_state.context_1 = context_1
+                        if query.lower() == "What is the customer's name?":
+                            prompt_1 = f'''Perform Name Enitity Recognition to identify the Customer name as accurately as possible, given the context. The Customer can also be referenced as the Victim or the person with whom the Fraud has taken place.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                            
+                        elif query.lower() == "What is the suspect's name?":
+                            prompt_1 = f'''Perform Name Enitity Recognition to identify the Suspect name as accurately as possible, given the context. Suspect is the Person who has committed the fraud with the Customer. Respond saying "The Suspect Name is not Present" if there is no suspect in the given context.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                            
+                        elif query.lower() == "List the merchant name":
+                            prompt_1 = f'''Perform Name Enitity Recognition to identify all the Merchant Organizations as accurately as possible, given the context. A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                            
+                        elif query.lower() == "How was the bank notified?":
+                            prompt_1 = f''' You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                            
+                        elif query.lower() == "When was the bank notified?":
+                            prompt_1 = f''' You need to act as a Financial analyst to identify the when the bank was notified of the Fraud i.e., the disputed date. Given the context, provide a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                            
+                        elif query.lower() == "What type of fraud is taking place?":
+                            prompt_1 = f''' You need to act as a Financial analyst to identify the type of fraud or suspicious activity has taken place amd summarize it, within the given context. Also mention the exact fraud code. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                        
+                        elif query.lower() == "When did the fraud occur?":
+                            prompt_1 = f''' You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Transaction Date. Given the context, provide a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                                
+                        elif query.lower() == "Was the disputed amount greater than 5000 usd?":
+                            prompt_1 = f''' You need to act as a Financial analyst to identify the disputed amount and perform a mathematical calculation to check if the disputed amount is greater than 5000 or no, given the context. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                            
+                        elif query.lower() == "What type of network/card are involved?":
+                            prompt_1 = f''' You need to act as a Financial analyst to identify the type of card and card's brand involved, given the context. On a higher level the card can be a Credit or Debit Card. VISA, MasterCard or American Express, Citi Group, etc. are the different brands with respect to a Credit card or Debit Card . Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                            
+                        elif query.lower() == "Was the police report filed?":
+                            prompt_1 = f''' You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                                
+                        elif query.lower() == "Is this a valid SAR case?":
+                            prompt_1 = f''' You need to act as a Financial analyst to check if this is a SAR or not, given the following context, if the transaction amount is less than 5000 USD we cannot categorize this as SAR (Suspicious activity Report).Give a relevant and concise response. \n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\
+                                        Response: '''
+
+                            
+                        else:
+                            prompt_1 = f'''Act as a financial analyst and give concise answer to below Question as truthfully as possible, with given Context.\n\n\
+                                        Question: {query}\n\
+                                        Context: {context_1}\n\                      
+                                        Response: '''
+
+                                    #prompt = PromptTemplate(template=prompt, input_variables=["query", "context"])
+                        response = usellm(prompt_1) #LLM_Response()
+                        text_dict[query] = response
+                        # resp_dict_obj.update(text_dict)
+                        st.write(response)
+                        if response:
+                            df = pd.DataFrame(text_dict.items(), columns=['Question','Answer'])
+                        else:
+                            df = pd.DataFrame()
+
+                        st.session_state["tmp_table_gpt"] = pd.concat([st.session_state.tmp_table_gpt, df], ignore_index=True)
+                        st.session_state.tmp_table_gpt.drop_duplicates(subset=['Question'])
+            
+                # #Lineage
+                # retriever(temp_file_path,hf_embeddings)
+
+
+            elif st.session_state.llm == "Open-Source":
+                    
                     with st.spinner('Getting you information...'):      
                         if query:
                             # Text input handling logic
@@ -1590,645 +1700,535 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             context_1 = docsearch.similarity_search(query, k=9)
                             st.session_state.context_1 = context_1
                             if query.lower() == "What is the customer's name?":
-                                prompt_1 = f'''Perform Name Enitity Recognition to identify the Customer name as accurately as possible, given the context. The Customer can also be referenced as the Victim or the person with whom the Fraud has taken place.\n\n\
+                                prompt_1 = f'''Perform Name Enitity Recognition to identify the Customer name as accurately as possible, given the context. The Customer can also be referenced as the Victim or the person with whom the Fraud has taken place.
+                                            Customer/Victim is cardholder, whose card is used without their consent.
+                                            Do not provide any extra [Explanation, Note] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response: (Provide a concise Response.) '''
 
                                 
                             elif query.lower() == "What is the suspect's name?":
-                                prompt_1 = f'''Perform Name Enitity Recognition to identify the Suspect name as accurately as possible, given the context. Suspect is the Person who has committed the fraud with the Customer. Respond saying "The Suspect Name is not Present" if there is no suspect in the given context.\n\n\
+                                prompt_1 = f''''Perform Name Enitity Recognition to identify the Suspect name as accurately as possible, given the context. Suspect is the Person who has committed the fraud with the Customer. Respond saying "The Suspect Name is not Present" if there is no suspect in the given context.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response: (Give me response in one sentence.Do not give me any Explanation or Note)'''
+
 
                                 
                             elif query.lower() == "List the merchant name":
-                                prompt_1 = f'''Perform Name Enitity Recognition to identify all the Merchant Organizations as accurately as possible, given the context. A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant and concise response.\n\n\
+                                prompt_1 = f'''Perform Name Enitity Recognition to identify all the Merchant Organizations as accurately as possible, given the context. A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant and concise response.
+                                            Do not provide any extra [Explanation, Note] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response: (Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.)'''
 
                                 
                             elif query.lower() == "How was the bank notified?":
-                                prompt_1 = f''' You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a relevant and concise response.\n\n\
+                                prompt_1 = f''' You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a relevant and concise response.
+                                            Do not provide any extra [Explanation, Note] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response:(Provide a concise Response.) '''
 
                                 
                             elif query.lower() == "When was the bank notified?":
-                                prompt_1 = f''' You need to act as a Financial analyst to identify the when the bank was notified of the Fraud i.e., the disputed date. Given the context, provide a relevant and concise response.\n\n\
+                                prompt_1 = f''' You need to act as a Financial analyst to identify the when the bank was notified of the Fraud i.e., the disputed date. Given the context, provide a relevant and concise response.
+                                            Do not provide any extra [Explanation, Note] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response: (Provide a concise Response.)'''
 
                                 
                             elif query.lower() == "What type of fraud is taking place?":
-                                prompt_1 = f''' You need to act as a Financial analyst to identify the type of fraud or suspicious activity has taken place amd summarize it, within the given context. Also mention the exact fraud code. Give a relevant and concise response.\n\n\
+                                prompt_1 = f''' You need to act as a Financial analyst to identify the type of fraud or suspicious activity has taken place amd summarize it, within the given context. Also mention the exact fraud code. Give a relevant and concise response.
+                                            Do not provide any extra [Explanation, Note] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response: (Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.)'''
 
                             
                             elif query.lower() == "When did the fraud occur?":
-                                prompt_1 = f''' You need to act as a Financial analyst to identify the when the did the fraud occur i.e., the Transaction Date. Given the context, provide a relevant and concise response.\n\n\
+                                prompt_1 = f''' You need to act as a Financial analyst to identify the type of card and card network involved, given the context. On a higher level the card can be a Credit Visa, Debit Visa Card.Based on the context give a relevant and concise response..
+                                            Do not provide any extra [Explanation, Note] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response: (Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.)'''
 
                                     
                             elif query.lower() == "Was the disputed amount greater than 5000 usd?":
-                                prompt_1 = f''' You need to act as a Financial analyst to identify the disputed amount and perform a mathematical calculation to check if the disputed amount is greater than 5000 or no, given the context. Give a relevant and concise response.\n\n\
+                                prompt_1 = f''' You need to act as a Financial analyst to identify the disputed amount and perform a mathematical calculation to check if the disputed amount is greater than 5000 or no, given the context. Give a relevant and concise response.
+                                            Kindly do not provide any extra [Explanation, Note, Description] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response:(Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.) '''
 
                                 
                             elif query.lower() == "What type of network/card are involved?":
-                                prompt_1 = f''' You need to act as a Financial analyst to identify the type of card and card's brand involved, given the context. On a higher level the card can be a Credit or Debit Card. VISA, MasterCard or American Express, Citi Group, etc. are the different brands with respect to a Credit card or Debit Card . Give a relevant and concise response.\n\n\
+                                prompt_1 = f''' You need to act as a Financial analyst to identify the type of Card and Card Network involved, given the context. On a higher level the card can be a Dedit, Crebit Card. VISA, MasterCard, American Express, Citi Group, etc. are the different brands with respect to a Credit Card or Debit Card . Give a relevant and concise response.
+                                            Do not provide any extra [Explanation, Note] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response:(Act like a professional and provide me a concise Response . Do not add any extra [Explanation, Note, Descricption] below the context.) '''
 
                                 
                             elif query.lower() == "Was the police report filed?":
-                                prompt_1 = f''' You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.\n\n\
+                                prompt_1 = f''' You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.
+                                            Do not provide any extra [Explanation, Note] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response: (Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.)'''
 
-                                    
-                            elif query.lower() == "Is this a valid SAR case?":
-                                prompt_1 = f''' You need to act as a Financial analyst to check if this is a SAR or not, given the following context, if the transaction amount is less than 5000 USD we cannot categorize this as SAR (Suspicious activity Report).Give a relevant and concise response. \n\n\
+                            elif query.lower() == "Is this a valid sar case?":
+                                prompt_1 =  f''' You are a Fraud Analyst.Check if there is evidence for this case to address as SAR or not. A SAR case is a case of financial Suspicious/Fraud Activity which can be observed given the context.
+                                            If there is any activity without the consent of the cardholder, also if there is a suspect who used the card without the consent.
+                                            Then we can address this as a valid SAR case.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\
-                                            Response: '''
+                                            Response: (Provide a concise response in single sentence.Do not add prefix like ['Respone', 'based on the document']. Do not add any further Explanation,Note.)'''        
+                            
+                            
+                            elif query.lower() == "Is there any evidence of a sar case?":
+                                prompt_1 = f''' You are a Fraud Analyst.Check if there is evidence for this case to address as SAR or not. A SAR case is a case of financial Suspicious/Fraud Activity which can be observed given the context.
+                                            If there is any activity without the consent of the cardholder, also if there is a suspect who used the card without the consent.
+                                            Then we can address this as a SAR case.Give a concise response with the suspect name. \n\n\
+                                            Question: {query}\n\
+                                            Context: {context_1}\n\
+                                            Response:(Do not add prefix like ['Respone', 'based on the document']. Do not add any further Explanation,Note.) '''
 
                                 
                             else:
-                                prompt_1 = f'''Act as a financial analyst and give concise answer to below Question as truthfully as possible, with given Context.\n\n\
+                                prompt_1 = f'''Act as a financial analyst and give concise answer to below Question as truthfully as possible, with given Context.
+                                            Do not provide any extra [Explanation, Note,Description] block below the Response.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\                      
-                                            Response: '''
+                                            Response: (Act like a professional and provide me a concise Response . Do not add any extra [Explanation, Note, Descricption] below the Response.)'''
 
-                                        #prompt = PromptTemplate(template=prompt, input_variables=["query", "context"])
-                            response = usellm(prompt_1) #LLM_Response()
+
+                        #prompt = PromptTemplate(template=prompt, input_variables=["query", "context"])
+                            response = zephyr_llm(zephyr_7b,prompt_1)
                             text_dict[query] = response
-                            # resp_dict_obj.update(text_dict)
+
                             st.write(response)
+
                             if response:
                                 df = pd.DataFrame(text_dict.items(), columns=['Question','Answer'])
                             else:
                                 df = pd.DataFrame()
 
-                            st.session_state["tmp_table_gpt"] = pd.concat([st.session_state.tmp_table_gpt, df], ignore_index=True)
-                            st.session_state.tmp_table_gpt.drop_duplicates(subset=['Question'])
-                
-                    # #Lineage
-                    # retriever(temp_file_path,hf_embeddings)
+                            st.session_state["tmp_table_llama"] = pd.concat([st.session_state.tmp_table_llama, df], ignore_index=True)
+                            st.session_state.tmp_table_llama.drop_duplicates(subset=['Question'])
 
+        with col3_up:
+                if st.session_state.llm == "Closed-Source":
+                        st.session_state.disabled=False
+                
+                        li = ["Select question to get the lineage","What is the customer's name?",
+                                "What is the suspect's name?",
+                                "List the Merchant Name",
+                                "How was the bank notified?",
+                                "When was the bank notified?",
+                                "What type of fraud is taking place?",
+                                "When did the fraud occur?",
+                                "Was the disputed amount greater than 5000 usd?",
+                                "What type of network/card are involved?",
+                                "Was the police report filed?"]
+                                                            
+                    
+                        selected_option = st.selectbox("", li)
+                        if selected_option in li[1:]:
+                            doc = st.session_state["lineage_gpt"][selected_option]
+                            for i in range(len(doc)):
+                                #st.write(doc[i])
+                                y=i+1
+                                st.write(f":blue[Reference-{y}:]")
+                                st_ = doc[i].page_content.replace("($)"," ")
+                                st.write(":blue[Page Content:]",st_) 
+                                st.write(":blue[Source:]",doc[i].metadata['source'])
 
                 elif st.session_state.llm == "Open-Source":
-                        
-                        with st.spinner('Getting you information...'):      
-                            if query:
-                                # Text input handling logic
-                                #st.write("Text Input:")
-                                #st.write(text_input)
-
-                                context_1 = docsearch.similarity_search(query, k=9)
-                                st.session_state.context_1 = context_1
-                                if query.lower() == "What is the customer's name?":
-                                    prompt_1 = f'''Perform Name Enitity Recognition to identify the Customer name as accurately as possible, given the context. The Customer can also be referenced as the Victim or the person with whom the Fraud has taken place.
-                                                Customer/Victim is cardholder, whose card is used without their consent.
-                                                Do not provide any extra [Explanation, Note] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response: (Provide a concise Response.) '''
-
-                                    
-                                elif query.lower() == "What is the suspect's name?":
-                                    prompt_1 = f''''Perform Name Enitity Recognition to identify the Suspect name as accurately as possible, given the context. Suspect is the Person who has committed the fraud with the Customer. Respond saying "The Suspect Name is not Present" if there is no suspect in the given context.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response: (Give me response in one sentence.Do not give me any Explanation or Note)'''
-
-
-                                    
-                                elif query.lower() == "List the merchant name":
-                                    prompt_1 = f'''Perform Name Enitity Recognition to identify all the Merchant Organizations as accurately as possible, given the context. A merchant is a type of business or organization that accepts payments from the customer account. Give a relevant and concise response.
-                                                Do not provide any extra [Explanation, Note] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response: (Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.)'''
-
-                                    
-                                elif query.lower() == "How was the bank notified?":
-                                    prompt_1 = f''' You need to act as a Financial analyst to identify how was the bank notified of the Supicious or Fraud event with in the given context. The means of communication can be a call, an email or in person. Give a relevant and concise response.
-                                                Do not provide any extra [Explanation, Note] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response:(Provide a concise Response.) '''
-
-                                    
-                                elif query.lower() == "When was the bank notified?":
-                                    prompt_1 = f''' You need to act as a Financial analyst to identify the when the bank was notified of the Fraud i.e., the disputed date. Given the context, provide a relevant and concise response.
-                                                Do not provide any extra [Explanation, Note] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response: (Provide a concise Response.)'''
-
-                                    
-                                elif query.lower() == "What type of fraud is taking place?":
-                                    prompt_1 = f''' You need to act as a Financial analyst to identify the type of fraud or suspicious activity has taken place amd summarize it, within the given context. Also mention the exact fraud code. Give a relevant and concise response.
-                                                Do not provide any extra [Explanation, Note] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response: (Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.)'''
-
-                                
-                                elif query.lower() == "When did the fraud occur?":
-                                    prompt_1 = f''' You need to act as a Financial analyst to identify the type of card and card network involved, given the context. On a higher level the card can be a Credit Visa, Debit Visa Card.Based on the context give a relevant and concise response..
-                                                Do not provide any extra [Explanation, Note] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response: (Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.)'''
-
-                                        
-                                elif query.lower() == "Was the disputed amount greater than 5000 usd?":
-                                    prompt_1 = f''' You need to act as a Financial analyst to identify the disputed amount and perform a mathematical calculation to check if the disputed amount is greater than 5000 or no, given the context. Give a relevant and concise response.
-                                                Kindly do not provide any extra [Explanation, Note, Description] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response:(Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.) '''
-
-                                    
-                                elif query.lower() == "What type of network/card are involved?":
-                                    prompt_1 = f''' You need to act as a Financial analyst to identify the type of Card and Card Network involved, given the context. On a higher level the card can be a Dedit, Crebit Card. VISA, MasterCard, American Express, Citi Group, etc. are the different brands with respect to a Credit Card or Debit Card . Give a relevant and concise response.
-                                                Do not provide any extra [Explanation, Note] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response:(Act like a professional and provide me a concise Response . Do not add any extra [Explanation, Note, Descricption] below the context.) '''
-
-                                    
-                                elif query.lower() == "Was the police report filed?":
-                                    prompt_1 = f''' You need to act as a Financial analyst to identify if the police was reported of the Fraud activity, given the context. Give a relevant and concise response.
-                                                Do not provide any extra [Explanation, Note] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response: (Provide a concise Response without any extra [Explanation, Note, Descricption] below the Response.)'''
-
-                                elif query.lower() == "Is this a valid sar case?":
-                                    prompt_1 =  f''' You are a Fraud Analyst.Check if there is evidence for this case to address as SAR or not. A SAR case is a case of financial Suspicious/Fraud Activity which can be observed given the context.
-                                                If there is any activity without the consent of the cardholder, also if there is a suspect who used the card without the consent.
-                                                Then we can address this as a valid SAR case.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response: (Provide a concise response in single sentence.Do not add prefix like ['Respone', 'based on the document']. Do not add any further Explanation,Note.)'''        
-                                
-                                
-                                elif query.lower() == "Is there any evidence of a sar case?":
-                                    prompt_1 = f''' You are a Fraud Analyst.Check if there is evidence for this case to address as SAR or not. A SAR case is a case of financial Suspicious/Fraud Activity which can be observed given the context.
-                                                If there is any activity without the consent of the cardholder, also if there is a suspect who used the card without the consent.
-                                                Then we can address this as a SAR case.Give a concise response with the suspect name. \n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\
-                                                Response:(Do not add prefix like ['Respone', 'based on the document']. Do not add any further Explanation,Note.) '''
-
-                                    
-                                else:
-                                    prompt_1 = f'''Act as a financial analyst and give concise answer to below Question as truthfully as possible, with given Context.
-                                                Do not provide any extra [Explanation, Note,Description] block below the Response.\n\n\
-                                                Question: {query}\n\
-                                                Context: {context_1}\n\                      
-                                                Response: (Act like a professional and provide me a concise Response . Do not add any extra [Explanation, Note, Descricption] below the Response.)'''
-    
-
-                            #prompt = PromptTemplate(template=prompt, input_variables=["query", "context"])
-                                response = zephyr_llm(zephyr_7b,prompt_1)
-                                text_dict[query] = response
-
-                                st.write(response)
-
-                                if response:
-                                    df = pd.DataFrame(text_dict.items(), columns=['Question','Answer'])
-                                else:
-                                    df = pd.DataFrame()
-
-                                st.session_state["tmp_table_llama"] = pd.concat([st.session_state.tmp_table_llama, df], ignore_index=True)
-                                st.session_state.tmp_table_llama.drop_duplicates(subset=['Question'])
-
-            with col3_up:
-                    if st.session_state.llm == "Closed-Source":
-                            st.session_state.disabled=False
-                    
-                            li = ["Select question to get the lineage","What is the customer's name?",
-                                    "What is the suspect's name?",
-                                    "List the Merchant Name",
-                                    "How was the bank notified?",
-                                    "When was the bank notified?",
-                                    "What type of fraud is taking place?",
-                                    "When did the fraud occur?",
-                                    "Was the disputed amount greater than 5000 usd?",
-                                    "What type of network/card are involved?",
-                                    "Was the police report filed?"]
-                                                                
-                        
-                            selected_option = st.selectbox("", li)
-                            if selected_option in li[1:]:
-                                doc = st.session_state["lineage_gpt"][selected_option]
-                                for i in range(len(doc)):
-                                    #st.write(doc[i])
-                                    y=i+1
-                                    st.write(f":blue[Reference-{y}:]")
-                                    st_ = doc[i].page_content.replace("($)"," ")
-                                    st.write(":blue[Page Content:]",st_) 
-                                    st.write(":blue[Source:]",doc[i].metadata['source'])
-
-                    elif st.session_state.llm == "Open-Source":
-                            st.session_state.disabled=False
-                            li = ["Select question to get the lineage","What is the customer's name?",
-                                    "What is the suspect's name?",
-                                    "List the Merchant Name",
-                                    "How was the bank notified?",
-                                    "When was the bank notified?",
-                                    "What type of fraud is taking place?",
-                                    "When did the fraud occur?",
-                                    "Was the disputed amount greater than 5000 usd?",
-                                    "What type of network/card are involved?",
-                                    "Was the police report filed?"]
-                        
-                            selected_option = st.selectbox("", li)
-                            if selected_option in li[1:]:
-                                doc = st.session_state["lineage_zephyr"][selected_option]
-                                for i in range(len(doc)):
-                                    #st.write(doc[i])
-                                    y=i+1
-                                    st.write(f":blue[Reference-{y}:]")
-                                    st_ = doc[i].page_content.replace("($)"," ")
-                                    st.write(":blue[Page Content:]",st_) 
-                                    st.write(":blue[Source:]",doc[i].metadata['source'])
-
-                                   
-            with col4_up:
-                def summ_gpt_(tmp_table_gpt):
-                    template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Don't include words like these: 'chat summary', 'includes information' or 'AI' in the final summary.\n\n\
-                            Context: {text}  '''
-                    
-                    prompt = PromptTemplate(template=template,input_variables=["text"])
-                    llm_chain_gpt = LLMChain(prompt=prompt,llm=llm)
-
-                    #summ_dict_gpt = tmp_table_gpt.set_index('Question')['Answer']
-                    # st.write(summ_dict_gpt)
-                    # text = []
-                    # for key,value in summ_dict_gpt.items():
-                    #     text.append(value)
-                    text = tmp_table_gpt
-                    response_summ_gpt = llm_chain_gpt.run(text)
-                    #st.write(text)
-                    return response_summ_gpt,summ_dict_gpt
-                
-                # def summ_zephyr_():
-                #     template = """Write a detailed summary of the below text provided in such way that it includes all relevant information.
-                #     ```{text}```
-                #     Response: (Return your response in one paragraph with all the details.) """
-                #     prompt = PromptTemplate(template=template,input_variables=["text"])
-                #     llm_chain_llama = LLMChain(prompt=prompt,llm=zephyr_7b)
-
-                #     text = ', '.join(res_df_zephyr['Answer']) + sara_recommendation_zephyr
-                #     response_summ_llama = llm_chain_llama.run(text)
-                #     return response_summ_llama
-                
-                if 'clicked2' not in st.session_state:
-                    st.session_state.clicked2 = False
-                
-                def set_clicked2():
-                    st.session_state.clicked2 = True
-                    st.session_state.disabled = True
-                st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
-                st.write()
-                st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled) 
-                with st.spinner("Summarization ..."):
-                
-                    if st.session_state.clicked2:
-
-                        if st.session_state.llm == "Closed-Source":
-                            st.session_state.disabled=False
-
-                       
-                            #summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
-                            summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_gpt
-                            
-                            #st.write(summ_dict_gpt)
-                            # chat_history = resp_dict_obj['Summary']
-                            response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt)
-
-                            response_summ_gpt = response_summ_gpt.replace("$", " ")
-                           # response_summ_gpt = response_summ_gpt.replace("$", " ")
-                            response_summ_gpt = response_summ_gpt.replace("5,000", "5,000 USD")
-                            response_summ_gpt = response_summ_gpt.replace("5,600", "5,600 USD")
-                            # memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=300)
-                            # memory.save_context({"input": "This is the entire summary"}, 
-                            #                 {"output": f"{summ_dict_gpt}"})
-                            # conversation = ConversationChain(
-                            # llm=llm, 
-                            # memory = memory,
-                            # verbose=True)
-                            st.session_state["tmp_summary_gpt"] = response_summ_gpt
-                           
-                            st.write(st.session_state["tmp_summary_gpt"])
-                            
-
-
-                        elif st.session_state.llm == "Open-Source":
-                            st.session_state.disabled=False
-                            ###################
-                            summary2 = ', '.join(res_df_zephyr['Answer']) + sara_recommendation_zephyr
-                            
-                            text1 = summary2
-                            #st.write(text)
-                            prompt = f'''Provide a detailed summary of the below context and make sure to include all the important information (like names, transactions, involved parties, amounts involved, etc). Don't include words like these: 'chat summary', 'includes information' or 'AI' in the final summary.\n\n\
-                            context: {text1} \n\
-                            Response: Output the summary in one paragraph.'''
-                            response1 = zephyr_llm(zephyr_7b,prompt) 
-                            
-
-                            
-                            st.session_state["tmp_summary_zephyr"] = response1
-                            st.session_state["tmp_summary_zephyr"]=st.session_state["tmp_summary_zephyr"].replace("$", "USD ")
-                            st.write(st.session_state["tmp_summary_zephyr"])
-                            ##################
-
-                            # response_summ_zephyr = summ_zephyr_()
-                            # response_summ_zephyr = response_summ_zephyr.replace("$", "USD")
-                            # response_summ_zephyr = response_summ_zephyr.replace("5,000", "5,000")
-                            # response_summ_zephyr = response_summ_zephyr.replace("5,600", "5,600")
-                            # st.session_state["tmp_summary_zephyr"] = response_summ_zephyr
-                            
-                            #summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_llama
-                            
-                            # template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
-                            # Context: {text}  '''
-                            # prompt = PromptTemplate(template=template,input_variables=["text"])
-                            # llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
-
-                            
-                            #st.write(text)
-                            # text = []
-                            # for key,value in summ_dict_llama.items():
-                            #     text.append(value)
-                            
-
-                    if st.session_state.clicked2:
-                        st.markdown("#### Summarization Feedback:")
-                        col_1, col_2, col_3, col_4, col_5,col_6 = st.columns(6)
-
-                        with col_1:
-                            if st.button("👍🏻",key=5):
-                                st.write("*Feedback is recorded*")
-                            # st.markdown('<span style="font-size: 24px;">👍🏻</span>',unsafe_allow_html=True)
-
-
-                        with col_2:
-                            if st.button("👎🏻",key=6):
-                                st.write("*Feedback is recorded*")
-                            # st.markdown('<span style="font-size: 24px;">👎🏻</span>',unsafe_allow_html=True)   
-   
-                
-                    
-                tmp_summary = []
-                tmp_table = pd.DataFrame()
-                try:
-
-                    if st.session_state.llm == "Closed-Source":
                         st.session_state.disabled=False
-                        tmp_summary.append(st.session_state["tmp_summary_gpt"])
-                        tmp_table = pd.concat([tmp_table, st.session_state["tmp_table_gpt"]], ignore_index=True)
-                        tmp_table.drop_duplicates(inplace=True)
+                        li = ["Select question to get the lineage","What is the customer's name?",
+                                "What is the suspect's name?",
+                                "List the Merchant Name",
+                                "How was the bank notified?",
+                                "When was the bank notified?",
+                                "What type of fraud is taking place?",
+                                "When did the fraud occur?",
+                                "Was the disputed amount greater than 5000 usd?",
+                                "What type of network/card are involved?",
+                                "Was the police report filed?"]
                     
+                        selected_option = st.selectbox("", li)
+                        if selected_option in li[1:]:
+                            doc = st.session_state["lineage_zephyr"][selected_option]
+                            for i in range(len(doc)):
+                                #st.write(doc[i])
+                                y=i+1
+                                st.write(f":blue[Reference-{y}:]")
+                                st_ = doc[i].page_content.replace("($)"," ")
+                                st.write(":blue[Page Content:]",st_) 
+                                st.write(":blue[Source:]",doc[i].metadata['source'])
 
-                    elif st.session_state.llm == "Open-Source":
-                        st.session_state.disabled=False
-                        tmp_summary.append(st.session_state["tmp_summary_zephyr"])
-                        tmp_table = pd.concat([tmp_table, st.session_state["tmp_table_zephyr"]], ignore_index=True)
-                        tmp_table.drop_duplicates(inplace=True)
-
-                except:
-                    e = Exception("")
-                    st.exception(e)
-
-
-                try:
-                    # initiate the doc file
-                    doc = docx.Document()
-                    # doc.add_section(WD_SECTION.NEW_PAGE)
-                    doc.add_heading(f"Case No.: {st.session_state.case_num}",0)
-
-                    # Add a subheader for case details
-                    subheader_case = doc.add_paragraph("Case Details")
-                    subheader_case.style = "Heading 2"
-                    # Addition of case details
-                    paragraph = doc.add_paragraph(" ")
-                    case_info = {
-                        "Case Number                            ": " SAR-2023-24680",
-                        "Customer Name                       ": " John Brown",
-                        "Customer ID                              ": " 9659754",
-                        "Case open date                         ": " Feb 02, 2021",
-                        "Case Type                                  ": " Fraud Transaction",
-                        "Case Status                                ": " Open"
-                    }
-                    for key_c, value_c in case_info.items():
-                        doc.add_paragraph(f"{key_c}: {value_c}")
-                    paragraph = doc.add_paragraph(" ")
-
-                    # Add a subheader for customer info to the document ->>
-                    subheader_paragraph = doc.add_paragraph("Customer Information")
-                    subheader_paragraph.style = "Heading 2"
-                    paragraph = doc.add_paragraph(" ")
-
-                    # Add the customer information
-                    customer_info = {
-                        "Name                                           ": " John Brown",
-                        "Address                                      ": " 858 3rd Ave, Chula Vista, California, 91911 US",
-                        "Phone                                          ": " (619) 425-2972",
-                        "A/C No.                                        ": " 4587236908230087",
-                        "SSN                                               ": " 653-30-9562"
-                    }
-
-                    for key, value in customer_info.items():
-                        doc.add_paragraph(f"{key}: {value}")
-                    paragraph = doc.add_paragraph()
-                    # Add a subheader for Suspect infor to the document ->>
-                    subheader_paragraph = doc.add_paragraph("Suspect's Info")
-                    subheader_paragraph.style = "Heading 2"
-                    paragraph = doc.add_paragraph()
-                    #""" Addition of a checkbox where unticked box imply unavailability of suspect info"""
-
-                    # Add the customer information
-                    sent_val = "Suspect has been reported."
-                    paragraph = doc.add_paragraph()
-                    runner = paragraph.add_run(sent_val)
-                    runner.bold = True
-                    runner.italic = True
-                    suspect_info = {
-                        "Name                                             ": "Mike White",
-                        "Address                                        ": "520, WintergreenCt,Vancaville,CA,95587",
-                        "Phone                                             ": "NA",
-                        "SSN                                                 ": "NA",
-                        "Relationship with Customer  ": "NA"
-                    }
-
-                    for key, value in suspect_info.items():
-                        doc.add_paragraph(f"{key}: {value}")
-
-                    doc.add_heading('Summary', level=2)
-                    paragraph = doc.add_paragraph()
-                    doc.add_paragraph(tmp_summary)
-                    paragraph = doc.add_paragraph()
-                    doc.add_heading('Key Insights', level=2)
-                    paragraph = doc.add_paragraph()
-                    columns = list(tmp_table.columns)
-                    table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
-                    table.autofit = True
-                    for col in range(len(columns)):
-                        # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
-                        table.cell(0, col).text = columns[col]
-                    # doc.add_table(st.session_state.tmp_table.shape[0]+1, st.session_state.tmp_table.shape[1], style='Table Grid')
-
-                    for i, row in enumerate(tmp_table.itertuples()):
-                        table_row = table.add_row().cells # add new row to table
-                        for col in range(len(columns)): # iterate over each column in row and add text
-                            table_row[col].text = str(row[col+1]) # avoid index by adding col+1
-                    # save document
-                    # output_bytes = docx.Document.save(doc, 'output.docx')
-                    # st.download_button(label='Download Report', data=output_bytes, file_name='evidence.docx', mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-
-                    paragraph = doc.add_paragraph()
-                    paragraph = doc.add_paragraph()
-                    doc.add_heading('SARA Recommendation', level=2)
-                    doc.add_paragraph()       
-                    paragraph = doc.add_paragraph(st.session_state["sara_doc"])
-
-                    bio = io.BytesIO()
-                    doc.save(bio)
-                except NameError:
-                    pass
-
-            with col5_up:
-
-                col_d1, col_d2 = st.tabs(["Download Report", "Download Case Package"])
-
-                with col_d1:
-                # Applying to download button -> download_button
-                    st.markdown("""
-                        <style>
-                            .stButton download_button {
-                                width: 100%;
-                                height: 70%;
-                            }
-                        </style>
-                    """, unsafe_allow_html=True)
-
-
-                             
-                    if doc:
-                        st.download_button(
-                            label="Download Report",
-                            data=bio.getvalue(),
-                            file_name="Report.docx",
-                            mime="docx",
-                            disabled=st.session_state.disabled
-                        )
-            with col_d2:
+                                
+        with col4_up:
+            def summ_gpt_(tmp_table_gpt):
+                template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Don't include words like these: 'chat summary', 'includes information' or 'AI' in the final summary.\n\n\
+                        Context: {text}  '''
                 
-                # initiating a temp file
-                tmp_dir = tempfile.mkdtemp()
+                prompt = PromptTemplate(template=template,input_variables=["text"])
+                llm_chain_gpt = LLMChain(prompt=prompt,llm=llm)
 
-                file_paths= []
-
-                for uploaded_file in st.session_state.pdf_files:
-                    file_pth = os.path.join(tmp_dir, uploaded_file.name)
-                    with open(file_pth, "wb") as file_opn:
-                        file_opn.write(uploaded_file.getbuffer())
-                    file_paths.append(file_pth)
-
-                for fetched_pdf in fetched_files:
-                    # st.write(fetched_pdf)
-                    file_pth = os.path.join('data/', fetched_pdf)
-                    # st.write(file_pth)
-                    file_paths.append(file_pth)
-
-                
-                combined_doc_path = os.path.join(tmp_dir, "report.docx")
-                doc.save(combined_doc_path)
-
-
-
-                # Create a zip file with the uploaded PDF files and the combined document
-                zip_file_name = "package_files.zip"
-                if file_paths:
-                    files =  [combined_doc_path] + file_paths
-                    create_zip_file(files, zip_file_name)
-                    # create_zip_file(file_paths, zip_file_name)
-                else:
-                    pass
-
-                
-                # Download the package
-
-                with open(zip_file_name, "rb") as file:
-                    st.download_button(
-                        label="Download Case Package", 
-                        data=file, 
-                        file_name=zip_file_name,
-                        disabled=st.session_state.disabled)
-
-                    # # Cleanup: Delete the temporary directory and its contents
-                    # for file_path in file_paths + [combined_doc_path]:
-                    #     os.remove(file_path)
-                    # os.rmdir(temp_dir)
-
-                with col6_up:   
-                    # Adding Radio button
-                    # st.markdown("""<span style="font-size: 24px; ">Make Decision</span>""", unsafe_allow_html=True)
-                    if st.session_state.llm == "Closed-Source":
+                #summ_dict_gpt = tmp_table_gpt.set_index('Question')['Answer']
+                # st.write(summ_dict_gpt)
+                # text = []
+                # for key,value in summ_dict_gpt.items():
+                #     text.append(value)
+                text = tmp_table_gpt
+                response_summ_gpt = llm_chain_gpt.run(text)
+                #st.write(text)
+                return response_summ_gpt,summ_dict_gpt
             
-                        st.markdown("""<span style="font-size: 24px;color:#0000FF">Is SAR filing required?</span>""", unsafe_allow_html=True)
+            # def summ_zephyr_():
+            #     template = """Write a detailed summary of the below text provided in such way that it includes all relevant information.
+            #     ```{text}```
+            #     Response: (Return your response in one paragraph with all the details.) """
+            #     prompt = PromptTemplate(template=template,input_variables=["text"])
+            #     llm_chain_llama = LLMChain(prompt=prompt,llm=zephyr_7b)
 
-                        st.write("#### *SARA Recommendation*")
-                        st.markdown("""<span style="font-size: 18px;">*Based on the following findings for the underlying case, under Bank Secrecy Act, it is recommended to file this case as a suspicious activity:*</span>""", unsafe_allow_html=True)
-                        st.markdown("""<span style="font-size: 18px;">*1. Transaction amount is above the $5,000 value threshold*</span>""", unsafe_allow_html=True)
-                        st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with involvement of multiple individuals, mismatch of customer details on merchant invoice and identification of a potential suspect*.</span>""", unsafe_allow_html=True)  
+            #     text = ', '.join(res_df_zephyr['Answer']) + sara_recommendation_zephyr
+            #     response_summ_llama = llm_chain_llama.run(text)
+            #     return response_summ_llama
+            
+            if 'clicked2' not in st.session_state:
+                st.session_state.clicked2 = False
+            
+            def set_clicked2():
+                st.session_state.clicked2 = True
+                st.session_state.disabled = True
+            st.markdown("""<span style="font-size: 24px; ">Summarize key findings of the case.</span>""", unsafe_allow_html=True)
+            st.write()
+            st.button("Summarize",on_click=set_clicked2,disabled=st.session_state.disabled) 
+            with st.spinner("Summarization ..."):
+            
+                if st.session_state.clicked2:
 
-                        st.warning('Please carefully review the recommendation and case details before the final submission',icon="⚠️")         
+                    if st.session_state.llm == "Closed-Source":
+                        st.session_state.disabled=False
+
+                    
+                        #summ_dict_gpt = st.session_state.tmp_table_gpt #.set_index('Question')['Answer'].to_dict()
+                        summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_gpt
+                        
+                        #st.write(summ_dict_gpt)
+                        # chat_history = resp_dict_obj['Summary']
+                        response_summ_gpt,summ_dict_gpt = summ_gpt_(summ_dict_gpt)
+
+                        response_summ_gpt = response_summ_gpt.replace("$", " ")
+                        # response_summ_gpt = response_summ_gpt.replace("$", " ")
+                        response_summ_gpt = response_summ_gpt.replace("5,000", "5,000 USD")
+                        response_summ_gpt = response_summ_gpt.replace("5,600", "5,600 USD")
+                        # memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=300)
+                        # memory.save_context({"input": "This is the entire summary"}, 
+                        #                 {"output": f"{summ_dict_gpt}"})
+                        # conversation = ConversationChain(
+                        # llm=llm, 
+                        # memory = memory,
+                        # verbose=True)
+                        st.session_state["tmp_summary_gpt"] = response_summ_gpt
+                        
+                        st.write(st.session_state["tmp_summary_gpt"])
+                        
+
+
+                    elif st.session_state.llm == "Open-Source":
+                        st.session_state.disabled=False
+                        ###################
+                        summary2 = ', '.join(res_df_zephyr['Answer']) + sara_recommendation_zephyr
+                        
+                        text1 = summary2
+                        #st.write(text)
+                        prompt = f'''Provide a detailed summary of the below context and make sure to include all the important information (like names, transactions, involved parties, amounts involved, etc). Don't include words like these: 'chat summary', 'includes information' or 'AI' in the final summary.\n\n\
+                        context: {text1} \n\
+                        Response: Output the summary in one paragraph.'''
+                        response1 = zephyr_llm(zephyr_7b,prompt) 
+                        
+
+                        
+                        st.session_state["tmp_summary_zephyr"] = response1
+                        st.session_state["tmp_summary_zephyr"]=st.session_state["tmp_summary_zephyr"].replace("$", "USD ")
+                        st.write(st.session_state["tmp_summary_zephyr"])
+                        ##################
+
+                        # response_summ_zephyr = summ_zephyr_()
+                        # response_summ_zephyr = response_summ_zephyr.replace("$", "USD")
+                        # response_summ_zephyr = response_summ_zephyr.replace("5,000", "5,000")
+                        # response_summ_zephyr = response_summ_zephyr.replace("5,600", "5,600")
+                        # st.session_state["tmp_summary_zephyr"] = response_summ_zephyr
+                        
+                        #summ_dict_gpt = ', '.join(res_df_gpt['Answer']) + sara_recommendation_llama
+                        
+                        # template = '''Provide a detailed summary of the below Context and make sure to include all the relevant information (like names, transactions, involved parties, amounts involved, etc). Do not include details like customer id , case id etc. Provide the summary in a single paragraph and don't include words like these: 'chat summary', 'includes information' or 'AI' in my final summary.\n\n\
+                        # Context: {text}  '''
+                        # prompt = PromptTemplate(template=template,input_variables=["text"])
+                        # llm_chain_llama = LLMChain(prompt=prompt,llm=llama_13b)
+
+                        
+                        #st.write(text)
+                        # text = []
+                        # for key,value in summ_dict_llama.items():
+                        #     text.append(value)
+                        
+
+                if st.session_state.clicked2:
+                    st.markdown("#### Summarization Feedback:")
+                    col_1, col_2, col_3, col_4, col_5,col_6 = st.columns(6)
+
+                    with col_1:
+                        if st.button("👍🏻",key=5):
+                            st.write("*Feedback is recorded*")
+                        # st.markdown('<span style="font-size: 24px;">👍🏻</span>',unsafe_allow_html=True)
+
+
+                    with col_2:
+                        if st.button("👎🏻",key=6):
+                            st.write("*Feedback is recorded*")
+                        # st.markdown('<span style="font-size: 24px;">👎🏻</span>',unsafe_allow_html=True)   
+
+            
+                
+            tmp_summary = []
+            tmp_table = pd.DataFrame()
+            try:
+
+                if st.session_state.llm == "Closed-Source":
+                    st.session_state.disabled=False
+                    tmp_summary.append(st.session_state["tmp_summary_gpt"])
+                    tmp_table = pd.concat([tmp_table, st.session_state["tmp_table_gpt"]], ignore_index=True)
+                    tmp_table.drop_duplicates(inplace=True)
+                
+
+                elif st.session_state.llm == "Open-Source":
+                    st.session_state.disabled=False
+                    tmp_summary.append(st.session_state["tmp_summary_zephyr"])
+                    tmp_table = pd.concat([tmp_table, st.session_state["tmp_table_zephyr"]], ignore_index=True)
+                    tmp_table.drop_duplicates(inplace=True)
+
+            except:
+                e = Exception("")
+                st.exception(e)
+
+
+            try:
+                # initiate the doc file
+                doc = docx.Document()
+                # doc.add_section(WD_SECTION.NEW_PAGE)
+                doc.add_heading(f"Case No.: {st.session_state.case_num}",0)
+
+                # Add a subheader for case details
+                subheader_case = doc.add_paragraph("Case Details")
+                subheader_case.style = "Heading 2"
+                # Addition of case details
+                paragraph = doc.add_paragraph(" ")
+                case_info = {
+                    "Case Number                            ": " SAR-2023-24680",
+                    "Customer Name                       ": " John Brown",
+                    "Customer ID                              ": " 9659754",
+                    "Case open date                         ": " Feb 02, 2021",
+                    "Case Type                                  ": " Fraud Transaction",
+                    "Case Status                                ": " Open"
+                }
+                for key_c, value_c in case_info.items():
+                    doc.add_paragraph(f"{key_c}: {value_c}")
+                paragraph = doc.add_paragraph(" ")
+
+                # Add a subheader for customer info to the document ->>
+                subheader_paragraph = doc.add_paragraph("Customer Information")
+                subheader_paragraph.style = "Heading 2"
+                paragraph = doc.add_paragraph(" ")
+
+                # Add the customer information
+                customer_info = {
+                    "Name                                           ": " John Brown",
+                    "Address                                      ": " 858 3rd Ave, Chula Vista, California, 91911 US",
+                    "Phone                                          ": " (619) 425-2972",
+                    "A/C No.                                        ": " 4587236908230087",
+                    "SSN                                               ": " 653-30-9562"
+                }
+
+                for key, value in customer_info.items():
+                    doc.add_paragraph(f"{key}: {value}")
+                paragraph = doc.add_paragraph()
+                # Add a subheader for Suspect infor to the document ->>
+                subheader_paragraph = doc.add_paragraph("Suspect's Info")
+                subheader_paragraph.style = "Heading 2"
+                paragraph = doc.add_paragraph()
+                #""" Addition of a checkbox where unticked box imply unavailability of suspect info"""
+
+                # Add the customer information
+                sent_val = "Suspect has been reported."
+                paragraph = doc.add_paragraph()
+                runner = paragraph.add_run(sent_val)
+                runner.bold = True
+                runner.italic = True
+                suspect_info = {
+                    "Name                                             ": "Mike White",
+                    "Address                                        ": "520, WintergreenCt,Vancaville,CA,95587",
+                    "Phone                                             ": "NA",
+                    "SSN                                                 ": "NA",
+                    "Relationship with Customer  ": "NA"
+                }
+
+                for key, value in suspect_info.items():
+                    doc.add_paragraph(f"{key}: {value}")
+
+                doc.add_heading('Summary', level=2)
+                paragraph = doc.add_paragraph()
+                doc.add_paragraph(tmp_summary)
+                paragraph = doc.add_paragraph()
+                doc.add_heading('Key Insights', level=2)
+                paragraph = doc.add_paragraph()
+                columns = list(tmp_table.columns)
+                table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
+                table.autofit = True
+                for col in range(len(columns)):
+                    # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
+                    table.cell(0, col).text = columns[col]
+                # doc.add_table(st.session_state.tmp_table.shape[0]+1, st.session_state.tmp_table.shape[1], style='Table Grid')
+
+                for i, row in enumerate(tmp_table.itertuples()):
+                    table_row = table.add_row().cells # add new row to table
+                    for col in range(len(columns)): # iterate over each column in row and add text
+                        table_row[col].text = str(row[col+1]) # avoid index by adding col+1
+                # save document
+                # output_bytes = docx.Document.save(doc, 'output.docx')
+                # st.download_button(label='Download Report', data=output_bytes, file_name='evidence.docx', mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+
+                paragraph = doc.add_paragraph()
+                paragraph = doc.add_paragraph()
+                doc.add_heading('SARA Recommendation', level=2)
+                doc.add_paragraph()       
+                paragraph = doc.add_paragraph(st.session_state["sara_doc"])
+
+                bio = io.BytesIO()
+                doc.save(bio)
+            except NameError:
+                pass
+
+        with col5_up:
+
+            col_d1, col_d2 = st.tabs(["Download Report", "Download Case Package"])
+
+            with col_d1:
+            # Applying to download button -> download_button
+                st.markdown("""
+                    <style>
+                        .stButton download_button {
+                            width: 100%;
+                            height: 70%;
+                        }
+                    </style>
+                """, unsafe_allow_html=True)
+
+
                             
-                    if st.session_state.llm == "Open-Source":
+                if doc:
+                    st.download_button(
+                        label="Download Report",
+                        data=bio.getvalue(),
+                        file_name="Report.docx",
+                        mime="docx",
+                        disabled=st.session_state.disabled
+                    )
+        with col_d2:
+            
+            # initiating a temp file
+            tmp_dir = tempfile.mkdtemp()
 
-                        st.write("#### *SARA Recommendation*")
-                        st.markdown("""<span style="font-size: 18px;">*Based on the following findings,it is recommended to file this case as a suspicious activity to FinCEN under Bank Secrecy Act:*</span>""", unsafe_allow_html=True)
-                        st.markdown("""<span style="font-size: 18px;">*1. Transaction amount is $5,600 indicating a need to file SAR with FinCEN.*</span>""", unsafe_allow_html=True)
-                        st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with identification of a suspect whose details mismatch with customer details on merchant invoice.*</span>""", unsafe_allow_html=True)  
+            file_paths= []
 
-                        st.warning('Please carefully review the recommendation and case details before the final submission',icon="⚠️")         
-                    
-                    
-                    selected_rad = st.radio(":blue", ["opt1","Yes", "No", "Refer for review"], horizontal=True,disabled=st.session_state.disabled)
-                    if selected_rad == "Refer for review":
-                        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-                        email_id = st.text_input("Enter email ID")
-                        if email_id and not re.match(email_regex, email_id):
-                            st.error("Please enter a valid email ID")
+            for uploaded_file in st.session_state.pdf_files:
+                file_pth = os.path.join(tmp_dir, uploaded_file.name)
+                with open(file_pth, "wb") as file_opn:
+                    file_opn.write(uploaded_file.getbuffer())
+                file_paths.append(file_pth)
+
+            for fetched_pdf in fetched_files:
+                # st.write(fetched_pdf)
+                file_pth = os.path.join('data/', fetched_pdf)
+                # st.write(file_pth)
+                file_paths.append(file_pth)
+
+            
+            combined_doc_path = os.path.join(tmp_dir, "report.docx")
+            doc.save(combined_doc_path)
 
 
-                    if st.button("Submit"):
-                        if selected_rad in ("Yes"):
-                            st.warning("Thanks for your review, your response has been submitted")
-                        elif selected_rad in ("No"):
-                            st.success("Thanks for your review, your response has been submitted")
 
-                        else:
-                            st.info("Thanks for your review, Case has been assigned to the next reviewer")
+            # Create a zip file with the uploaded PDF files and the combined document
+            zip_file_name = "package_files.zip"
+            if file_paths:
+                files =  [combined_doc_path] + file_paths
+                create_zip_file(files, zip_file_name)
+                # create_zip_file(file_paths, zip_file_name)
+            else:
+                pass
+
+            
+            # Download the package
+
+            with open(zip_file_name, "rb") as file:
+                st.download_button(
+                    label="Download Case Package", 
+                    data=file, 
+                    file_name=zip_file_name,
+                    disabled=st.session_state.disabled)
+
+                # # Cleanup: Delete the temporary directory and its contents
+                # for file_path in file_paths + [combined_doc_path]:
+                #     os.remove(file_path)
+                # os.rmdir(temp_dir)
+
+            with col6_up:   
+                # Adding Radio button
+                # st.markdown("""<span style="font-size: 24px; ">Make Decision</span>""", unsafe_allow_html=True)
+                if st.session_state.llm == "Closed-Source":
+        
+                    st.markdown("""<span style="font-size: 24px;color:#0000FF">Is SAR filing required?</span>""", unsafe_allow_html=True)
+
+                    st.write("#### *SARA Recommendation*")
+                    st.markdown("""<span style="font-size: 18px;">*Based on the following findings for the underlying case, under Bank Secrecy Act, it is recommended to file this case as a suspicious activity:*</span>""", unsafe_allow_html=True)
+                    st.markdown("""<span style="font-size: 18px;">*1. Transaction amount is above the $5,000 value threshold*</span>""", unsafe_allow_html=True)
+                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with involvement of multiple individuals, mismatch of customer details on merchant invoice and identification of a potential suspect*.</span>""", unsafe_allow_html=True)  
+
+                    st.warning('Please carefully review the recommendation and case details before the final submission',icon="⚠️")         
+                        
+                if st.session_state.llm == "Open-Source":
+
+                    st.write("#### *SARA Recommendation*")
+                    st.markdown("""<span style="font-size: 18px;">*Based on the following findings,it is recommended to file this case as a suspicious activity to FinCEN under Bank Secrecy Act:*</span>""", unsafe_allow_html=True)
+                    st.markdown("""<span style="font-size: 18px;">*1. Transaction amount is $5,600 indicating a need to file SAR with FinCEN.*</span>""", unsafe_allow_html=True)
+                    st.markdown("""<span style="font-size: 18px;">*2. There is an indication of suspicion with identification of a suspect whose details mismatch with customer details on merchant invoice.*</span>""", unsafe_allow_html=True)  
+
+                    st.warning('Please carefully review the recommendation and case details before the final submission',icon="⚠️")         
+                
+                
+                selected_rad = st.radio(":blue", ["opt1","Yes", "No", "Refer for review"], horizontal=True,disabled=st.session_state.disabled)
+                if selected_rad == "Refer for review":
+                    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+                    email_id = st.text_input("Enter email ID")
+                    if email_id and not re.match(email_regex, email_id):
+                        st.error("Please enter a valid email ID")
+
+
+                if st.button("Submit"):
+                    if selected_rad in ("Yes"):
+                        st.warning("Thanks for your review, your response has been submitted")
+                    elif selected_rad in ("No"):
+                        st.success("Thanks for your review, your response has been submitted")
+
+                    else:
+                        st.info("Thanks for your review, Case has been assigned to the next reviewer")
 
 
 

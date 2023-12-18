@@ -2160,7 +2160,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
 
                 for fetched_pdf in fetched_files:
                     # st.write(fetched_pdf)
-                    file_pth = os.path.join('data/', fetched_pdf)
+                    file_pth = os.path.join('data2/', fetched_pdf)
                     # st.write(file_pth)
                     file_paths.append(file_pth)
 

@@ -2027,191 +2027,206 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     st.exception(e)
 
 
-                if st.session_state.case_num == "SAR-2023-24680" :
-                    # initiate the doc file
-                    doc = docx.Document()
-                    # doc.add_section(WD_SECTION.NEW_PAGE)
-                    doc.add_heading(f"Case No.: {st.session_state.case_num}",0)
+                def save_report1(tmp_table,tmp_summary,sara_recommendation):
+                    try:
+                        # initiate the doc file
+                        doc = docx.Document()
+                        # doc.add_section(WD_SECTION.NEW_PAGE)
+                        doc.add_heading(f"Case No.: {st.session_state.case_num}",0)
 
-                    # Add a subheader for case details
-                    subheader_case = doc.add_paragraph("Case Details")
-                    subheader_case.style = "Heading 2"
-                    # Addition of case details
-                    paragraph = doc.add_paragraph(" ")
-                    case_info = {
-                        "Case Number                            ": " SAR-2023-24680",
-                        "Customer Name                       ": " John Brown",
-                        "Customer ID                              ": " 9659754",
-                        "Case open date                         ": " Feb 02, 2021",
-                        "Case Type                                  ": " Fraud Transaction",
-                        "Case Status                                ": " Open"
-                    }
-                    for key_c, value_c in case_info.items():
-                        doc.add_paragraph(f"{key_c}: {value_c}")
-                    paragraph = doc.add_paragraph(" ")
+                        # Add a subheader for case details
+                        subheader_case = doc.add_paragraph("Case Details")
+                        subheader_case.style = "Heading 2"
+                        # Addition of case details
+                        paragraph = doc.add_paragraph(" ")
+                        case_info = {
+                            "Case Number                            ": " SAR-2023-24680",
+                            "Customer Name                       ": " John Brown",
+                            "Customer ID                              ": " 9659754",
+                            "Case open date                         ": " Feb 02, 2021",
+                            "Case Type                                  ": " Fraud Transaction",
+                            "Case Status                                ": " Open"
+                        }
+                        for key_c, value_c in case_info.items():
+                            doc.add_paragraph(f"{key_c}: {value_c}")
+                        paragraph = doc.add_paragraph(" ")
 
-                    # Add a subheader for customer info to the document ->>
-                    subheader_paragraph = doc.add_paragraph("Customer Information")
-                    subheader_paragraph.style = "Heading 2"
-                    paragraph = doc.add_paragraph(" ")
+                        # Add a subheader for customer info to the document ->>
+                        subheader_paragraph = doc.add_paragraph("Customer Information")
+                        subheader_paragraph.style = "Heading 2"
+                        paragraph = doc.add_paragraph(" ")
 
-                    # Add the customer information
-                    customer_info = {
-                        "Name                                           ": " John Brown",
-                        "Address                                      ": " 858 3rd Ave, Chula Vista, California, 91911 US",
-                        "Phone                                          ": " (619) 425-2972",
-                        "A/C No.                                        ": " 4587236908230087",
-                        "SSN                                               ": " 653-30-9562"
-                    }
+                        # Add the customer information
+                        customer_info = {
+                            "Name                                           ": " John Brown",
+                            "Address                                      ": " 858 3rd Ave, Chula Vista, California, 91911 US",
+                            "Phone                                          ": " (619) 425-2972",
+                            "A/C No.                                        ": " 4587236908230087",
+                            "SSN                                               ": " 653-30-9562"
+                        }
 
-                    for key, value in customer_info.items():
-                        doc.add_paragraph(f"{key}: {value}")
-                    paragraph = doc.add_paragraph()
-                    # Add a subheader for Suspect infor to the document ->>
-                    subheader_paragraph = doc.add_paragraph("Suspect's Info")
-                    subheader_paragraph.style = "Heading 2"
-                    paragraph = doc.add_paragraph()
-                    #""" Addition of a checkbox where unticked box imply unavailability of suspect info"""
+                        for key, value in customer_info.items():
+                            doc.add_paragraph(f"{key}: {value}")
+                        paragraph = doc.add_paragraph()
+                        # Add a subheader for Suspect infor to the document ->>
+                        subheader_paragraph = doc.add_paragraph("Suspect's Info")
+                        subheader_paragraph.style = "Heading 2"
+                        paragraph = doc.add_paragraph()
+                        #""" Addition of a checkbox where unticked box imply unavailability of suspect info"""
 
-                    # Add the customer information
-                    sent_val = "Suspect has been reported."
-                    paragraph = doc.add_paragraph()
-                    runner = paragraph.add_run(sent_val)
-                    runner.bold = True
-                    runner.italic = True
-                    suspect_info = {
-                        "Name                                             ": "Mike White",
-                        "Address                                        ": "520, WintergreenCt,Vancaville,CA,95587",
-                        "Phone                                             ": "NA",
-                        "SSN                                                 ": "NA",
-                        "Relationship with Customer  ": "NA"
-                    }
+                        # Add the customer information
+                        sent_val = "Suspect has been reported."
+                        paragraph = doc.add_paragraph()
+                        runner = paragraph.add_run(sent_val)
+                        runner.bold = True
+                        runner.italic = True
+                        suspect_info = {
+                            "Name                                             ": "Mike White",
+                            "Address                                        ": "520, WintergreenCt,Vancaville,CA,95587",
+                            "Phone                                             ": "NA",
+                            "SSN                                                 ": "NA",
+                            "Relationship with Customer  ": "NA"
+                        }
 
-                    for key, value in suspect_info.items():
-                        doc.add_paragraph(f"{key}: {value}")
+                        for key, value in suspect_info.items():
+                            doc.add_paragraph(f"{key}: {value}")
 
-                    doc.add_heading('Summary', level=2)
-                    paragraph = doc.add_paragraph()
-                    doc.add_paragraph(tmp_summary)
-                    paragraph = doc.add_paragraph()
-                    doc.add_heading('Key Insights', level=2)
-                    paragraph = doc.add_paragraph()
-                    columns = list(tmp_table.columns)
-                    table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
-                    table.autofit = True
-                    for col in range(len(columns)):
-                        # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
-                        table.cell(0, col).text = columns[col]
-                    # doc.add_table(st.session_state.tmp_table.shape[0]+1, st.session_state.tmp_table.shape[1], style='Table Grid')
+                        doc.add_heading('Summary', level=2)
+                        paragraph = doc.add_paragraph()
+                        doc.add_paragraph(tmp_summary)
+                        paragraph = doc.add_paragraph()
+                        doc.add_heading('Key Insights', level=2)
+                        paragraph = doc.add_paragraph()
+                        columns = list(tmp_table.columns)
+                        table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
+                        table.autofit = True
+                        for col in range(len(columns)):
+                            # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
+                            table.cell(0, col).text = columns[col]
+                        # doc.add_table(st.session_state.tmp_table.shape[0]+1, st.session_state.tmp_table.shape[1], style='Table Grid')
+                        
+                        for i, row in enumerate(tmp_table.itertuples()):
+                            table_row = table.add_row().cells # add new row to table
+                            for col in range(len(columns)): # iterate over each column in row and add text
+                                table_row[col].text = str(row[col+1]) # avoid index by adding col+1
+                        # save document
+                        # output_bytes = docx.Document.save(doc, 'output.docx')
+                        # st.download_button(label='Download Report', data=output_bytes, file_name='evidence.docx', mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
 
-                    for i, row in enumerate(tmp_table.itertuples()):
-                        table_row = table.add_row().cells # add new row to table
-                        for col in range(len(columns)): # iterate over each column in row and add text
-                            table_row[col].text = str(row[col+1]) # avoid index by adding col+1
-                    # save document
-                    # output_bytes = docx.Document.save(doc, 'output.docx')
-                    # st.download_button(label='Download Report', data=output_bytes, file_name='evidence.docx', mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                        paragraph = doc.add_paragraph()
+                        paragraph = doc.add_paragraph()
+                        doc.add_heading('SARA Recommendation', level=2)
+                        doc.add_paragraph()       
+                        paragraph = doc.add_paragraph(sara_recommendation)         
 
-                    paragraph = doc.add_paragraph()
-                    paragraph = doc.add_paragraph()
-                    doc.add_heading('SARA Recommendation', level=2)
-                    doc.add_paragraph()       
-                    paragraph = doc.add_paragraph(st.session_state["sara_doc"])
+                        bio = io.BytesIO()
+                        doc.save(bio)
+                    except:
+                        e = Exception("")
+                        st.exception(e)
 
-                    bio = io.BytesIO()
-                    doc.save(bio)
-                
-                elif st.session_state.case_num == "SAR-2023-24680":
-                    doc = docx.Document()
-                    # doc.add_section(WD_SECTION.NEW_PAGE)
-                    doc.add_heading(f"Case No.: {st.session_state.case_num}",0)
+                    return doc
 
-                    subheader_case = doc.add_paragraph("Case Details")
-                    subheader_case.style = "Heading 2"
-                    # Addition of case details
-                    paragraph = doc.add_paragraph(" ")
-                    case_info = {
-                        "Case Number                            ": " SAR-2023-24680",
-                        "Customer Name                       ": " John Brown",
-                        "Customer ID                              ": " 9659754",
-                        "Case open date                         ": " Feb 02, 2021",
-                        "Case Type                                  ": " Fraud Transaction",
-                        "Case Status                                ": " Open"
-                    }
-                    for key_c, value_c in case_info.items():
-                        doc.add_paragraph(f"{key_c}: {value_c}")
-                    paragraph = doc.add_paragraph(" ")
 
-                    # Add a subheader for customer info to the document ->>
-                    subheader_paragraph = doc.add_paragraph("Customer Information")
-                    subheader_paragraph.style = "Heading 2"
-                    paragraph = doc.add_paragraph(" ")
+                def save_report2(tmp_table,tmp_summary,sara_recommendation):
+                    try:
+                        # initiate the doc file
+                        doc = docx.Document()
+                        # doc.add_section(WD_SECTION.NEW_PAGE)
+                        doc.add_heading(f"Case No.: {st.session_state.case_num}",0)
 
-                    # Add the customer information
-                    customer_info = {
-                        "Name                                           ": " John Brown",
-                        "Address                                      ": " 858 3rd Ave, Chula Vista, California, 91911 US",
-                        "Phone                                          ": " (619) 425-2972",
-                        "A/C No.                                        ": " 4587236908230087",
-                        "SSN                                               ": " 653-30-9562"
-                    }
+                        # Add a subheader for case details
+                        subheader_case = doc.add_paragraph("Case Details")
+                        subheader_case.style = "Heading 2"
+                        # Addition of case details
+                        paragraph = doc.add_paragraph(" ")
+                        case_info = {
+                            "Case Number                            ": " SAR-2023-24680",
+                            "Customer Name                       ": " John Brown",
+                            "Customer ID                              ": " 9659754",
+                            "Case open date                         ": " Feb 02, 2021",
+                            "Case Type                                  ": " Fraud Transaction",
+                            "Case Status                                ": " Open"
+                        }
+                        for key_c, value_c in case_info.items():
+                            doc.add_paragraph(f"{key_c}: {value_c}")
+                        paragraph = doc.add_paragraph(" ")
 
-                    for key, value in customer_info.items():
-                        doc.add_paragraph(f"{key}: {value}")
-                    paragraph = doc.add_paragraph()
-                    # Add a subheader for Suspect infor to the document ->>
-                    subheader_paragraph = doc.add_paragraph("Suspect's Info")
-                    subheader_paragraph.style = "Heading 2"
-                    paragraph = doc.add_paragraph()
-                    #""" Addition of a checkbox where unticked box imply unavailability of suspect info"""
+                        # Add a subheader for customer info to the document ->>
+                        subheader_paragraph = doc.add_paragraph("Customer Information")
+                        subheader_paragraph.style = "Heading 2"
+                        paragraph = doc.add_paragraph(" ")
 
-                    # Add the customer information
-                    sent_val = "Suspect has been reported."
-                    paragraph = doc.add_paragraph()
-                    runner = paragraph.add_run(sent_val)
-                    runner.bold = True
-                    runner.italic = True
-                    suspect_info = {
-                        "Name                                             ": "NA",
-                        "Address                                        ": "NA",
-                        "Phone                                             ": "NA",
-                        "SSN                                                 ": "NA",
-                        "Relationship with Customer  ": "NA"
-                    }
+                        # Add the customer information
+                        customer_info = {
+                            "Name                                           ": " John Brown",
+                            "Address                                      ": " 858 3rd Ave, Chula Vista, California, 91911 US",
+                            "Phone                                          ": " (619) 425-2972",
+                            "A/C No.                                        ": " 4587236908230087",
+                            "SSN                                               ": " 653-30-9562"
+                        }
 
-                    for key, value in suspect_info.items():
-                        doc.add_paragraph(f"{key}: {value}")
+                        for key, value in customer_info.items():
+                            doc.add_paragraph(f"{key}: {value}")
+                        paragraph = doc.add_paragraph()
+                        # Add a subheader for Suspect infor to the document ->>
+                        subheader_paragraph = doc.add_paragraph("Suspect's Info")
+                        subheader_paragraph.style = "Heading 2"
+                        paragraph = doc.add_paragraph()
+                        #""" Addition of a checkbox where unticked box imply unavailability of suspect info"""
 
-                    doc.add_heading('Summary', level=2)
-                    paragraph = doc.add_paragraph()
-                    doc.add_paragraph(tmp_summary)
-                    paragraph = doc.add_paragraph()
-                    doc.add_heading('Key Insights', level=2)
-                    paragraph = doc.add_paragraph()
-                    columns = list(tmp_table.columns)
-                    table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
-                    table.autofit = True
-                    for col in range(len(columns)):
-                        # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
-                        table.cell(0, col).text = columns[col]
-                    # doc.add_table(st.session_state.tmp_table.shape[0]+1, st.session_state.tmp_table.shape[1], style='Table Grid')
-                    
-                    for i, row in enumerate(tmp_table.itertuples()):
-                        table_row = table.add_row().cells # add new row to table
-                        for col in range(len(columns)): # iterate over each column in row and add text
-                            table_row[col].text = str(row[col+1]) # avoid index by adding col+1
-                    # save document
-                    # output_bytes = docx.Document.save(doc, 'output.docx')
-                    # st.download_button(label='Download Report', data=output_bytes, file_name='evidence.docx', mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                        # Add the customer information
+                        sent_val = "Suspect has been reported."
+                        paragraph = doc.add_paragraph()
+                        runner = paragraph.add_run(sent_val)
+                        runner.bold = True
+                        runner.italic = True
+                        suspect_info = {
+                            "Name                                             ": "NA",
+                            "Address                                        ": "NA",
+                            "Phone                                             ": "NA",
+                            "SSN                                                 ": "NA",
+                            "Relationship with Customer  ": "NA"
+                        }
 
-                    paragraph = doc.add_paragraph()
-                    paragraph = doc.add_paragraph()
-                    doc.add_heading('SARA Recommendation', level=2)
-                    doc.add_paragraph()       
-                    paragraph = doc.add_paragraph(sara_recommendation)         
+                        for key, value in suspect_info.items():
+                            doc.add_paragraph(f"{key}: {value}")
 
-                    bio = io.BytesIO()
-                    doc.save(bio)
+                        doc.add_heading('Summary', level=2)
+                        paragraph = doc.add_paragraph()
+                        doc.add_paragraph(tmp_summary)
+                        paragraph = doc.add_paragraph()
+                        doc.add_heading('Key Insights', level=2)
+                        paragraph = doc.add_paragraph()
+                        columns = list(tmp_table.columns)
+                        table = doc.add_table(rows=1, cols=len(columns), style="Table Grid")
+                        table.autofit = True
+                        for col in range(len(columns)):
+                            # set_cell_margins(table.cell(0, col), top=100, start=100, bottom=100, end=50) # set cell margin
+                            table.cell(0, col).text = columns[col]
+                        # doc.add_table(st.session_state.tmp_table.shape[0]+1, st.session_state.tmp_table.shape[1], style='Table Grid')
+                        
+                        for i, row in enumerate(tmp_table.itertuples()):
+                            table_row = table.add_row().cells # add new row to table
+                            for col in range(len(columns)): # iterate over each column in row and add text
+                                table_row[col].text = str(row[col+1]) # avoid index by adding col+1
+                        # save document
+                        # output_bytes = docx.Document.save(doc, 'output.docx')
+                        # st.download_button(label='Download Report', data=output_bytes, file_name='evidence.docx', mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+
+                        paragraph = doc.add_paragraph()
+                        paragraph = doc.add_paragraph()
+                        doc.add_heading('SARA Recommendation', level=2)
+                        doc.add_paragraph()       
+                        paragraph = doc.add_paragraph(sara_recommendation)         
+
+                        bio = io.BytesIO()
+                        doc.save(bio)
+                    except:
+                        e = Exception("")
+                        st.exception(e)
+
+                    return doc
               
             
 
@@ -2230,6 +2245,20 @@ elif selected_option_case_type == "Fraud transaction dispute":
                             }
                         </style>
                     """, unsafe_allow_html=True)
+                    if st.session_state.case_num == "SAR-2023-24680":
+                    
+                        # st.write(fetched_pdf)
+                        doc = save_report1(tmp_table,tmp_summary,sara_recommendation_gpt)
+                        bio = io.BytesIO()
+                        doc.save(bio)
+                    elif st.session_state.case_num == "SAR-2023-13579":
+                    
+                        # st.write(fetched_pdf)
+                        doc = save_report1(tmp_table,tmp_summary,sara_recommendation_gpt)
+                        bio = io.BytesIO()
+                        doc.save(bio)
+
+                    
 
 
                              

@@ -1125,7 +1125,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                     if st.session_state.clicked1:
                         if temp_file_path is not None:
                         # File handling logic
-                            _, docsearch = embedding_store(temp_file_path,hf_embeddings)
+                            _, docsearch = embedding_store_fd(temp_file_path,hf_embeddings)
                             st.write(temp_file_path)
                             res_dict = {}
                             lineage_dict = {}
@@ -1145,7 +1145,7 @@ elif selected_option_case_type == "Fraud transaction dispute":
                                     
                                 query = "What is the suspect's name?"
                                 context_1 = docsearch.similarity_search(query, k=5)
-                               # st.write(context_1)
+                               #st.write(context_1)
                                 prompt_1 = f'''Perform Name Enitity Recognition to identify the suspect name as accurately as possible, given the context. Suspect is the Person who has committed the fraud with the Customer. Respond saying "The Suspect Name is not Present" if there is no suspect in the given context.\n\n\
                                             Question: {query}\n\
                                             Context: {context_1}\n\

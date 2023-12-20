@@ -2730,7 +2730,7 @@ elif selected_option_case_type == "Money Laundering":
 
                                 
                                 # st.write(doc_1)
-                                st.write(temp_file_path2)
+                                
 
     
                                 query = "Why was the transaction triggered?"
@@ -3022,6 +3022,7 @@ elif selected_option_case_type == "Money Laundering":
                                 
                                 
                                 ## Question-2
+                                st.write(temp_file_path2)
 
                                 template = """ Your goal is to read customer relationship information and answer below question in one single sentence. \n\n\
                                 """

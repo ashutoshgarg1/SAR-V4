@@ -2725,11 +2725,12 @@ elif selected_option_case_type == "Money Laundering":
                             if st.session_state.llm == "Closed-Source":
                                 chat_history_1 = {}
 
+
                                 ## Question-1
 
                                 
                                 # st.write(doc_1)
-                                # st.write(temp_file_path2)
+                                st.write(temp_file_path2)
 
     
                                 query = "Why was the transaction triggered?"
